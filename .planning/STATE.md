@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-03-16T07:24:19.133Z"
+stopped_at: Completed 02-03-PLAN.md
+last_updated: "2026-03-16T07:28:41.643Z"
 last_activity: 2026-03-16 -- Completed 02-01-PLAN.md
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 7
-  completed_plans: 4
+  completed_plans: 5
   percent: 57
 ---
 
@@ -55,6 +55,7 @@ _Updated after each plan completion_
 | Phase 01 P02 | 5min | 2 tasks | 6 files |
 | Phase 01 P03 | 6min | 2 tasks | 8 files |
 | Phase 02 P01 | 3min | 2 tasks | 9 files |
+| Phase 02 P03 | 2min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,8 @@ Recent decisions affecting current work:
 - [Phase 01]: immediatelyRender: false for TipTap useEditor (required for Editor | null return type)
 - [Phase 01]: content fallback to empty string (TipTap Content type rejects undefined)
 - [Phase 02-01]: eslint-disable for generic IndexedDB type assertion in usePersistedState (same pattern as useNote type guard)
+- [Phase 02]: Permanent note names stored as Record<string,string> in usePersistedState rather than per-note metadata entries
+- [Phase 02]: useNote called with __unused__ sentinel when no permanent note selected to avoid conditional hook
 
 ### Pending Todos
 
@@ -86,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T07:24:19.131Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-03-16T07:28:41.641Z
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None

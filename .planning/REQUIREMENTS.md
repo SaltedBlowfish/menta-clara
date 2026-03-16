@@ -30,15 +30,15 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Weekly Notes
 
-- [ ] **WEEK-01**: A weekly note persists for an entire week cycle and is visible in the right pane
-- [ ] **WEEK-02**: User can configure whether weeks start on Monday or Sunday
-- [ ] **WEEK-03**: Weekly notes auto-create from the configured weekly template at the start of each week cycle
+- [x] **WEEK-01**: A weekly note persists for an entire week cycle and is visible in the right pane
+- [x] **WEEK-02**: User can configure whether weeks start on Monday or Sunday
+- [x] **WEEK-03**: Weekly notes auto-create from the configured weekly template at the start of each week cycle
 
 ### Permanent Notes
 
-- [ ] **PERM-01**: User can create multiple named permanent notes within a workspace
-- [ ] **PERM-02**: User can switch between permanent notes via a dropdown or tab in the right pane
-- [ ] **PERM-03**: Permanent notes persist indefinitely and are not tied to any date
+- [x] **PERM-01**: User can create multiple named permanent notes within a workspace
+- [x] **PERM-02**: User can switch between permanent notes via a dropdown or tab in the right pane
+- [x] **PERM-03**: Permanent notes persist indefinitely and are not tied to any date
 
 ### Calendar
 
@@ -152,12 +152,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DALY-01     | Phase 2 | Pending |
 | DALY-02     | Phase 2 | Pending |
 | DALY-03     | Phase 2 | Pending |
-| WEEK-01     | Phase 2 | Pending |
-| WEEK-02     | Phase 2 | Pending |
-| WEEK-03     | Phase 2 | Pending |
-| PERM-01     | Phase 2 | Pending |
-| PERM-02     | Phase 2 | Pending |
-| PERM-03     | Phase 2 | Pending |
+| WEEK-01     | Phase 2 | Complete |
+| WEEK-02     | Phase 2 | Complete |
+| WEEK-03     | Phase 2 | Complete |
+| PERM-01     | Phase 2 | Complete |
+| PERM-02     | Phase 2 | Complete |
+| PERM-03     | Phase 2 | Complete |
 | CALR-01     | Phase 2 | Pending |
 | CALR-02     | Phase 2 | Pending |
 | CALR-03     | Phase 2 | Pending |
