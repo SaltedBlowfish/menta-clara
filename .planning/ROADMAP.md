@@ -28,11 +28,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can undo and redo edits within a session
   4. User can close the browser tab, reopen it, and find their note content preserved exactly as they left it
   5. Project builds to static files with zero lint warnings under strictest TypeScript/ESLint configuration
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md -- Project scaffolding with Vite + React + TypeScript, strict ESLint, Prettier, Vitest
+- [ ] 01-02-PLAN.md -- Storage layer: Note type, IndexedDB via idb, useNote hook, persistent storage request
+- [ ] 01-03-PLAN.md -- TipTap editor with StarterKit + CodeBlockLowlight, app shell wiring, auto-save
 
 ### Phase 2: Core Product Experience
 **Goal**: Users experience the full Paneful Notes product -- opening a tab shows today's daily note on the left alongside their weekly note, permanent notes, and a mini calendar on the right, all navigable by keyboard, with light/dark theming and full accessibility
@@ -76,6 +77,6 @@ Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation and Editor | 0/? | Not started | - |
+| 1. Foundation and Editor | 0/3 | Not started | - |
 | 2. Core Product Experience | 0/? | Not started | - |
 | 3. Power Features | 0/? | Not started | - |
