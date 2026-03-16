@@ -97,10 +97,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Developer
 
-- [ ] **DEVX-01**: Project uses React + TypeScript + ESLint + Prettier
-- [ ] **DEVX-02**: Strictest ESLint rules: no `any`, no `unknown`, no `as` casting, alphabetized imports/props/object keys
-- [ ] **DEVX-03**: Max 100 lines per file (excluding blank lines and comments), no multi-component exports, no default exports
-- [ ] **DEVX-04**: App builds to static files deployable on GitHub Pages
+- [x] **DEVX-01**: Project uses React + TypeScript + ESLint + Prettier
+- [x] **DEVX-02**: Strictest ESLint rules: no `any`, no `unknown`, no `as` casting, alphabetized imports/props/object keys
+- [x] **DEVX-03**: Max 100 lines per file (excluding blank lines and comments), no multi-component exports, no default exports
+- [x] **DEVX-04**: App builds to static files deployable on GitHub Pages
 
 ## v2 Requirements
 
@@ -136,10 +136,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase   | Status  |
 | ----------- | ------- | ------- |
-| DEVX-01     | Phase 1 | Pending |
-| DEVX-02     | Phase 1 | Pending |
-| DEVX-03     | Phase 1 | Pending |
-| DEVX-04     | Phase 1 | Pending |
+| DEVX-01     | Phase 1 | Complete |
+| DEVX-02     | Phase 1 | Complete |
+| DEVX-03     | Phase 1 | Complete |
+| DEVX-04     | Phase 1 | Complete |
 | DATA-01     | Phase 1 | Pending |
 | DATA-04     | Phase 1 | Pending |
 | EDIT-01     | Phase 1 | Pending |
