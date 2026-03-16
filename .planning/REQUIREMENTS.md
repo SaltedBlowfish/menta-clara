@@ -136,13 +136,65 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (Populated during roadmap creation) | | |
+| DEVX-01 | Phase 1 | Pending |
+| DEVX-02 | Phase 1 | Pending |
+| DEVX-03 | Phase 1 | Pending |
+| DEVX-04 | Phase 1 | Pending |
+| DATA-01 | Phase 1 | Pending |
+| DATA-04 | Phase 1 | Pending |
+| EDIT-01 | Phase 1 | Pending |
+| EDIT-02 | Phase 1 | Pending |
+| EDIT-05 | Phase 1 | Pending |
+| LAYO-01 | Phase 2 | Pending |
+| LAYO-02 | Phase 2 | Pending |
+| LAYO-03 | Phase 2 | Pending |
+| LAYO-04 | Phase 2 | Pending |
+| DALY-01 | Phase 2 | Pending |
+| DALY-02 | Phase 2 | Pending |
+| DALY-03 | Phase 2 | Pending |
+| WEEK-01 | Phase 2 | Pending |
+| WEEK-02 | Phase 2 | Pending |
+| WEEK-03 | Phase 2 | Pending |
+| PERM-01 | Phase 2 | Pending |
+| PERM-02 | Phase 2 | Pending |
+| PERM-03 | Phase 2 | Pending |
+| CALR-01 | Phase 2 | Pending |
+| CALR-02 | Phase 2 | Pending |
+| CALR-03 | Phase 2 | Pending |
+| CALR-04 | Phase 2 | Pending |
+| APPR-01 | Phase 2 | Pending |
+| APPR-02 | Phase 2 | Pending |
+| APPR-03 | Phase 2 | Pending |
+| KEYS-01 | Phase 2 | Pending |
+| KEYS-02 | Phase 2 | Pending |
+| KEYS-03 | Phase 2 | Pending |
+| KEYS-04 | Phase 2 | Pending |
+| A11Y-01 | Phase 2 | Pending |
+| A11Y-02 | Phase 2 | Pending |
+| A11Y-03 | Phase 2 | Pending |
+| A11Y-04 | Phase 2 | Pending |
+| A11Y-05 | Phase 2 | Pending |
+| TMPL-01 | Phase 3 | Pending |
+| TMPL-02 | Phase 3 | Pending |
+| TMPL-03 | Phase 3 | Pending |
+| TMPL-04 | Phase 3 | Pending |
+| TMPL-05 | Phase 3 | Pending |
+| WKSP-01 | Phase 3 | Pending |
+| WKSP-02 | Phase 3 | Pending |
+| WKSP-03 | Phase 3 | Pending |
+| SRCH-01 | Phase 3 | Pending |
+| SRCH-02 | Phase 3 | Pending |
+| SRCH-03 | Phase 3 | Pending |
+| DATA-02 | Phase 3 | Pending |
+| DATA-03 | Phase 3 | Pending |
+| EDIT-03 | Phase 3 | Pending |
+| EDIT-04 | Phase 3 | Pending |
 
 **Coverage:**
-- v1 requirements: 42 total
-- Mapped to phases: 0
-- Unmapped: 42 ⚠️
+- v1 requirements: 53 total
+- Mapped to phases: 53
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-15*
-*Last updated: 2026-03-15 after initial definition*
+*Last updated: 2026-03-15 after roadmap creation*
