@@ -1,10 +1,13 @@
 .permanent-editor-area {
+  cursor: text;
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 4px;
 }
 
 .permanent-editor-area .tiptap {
+  flex: 1;
   min-height: 48px;
 }
 

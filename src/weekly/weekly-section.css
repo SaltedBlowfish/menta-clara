@@ -1,7 +1,9 @@
 .weekly-editor-area {
+  cursor: text;
+  flex: 1;
   min-height: 60px;
 }
 
 .weekly-editor-area .tiptap {
-  min-height: 48px;
+  min-height: 100%;
 }

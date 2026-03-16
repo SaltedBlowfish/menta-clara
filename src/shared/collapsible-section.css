@@ -39,5 +39,8 @@
 }
 
 .collapsible-section-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   padding: 0 16px 16px;
 }

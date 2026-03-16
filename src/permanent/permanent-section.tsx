@@ -1,5 +1,5 @@
 import './permanent-section.css';
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { NoteEditor } from '../editor/editor';
 import { CollapsibleSection } from '../shared/collapsible-section';
@@ -41,7 +41,16 @@ export function PermanentSection() {
           selectedNoteId={selectedNoteId}
         />
         {selectedNoteId ? (
-          <div className="permanent-editor-area">
+          <div
+            className="permanent-editor-area"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                const tiptap = e.currentTarget.querySelector<HTMLElement>('.tiptap');
+                tiptap?.focus();
+              }
+            }}
+            role="presentation"
+          >
             <InlineTitle name={selectedName} onRename={handleRename} />
             <NoteEditor content={content} onUpdate={saveContent} />
           </div>
