@@ -69,10 +69,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Data
 
-- [ ] **DATA-01**: All data is stored locally in the browser using IndexedDB — no server calls
+- [x] **DATA-01**: All data is stored locally in the browser using IndexedDB — no server calls
 - [ ] **DATA-02**: User can export all workspace data as a folder of markdown files (downloadable zip)
 - [ ] **DATA-03**: User can import markdown files to populate notes
-- [ ] **DATA-04**: App requests persistent storage to prevent browser eviction (Safari ITP mitigation)
+- [x] **DATA-04**: App requests persistent storage to prevent browser eviction (Safari ITP mitigation)
 
 ### Appearance
 
@@ -140,8 +140,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEVX-02     | Phase 1 | Complete |
 | DEVX-03     | Phase 1 | Complete |
 | DEVX-04     | Phase 1 | Complete |
-| DATA-01     | Phase 1 | Pending |
-| DATA-04     | Phase 1 | Pending |
+| DATA-01     | Phase 1 | Complete |
+| DATA-04     | Phase 1 | Complete |
 | EDIT-01     | Phase 1 | Pending |
 | EDIT-02     | Phase 1 | Pending |
 | EDIT-05     | Phase 1 | Pending |
