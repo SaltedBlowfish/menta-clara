@@ -1,21 +1,23 @@
+import { useState } from 'react';
+
 import './app.css';
-import { NoteEditor } from '../editor/editor';
-import { useNote } from '../storage/use-note';
-import { StorageWarning } from './storage-warning';
+import { DailyPane } from '../daily/daily-pane';
+import { SplitPane } from '../layout/split-pane';
+import { LiveRegion } from '../shared/live-region';
+import { ThemeToggle } from '../theme/theme-toggle';
 
 export function App() {
-  const { content, error, loading, saveContent } = useNote();
-
-  if (loading) {
-    return null;
-  }
+  const [selectedDate] = useState<Date>(() => new Date());
+  const [announcement] = useState('');
 
   return (
     <>
-      <div className="editor-container">
-        <NoteEditor content={content} onUpdate={saveContent} />
-      </div>
-      {error ? <StorageWarning message={error} /> : null}
+      <ThemeToggle />
+      <SplitPane
+        left={<DailyPane date={selectedDate} />}
+        right={<div />}
+      />
+      <LiveRegion message={announcement} />
     </>
   );
 }

@@ -1,0 +1,16 @@
+.permanent-empty {
+  padding: 16px 0;
+  text-align: center;
+}
+
+.permanent-empty-heading {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.permanent-empty-body {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  margin-top: 4px;
+}
