@@ -20,7 +20,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **LAYO-01**: App displays a split-pane layout: daily note on the left, right pane stacked with weekly note, permanent note, and mini calendar
 - [ ] **LAYO-02**: User can resize panes by dragging the divider
 - [ ] **LAYO-03**: User can switch focus between panes using keyboard shortcuts (CMD+[ and CMD+])
-- [ ] **LAYO-04**: Right pane sections (weekly, permanent, calendar) are individually collapsible
+- [x] **LAYO-04**: Right pane sections (weekly, permanent, calendar) are individually collapsible
 
 ### Daily Notes
 
@@ -76,9 +76,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Appearance
 
-- [ ] **APPR-01**: User can toggle between light and dark mode
-- [ ] **APPR-02**: App defaults to the user's system color scheme preference
-- [ ] **APPR-03**: UI uses clean, minimal typography inspired by makingsoftware.com
+- [x] **APPR-01**: User can toggle between light and dark mode
+- [x] **APPR-02**: App defaults to the user's system color scheme preference
+- [x] **APPR-03**: UI uses clean, minimal typography inspired by makingsoftware.com
 
 ### Keyboard
 
@@ -89,10 +89,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Accessibility
 
-- [ ] **A11Y-01**: All interactive elements have proper ARIA labels and roles
+- [x] **A11Y-01**: All interactive elements have proper ARIA labels and roles
 - [ ] **A11Y-02**: App is fully navigable with keyboard only (no mouse required)
-- [ ] **A11Y-03**: App works with screen readers (VoiceOver, NVDA)
-- [ ] **A11Y-04**: Color contrast meets WCAG 2.1 AA standards
+- [x] **A11Y-03**: App works with screen readers (VoiceOver, NVDA)
+- [x] **A11Y-04**: Color contrast meets WCAG 2.1 AA standards
 - [ ] **A11Y-05**: Focus management is correct — focus is never lost or trapped unexpectedly
 
 ### Developer
@@ -148,7 +148,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LAYO-01     | Phase 2 | Pending |
 | LAYO-02     | Phase 2 | Pending |
 | LAYO-03     | Phase 2 | Pending |
-| LAYO-04     | Phase 2 | Pending |
+| LAYO-04     | Phase 2 | Complete |
 | DALY-01     | Phase 2 | Pending |
 | DALY-02     | Phase 2 | Pending |
 | DALY-03     | Phase 2 | Pending |
@@ -162,17 +162,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CALR-02     | Phase 2 | Pending |
 | CALR-03     | Phase 2 | Pending |
 | CALR-04     | Phase 2 | Pending |
-| APPR-01     | Phase 2 | Pending |
-| APPR-02     | Phase 2 | Pending |
-| APPR-03     | Phase 2 | Pending |
+| APPR-01     | Phase 2 | Complete |
+| APPR-02     | Phase 2 | Complete |
+| APPR-03     | Phase 2 | Complete |
 | KEYS-01     | Phase 2 | Pending |
 | KEYS-02     | Phase 2 | Pending |
 | KEYS-03     | Phase 2 | Pending |
 | KEYS-04     | Phase 2 | Pending |
-| A11Y-01     | Phase 2 | Pending |
+| A11Y-01     | Phase 2 | Complete |
 | A11Y-02     | Phase 2 | Pending |
-| A11Y-03     | Phase 2 | Pending |
-| A11Y-04     | Phase 2 | Pending |
+| A11Y-03     | Phase 2 | Complete |
+| A11Y-04     | Phase 2 | Complete |
 | A11Y-05     | Phase 2 | Pending |
 | TMPL-01     | Phase 3 | Pending |
 | TMPL-02     | Phase 3 | Pending |
