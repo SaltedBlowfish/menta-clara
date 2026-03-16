@@ -1,0 +1,26 @@
+.calendar-nav {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 8px;
+}
+.calendar-nav-button {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 8px;
+}
+.calendar-nav-button:hover {
+  color: var(--color-text);
+}
+.calendar-nav-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.calendar-nav-label {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+}
