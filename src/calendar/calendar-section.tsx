@@ -1,9 +1,7 @@
 import './calendar-section.css';
 
-import { format } from 'date-fns';
 import { useMemo } from 'react';
 
-import { CollapsibleSection } from '../shared/collapsible-section';
 import { CalendarGrid } from './calendar-grid';
 import { useCalendar } from './use-calendar';
 
@@ -17,10 +15,10 @@ export function CalendarSection({ onSelectDay, selectedDate }: CalendarSectionPr
     useCalendar(selectedDate);
 
   const today = useMemo(() => new Date(), []);
-  const sectionTitle = format(displayedMonth, 'MMM yyyy');
 
   return (
-    <CollapsibleSection sectionId="calendar" title={sectionTitle}>
+    <>
+      <span className="section-title">Calendar</span>
       <div className="calendar-nav">
         <button
           aria-label="Previous month"
@@ -47,6 +45,6 @@ export function CalendarSection({ onSelectDay, selectedDate }: CalendarSectionPr
         selectedDate={selectedDate}
         today={today}
       />
-    </CollapsibleSection>
+    </>
   );
 }

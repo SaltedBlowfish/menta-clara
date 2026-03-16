@@ -4,6 +4,7 @@
   flex: 1;
   flex-direction: column;
   gap: 4px;
+  padding: 0 16px 16px;
 }
 
 .permanent-editor-area .tiptap {
@@ -12,7 +13,7 @@
 }
 
 .permanent-empty {
-  padding: 16px 0;
+  padding: 16px;
   text-align: center;
 }
 

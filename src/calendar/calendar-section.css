@@ -2,7 +2,7 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
-  padding: 0 0 4px;
+  padding: 0 16px 4px;
 }
 .calendar-nav-button {
   background: none;

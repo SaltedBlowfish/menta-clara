@@ -2,6 +2,7 @@
   cursor: text;
   flex: 1;
   min-height: 60px;
+  padding: 0 16px 16px;
 }
 
 .weekly-editor-area .tiptap {

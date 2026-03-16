@@ -2,6 +2,7 @@
   display: grid;
   gap: 0;
   grid-template-columns: repeat(7, 1fr);
+  padding: 0 16px 8px;
 }
 .calendar-weekday {
   color: var(--color-text-secondary);
