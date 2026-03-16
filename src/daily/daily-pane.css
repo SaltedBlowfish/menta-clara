@@ -5,6 +5,9 @@
 }
 
 .daily-pane-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   padding: 16px 48px 0;
 }
 
@@ -15,12 +18,18 @@
 }
 
 .daily-pane-editor {
+  cursor: text;
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px 48px 48px;
+  width: 100%;
+}
+
+.daily-pane-editor .tiptap {
   margin: 0 auto;
   max-width: 720px;
-  overflow-y: auto;
-  padding: 64px 48px 48px;
-  width: 100%;
+  min-height: 100%;
 }
 
 @media (max-width: 800px) {

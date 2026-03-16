@@ -13,6 +13,7 @@ interface UsePermanentNotesResult {
   deleteNote: (noteId: string) => Promise<void>;
   loading: boolean;
   notes: ReadonlyArray<PermanentNote>;
+  renameNote: (noteId: string, name: string) => void;
   selectedNoteId: string | null;
   selectNote: (noteId: string) => void;
 }
@@ -93,6 +94,13 @@ export function usePermanentNotes(): UsePermanentNotesResult {
     [names, noteIds, selectedNoteId, setNames, setSelectedNoteId],
   );
 
+  const renameNote = useCallback(
+    (noteId: string, name: string) => {
+      setNames({ ...names, [noteId]: name });
+    },
+    [names, setNames],
+  );
+
   const selectNote = useCallback(
     (noteId: string) => {
       setSelectedNoteId(noteId);
@@ -100,5 +108,5 @@ export function usePermanentNotes(): UsePermanentNotesResult {
     [setSelectedNoteId],
   );
 
-  return { createNote, deleteNote, loading, notes, selectedNoteId, selectNote };
+  return { createNote, deleteNote, loading, notes, renameNote, selectedNoteId, selectNote };
 }

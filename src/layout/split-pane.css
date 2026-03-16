@@ -11,8 +11,10 @@
 }
 
 .split-pane-right {
+  display: flex;
   flex: 1;
-  overflow-y: auto;
+  flex-direction: column;
+  overflow: hidden;
   position: relative;
 }
 

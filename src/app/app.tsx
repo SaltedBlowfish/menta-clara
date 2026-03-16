@@ -46,18 +46,28 @@ export function App() {
 
   return (
     <>
-      <ThemeToggle />
       <SplitPane
         left={<DailyPane date={selectedDate} />}
         right={
-          <>
-            <WeeklySection date={selectedDate} />
-            <PermanentSection />
-            <CalendarSection
-              onSelectDay={handleSelectDay}
-              selectedDate={selectedDate}
-            />
-          </>
+          <div className="right-pane-layout">
+            <div className="right-pane-toolbar">
+              <ThemeToggle />
+            </div>
+            <div className="right-pane-sections">
+              <div className="right-pane-section">
+                <WeeklySection date={selectedDate} />
+              </div>
+              <div className="right-pane-section">
+                <PermanentSection />
+              </div>
+            </div>
+            <div className="right-pane-calendar">
+              <CalendarSection
+                onSelectDay={handleSelectDay}
+                selectedDate={selectedDate}
+              />
+            </div>
+          </div>
         }
       />
       <LiveRegion message={announcement} />

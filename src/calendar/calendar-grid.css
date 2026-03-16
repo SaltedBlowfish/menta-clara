@@ -11,6 +11,7 @@
 }
 .calendar-day {
   align-items: center;
+  aspect-ratio: 1;
   background: none;
   border: none;
   border-radius: 50%;
@@ -20,7 +21,6 @@
   flex-direction: column;
   font-size: 14px;
   gap: 2px;
-  height: 32px;
   justify-content: center;
   position: relative;
   width: 100%;

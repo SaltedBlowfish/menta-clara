@@ -17,6 +17,8 @@
   --color-calendar-selected-bg: #1a1a1a;
   --color-calendar-selected-text: #ffffff;
   --color-calendar-hover: #f5f5f5;
+  --color-input-bg: #ffffff;
+  --color-input-text: #1a1a1a;
 }
 
 [data-theme="dark"] {
@@ -37,6 +39,8 @@
   --color-calendar-selected-bg: #e5e5e5;
   --color-calendar-selected-text: #1c1917;
   --color-calendar-hover: #292524;
+  --color-input-bg: #292524;
+  --color-input-text: #e5e5e5;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -58,5 +62,7 @@
     --color-calendar-selected-bg: #e5e5e5;
     --color-calendar-selected-text: #1c1917;
     --color-calendar-hover: #292524;
+    --color-input-bg: #292524;
+    --color-input-text: #e5e5e5;
   }
 }

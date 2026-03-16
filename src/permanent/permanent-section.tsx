@@ -1,37 +1,59 @@
 import './permanent-section.css';
+import { useCallback } from 'react';
+
 import { NoteEditor } from '../editor/editor';
 import { CollapsibleSection } from '../shared/collapsible-section';
 import { useNote } from '../storage/use-note';
+import { InlineTitle } from './inline-title';
 import { NoteDropdown } from './note-dropdown';
 import { usePermanentNotes } from './use-permanent-notes';
 
 export function PermanentSection() {
-  const { createNote, notes, selectedNoteId, selectNote } =
+  const { createNote, notes, renameNote, selectedNoteId, selectNote } =
     usePermanentNotes();
   const { content, saveContent } = useNote(selectedNoteId ?? '__unused__');
 
-  const handleCreate = (name: string) => {
-    void createNote(name);
-  };
+  const handleCreate = useCallback(() => {
+    void createNote('Untitled');
+  }, [createNote]);
+
+  const selectedName = selectedNoteId
+    ? (notes.find((n) => n.id === selectedNoteId)?.name ?? 'Untitled')
+    : '';
+
+  const handleRename = useCallback(
+    (name: string) => {
+      if (selectedNoteId) {
+        renameNote(selectedNoteId, name);
+      }
+    },
+    [renameNote, selectedNoteId],
+  );
 
   return (
-    <CollapsibleSection sectionId="permanent" title="Notes">
-      <NoteDropdown
-        notes={notes}
-        onCreateNote={handleCreate}
-        onSelectNote={selectNote}
-        selectedNoteId={selectedNoteId}
-      />
-      {selectedNoteId ? (
-        <NoteEditor content={content} onUpdate={saveContent} />
-      ) : (
-        <div className="permanent-empty">
-          <p className="permanent-empty-heading">No permanent notes yet</p>
-          <p className="permanent-empty-body">
-            Create a note to keep content that isn&apos;t tied to a date.
-          </p>
-        </div>
-      )}
-    </CollapsibleSection>
+    <>
+      <span className="section-title">Permanent Notes</span>
+      <CollapsibleSection sectionId="permanent" title="Notes">
+        <NoteDropdown
+          notes={notes}
+          onCreateNote={handleCreate}
+          onSelectNote={selectNote}
+          selectedNoteId={selectedNoteId}
+        />
+        {selectedNoteId ? (
+          <div className="permanent-editor-area">
+            <InlineTitle name={selectedName} onRename={handleRename} />
+            <NoteEditor content={content} onUpdate={saveContent} />
+          </div>
+        ) : (
+          <div className="permanent-empty">
+            <p className="permanent-empty-heading">No permanent notes yet</p>
+            <p className="permanent-empty-body">
+              Create a note to keep content that isn&apos;t tied to a date.
+            </p>
+          </div>
+        )}
+      </CollapsibleSection>
+    </>
   );
 }

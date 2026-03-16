@@ -1,4 +1,6 @@
 import './daily-pane.css';
+import { useCallback } from 'react';
+
 import { StorageWarning } from '../app/storage-warning';
 import { NoteEditor } from '../editor/editor';
 import { useDailyNote } from './use-daily-note';
@@ -11,13 +13,21 @@ export function DailyPane(props: DailyPaneProps) {
   const { date } = props;
   const { content, dateLabel, error, loading, saveContent } = useDailyNote(date);
 
+  const handleEditorAreaClick = useCallback((e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      const tiptap = e.currentTarget.querySelector<HTMLElement>('.tiptap');
+      tiptap?.focus();
+    }
+  }, []);
+
   return (
     <div className="daily-pane">
       <div className="daily-pane-header">
+        <span className="section-title">Daily Note</span>
         <span className="daily-pane-date">{dateLabel}</span>
       </div>
       {loading ? null : (
-        <div className="daily-pane-editor">
+        <div className="daily-pane-editor" onClick={handleEditorAreaClick} role="presentation">
           <NoteEditor content={content} onUpdate={saveContent} />
         </div>
       )}

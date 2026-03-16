@@ -8,11 +8,7 @@
   display: flex;
   height: 32px;
   justify-content: center;
-  position: fixed;
-  right: 16px;
-  top: 16px;
   width: 32px;
-  z-index: 10;
 }
 
 .theme-toggle:hover {

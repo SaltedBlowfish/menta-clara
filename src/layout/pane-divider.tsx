@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 
+const DEFAULT_RATIO = 60;
+
 interface PaneDividerProps {
   onPointerDown: (e: React.PointerEvent) => void;
   onPointerMove: (e: React.PointerEvent) => void;
@@ -24,6 +26,10 @@ export function PaneDivider(props: PaneDividerProps) {
     [ratio, setRatio],
   );
 
+  const onDoubleClick = useCallback(() => {
+    setRatio(DEFAULT_RATIO);
+  }, [setRatio]);
+
   return (
     <div
       aria-controls="daily-pane"
@@ -33,6 +39,7 @@ export function PaneDivider(props: PaneDividerProps) {
       aria-valuemin={0}
       aria-valuenow={Math.round(ratio)}
       className="pane-divider"
+      onDoubleClick={onDoubleClick}
       onKeyDown={onKeyDown}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}

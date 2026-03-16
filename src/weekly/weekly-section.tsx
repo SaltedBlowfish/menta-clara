@@ -13,11 +13,16 @@ export function WeeklySection({ date }: WeeklySectionProps) {
     useWeeklyNote(date);
 
   return (
-    <CollapsibleSection sectionId="weekly" title={weekLabel}>
-      {loading ? null : (
-        <NoteEditor content={content} onUpdate={saveContent} />
-      )}
-      {error ? <StorageWarning message={error} /> : null}
-    </CollapsibleSection>
+    <>
+      <span className="section-title">Weekly Note</span>
+      <CollapsibleSection sectionId="weekly" title={weekLabel}>
+        <div className="weekly-editor-area">
+          {loading ? null : (
+            <NoteEditor content={content} onUpdate={saveContent} />
+          )}
+        </div>
+        {error ? <StorageWarning message={error} /> : null}
+      </CollapsibleSection>
+    </>
   );
 }

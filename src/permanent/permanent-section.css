@@ -1,3 +1,13 @@
+.permanent-editor-area {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.permanent-editor-area .tiptap {
+  min-height: 48px;
+}
+
 .permanent-empty {
   padding: 16px 0;
   text-align: center;
