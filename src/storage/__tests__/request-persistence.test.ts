@@ -23,7 +23,6 @@ describe('requestPersistence', () => {
     mockPersist.mockResolvedValue(true);
     const result = await requestPersistence();
     expect(result).toBe('granted');
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(console.info).toHaveBeenCalledWith('Persistent storage: granted');
   });
 
@@ -31,7 +30,6 @@ describe('requestPersistence', () => {
     mockPersist.mockResolvedValue(false);
     const result = await requestPersistence();
     expect(result).toBe('denied');
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(console.info).toHaveBeenCalledWith('Persistent storage: denied');
   });
 
