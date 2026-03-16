@@ -1,17 +1,12 @@
 .inline-title {
   background: transparent;
   border: none;
-  border-bottom: 1px solid transparent;
   color: var(--color-text);
   font-size: 18px;
   font-weight: 600;
   outline: none;
   padding: 4px 0;
   width: 100%;
-}
-
-.inline-title:focus {
-  border-bottom-color: var(--color-border);
 }
 
 .inline-title::placeholder {

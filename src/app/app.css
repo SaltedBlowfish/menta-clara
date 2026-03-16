@@ -110,7 +110,6 @@ body {
 
 .right-pane-toolbar {
   align-items: center;
-  border-bottom: 1px solid var(--color-border);
   display: flex;
   flex: 0 0 auto;
   justify-content: flex-end;
@@ -132,9 +131,15 @@ body {
   overflow-y: auto;
 }
 
+.right-pane-section + .right-pane-section {
+  border-top: 1px solid var(--color-border);
+}
+
 .right-pane-calendar {
   border-top: 1px solid var(--color-border);
   flex: 0 0 auto;
+  max-height: 200px;
+  overflow: hidden;
 }
 
 /* Section titles */
