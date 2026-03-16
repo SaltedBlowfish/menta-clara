@@ -43,7 +43,7 @@ Declared values (must be multiples of 4):
 | 2xl   | 48px  | Editor container horizontal padding (large viewports)                           |
 | 3xl   | 64px  | Editor container top padding                                                    |
 
-Exceptions: Divider drag handle hit area is 12px wide (not a multiple of 4) for ergonomic drag targeting. The visual divider line itself is 1px.
+Exceptions: Divider drag handle hit area is 12px wide (smallest spacing value not in the declared token scale, justified for ergonomic drag targeting). The visual divider line itself is 1px.
 
 ---
 
@@ -55,14 +55,11 @@ Phase 2 inherits all Phase 1 editor typography unchanged. New typography roles a
 | ------------ | ---- | -------------- | ----------- | ----------------------------------------------------------- |
 | Body / Code  | 16px | 400 (regular)  | 1.6         | Editor content (`p`, `li`, `blockquote`, `code`, `pre code`) |
 | Label        | 14px | 400 (regular)  | 1.5         | Section headers, calendar day numbers, dropdown items, date display |
-| Heading 3    | 18px | 600 (semibold) | 1.35        | Editor `h3`                                                 |
 | Heading 2    | 22px | 600 (semibold) | 1.3         | Editor `h2`                                                 |
 | Heading 1    | 28px | 600 (semibold) | 1.25        | Editor `h1`, daily note date title                          |
 
 **Font sizes (4 declared):** 14px, 16px, 22px, 28px
 **Font weights (2 declared):** 400 (regular), 600 (semibold)
-
-**Note:** 18px (Heading 3) is retained from Phase 1 for editor content but is not counted as a new size -- it falls between the 4 declared sizes and is used only within TipTap content areas where Phase 1 rules already apply.
 
 **Monospace stack for code:** `"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace`
 
@@ -180,6 +177,8 @@ Accent reserved for: today circle on calendar, selected day fill on calendar, ac
 
 Phase 2 replaces the single centered editor with a full-width split-pane layout.
 
+**Focal point:** The daily note editor (left pane) is the primary visual anchor. It occupies 60% of the viewport by default and receives focus on app load. All other UI elements (right-pane sections, calendar, controls) are secondary to this writing surface.
+
 ```
 +------------------------------------------------------------------+
 | [date/title]                                    [theme toggle]   |
@@ -194,7 +193,7 @@ Phase 2 replaces the single centered editor with a full-width split-pane layout.
 | |                             |  |  [editor content]           | |
 | |                             |  |                             | |
 | |                             |  +-----------------------------+ |
-| |                             |  |  ◀ March 2026 ▶   [collapse]| |
+| |                             |  |  < March 2026 >   [collapse]| |
 | |                             |  |  Mo Tu We Th Fr Sa Su      | |
 | |                             |  |   1  2  3  4  5  6  7      | |
 | |                             |  |   8  9 10 11 12 13 14      | |
