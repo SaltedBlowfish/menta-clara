@@ -51,13 +51,14 @@ Plans:
 3. User can click any day on the mini calendar to navigate to that day's note, see dots on days with existing notes, and navigate between months
 4. User can create and switch between multiple named permanent notes that persist indefinitely
 5. User can toggle light/dark mode (defaulting to system preference) and navigate the entire app using only the keyboard, including switching focus between panes with CMD+[ and CMD+]
-   **Plans**: TBD
+   **Plans**: 4 plans
 
 Plans:
 
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01-PLAN.md -- Theme system (CSS custom properties, light/dark toggle, system preference), collapsible section component, live region, CSS refactor
+- [ ] 02-02-PLAN.md -- Split-pane layout with drag-to-resize divider, daily note pane with auto-creation, app shell rewrite
+- [ ] 02-03-PLAN.md -- Weekly note section (ISO week calculation), permanent notes section (dropdown, CRUD)
+- [ ] 02-04-PLAN.md -- Mini calendar (month grid, note dots, navigation), keyboard shortcuts, final app shell wiring
 
 ### Phase 3: Power Features
 
@@ -87,6 +88,6 @@ Phases execute in numeric order: 1 -> 2 -> 3
 
 | Phase                      | Plans Complete | Status      | Completed |
 | -------------------------- | -------------- | ----------- | --------- |
-| 1. Foundation and Editor   | 0/3            | Not started | -         |
-| 2. Core Product Experience | 0/?            | Not started | -         |
+| 1. Foundation and Editor   | 3/3            | Complete    | 2026-03-15 |
+| 2. Core Product Experience | 0/4            | Not started | -         |
 | 3. Power Features          | 0/?            | Not started | -         |
