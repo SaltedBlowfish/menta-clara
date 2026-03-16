@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-03-16T07:28:30Z"
-last_activity: 2026-03-16 -- Completed 02-02-PLAN.md
+stopped_at: Completed 02-04-PLAN.md
+last_updated: "2026-03-16T07:53:36Z"
+last_activity: 2026-03-16 -- Completed 02-04-PLAN.md
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 7
-  completed_plans: 5
-  percent: 71
+  completed_plans: 7
+  percent: 100
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-15)
 ## Current Position
 
 Phase: 2 of 3 (Core Product Experience)
-Plan: 2 of 4 in current phase
-Status: In Progress
-Last activity: 2026-03-16 -- Completed 02-02-PLAN.md
+Plan: 4 of 4 in current phase
+Status: Phase Complete
+Last activity: 2026-03-16 -- Completed 02-04-PLAN.md
 
-Progress: [███████░░░] 71%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ _Updated after each plan completion_
 | Phase 02 P01 | 3min | 2 tasks | 9 files |
 | Phase 02 P02 | 3min | 2 tasks | 10 files |
 | Phase 02 P03 | 2min | 2 tasks | 9 files |
+| Phase 02 P04 | 4min | 3 tasks | 27 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,10 @@ Recent decisions affecting current work:
 - [Phase 02-02]: autoCreatedRef guard prevents duplicate daily note auto-creation during React strict mode
 - [Phase 02]: Permanent note names stored as Record<string,string> in usePersistedState rather than per-note metadata entries
 - [Phase 02]: useNote called with __unused__ sentinel when no permanent note selected to avoid conditional hook
+- [Phase 02-04]: Theme toggle moved from fixed position to dedicated right-pane toolbar
+- [Phase 02-04]: Right pane uses flexbox layout with fixed calendar at bottom and scrollable sections
+- [Phase 02-04]: Permanent note naming via inline title editing instead of separate input dialog
+- [Phase 02-04]: Input background/text theme tokens added for dark mode contrast
 
 ### Pending Todos
 
@@ -93,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T07:28:30Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-03-16T07:53:36Z
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None

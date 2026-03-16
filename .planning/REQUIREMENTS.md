@@ -19,7 +19,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **LAYO-01**: App displays a split-pane layout: daily note on the left, right pane stacked with weekly note, permanent note, and mini calendar
 - [x] **LAYO-02**: User can resize panes by dragging the divider
-- [ ] **LAYO-03**: User can switch focus between panes using keyboard shortcuts (CMD+[ and CMD+])
+- [x] **LAYO-03**: User can switch focus between panes using keyboard shortcuts (CMD+[ and CMD+])
 - [x] **LAYO-04**: Right pane sections (weekly, permanent, calendar) are individually collapsible
 
 ### Daily Notes
@@ -42,10 +42,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Calendar
 
-- [ ] **CALR-01**: A collapsible mini-month calendar is visible in the right pane
-- [ ] **CALR-02**: Calendar shows dots on days that have notes
-- [ ] **CALR-03**: User can click a day on the calendar to navigate to that day's note
-- [ ] **CALR-04**: User can navigate between months in the calendar
+- [x] **CALR-01**: A collapsible mini-month calendar is visible in the right pane
+- [x] **CALR-02**: Calendar shows dots on days that have notes
+- [x] **CALR-03**: User can click a day on the calendar to navigate to that day's note
+- [x] **CALR-04**: User can navigate between months in the calendar
 
 ### Templates
 
@@ -82,15 +82,15 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Keyboard
 
-- [ ] **KEYS-01**: All actions are accessible via keyboard shortcuts
-- [ ] **KEYS-02**: User can switch focus between panes with CMD+[ and CMD+]
-- [ ] **KEYS-03**: Standard formatting shortcuts work (CMD+B bold, CMD+I italic, etc.)
-- [ ] **KEYS-04**: User can open search, switch workspaces, and navigate dates via keyboard
+- [x] **KEYS-01**: All actions are accessible via keyboard shortcuts
+- [x] **KEYS-02**: User can switch focus between panes with CMD+[ and CMD+]
+- [x] **KEYS-03**: Standard formatting shortcuts work (CMD+B bold, CMD+I italic, etc.)
+- [x] **KEYS-04**: User can open search, switch workspaces, and navigate dates via keyboard
 
 ### Accessibility
 
 - [x] **A11Y-01**: All interactive elements have proper ARIA labels and roles
-- [ ] **A11Y-02**: App is fully navigable with keyboard only (no mouse required)
+- [x] **A11Y-02**: App is fully navigable with keyboard only (no mouse required)
 - [x] **A11Y-03**: App works with screen readers (VoiceOver, NVDA)
 - [x] **A11Y-04**: Color contrast meets WCAG 2.1 AA standards
 - [x] **A11Y-05**: Focus management is correct — focus is never lost or trapped unexpectedly
@@ -147,7 +147,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EDIT-05     | Phase 1 | Complete |
 | LAYO-01     | Phase 2 | Complete |
 | LAYO-02     | Phase 2 | Complete |
-| LAYO-03     | Phase 2 | Pending |
+| LAYO-03     | Phase 2 | Complete |
 | LAYO-04     | Phase 2 | Complete |
 | DALY-01     | Phase 2 | Complete |
 | DALY-02     | Phase 2 | Complete |
@@ -158,19 +158,19 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PERM-01     | Phase 2 | Complete |
 | PERM-02     | Phase 2 | Complete |
 | PERM-03     | Phase 2 | Complete |
-| CALR-01     | Phase 2 | Pending |
-| CALR-02     | Phase 2 | Pending |
-| CALR-03     | Phase 2 | Pending |
-| CALR-04     | Phase 2 | Pending |
+| CALR-01     | Phase 2 | Complete |
+| CALR-02     | Phase 2 | Complete |
+| CALR-03     | Phase 2 | Complete |
+| CALR-04     | Phase 2 | Complete |
 | APPR-01     | Phase 2 | Complete |
 | APPR-02     | Phase 2 | Complete |
 | APPR-03     | Phase 2 | Complete |
-| KEYS-01     | Phase 2 | Pending |
-| KEYS-02     | Phase 2 | Pending |
-| KEYS-03     | Phase 2 | Pending |
-| KEYS-04     | Phase 2 | Pending |
+| KEYS-01     | Phase 2 | Complete |
+| KEYS-02     | Phase 2 | Complete |
+| KEYS-03     | Phase 2 | Complete |
+| KEYS-04     | Phase 2 | Complete |
 | A11Y-01     | Phase 2 | Complete |
-| A11Y-02     | Phase 2 | Pending |
+| A11Y-02     | Phase 2 | Complete |
 | A11Y-03     | Phase 2 | Complete |
 | A11Y-04     | Phase 2 | Complete |
 | A11Y-05     | Phase 2 | Complete |
