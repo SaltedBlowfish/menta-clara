@@ -59,14 +59,15 @@ Users can open a tab and immediately start writing today's note alongside their 
 
 ## Key Decisions
 
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| WYSIWYG-style markdown editor | User wants rendered-as-you-type experience, not split edit/preview | — Pending |
-| Local blob store for images | Keeps notes lightweight vs inline base64 | — Pending |
-| Multiple permanent notes (not single) | More flexible than one scratchpad per workspace | — Pending |
-| Configurable week start day | Accommodates both Monday (ISO) and Sunday (US) users | — Pending |
-| Markdown file export (not JSON) | Human-readable, portable, works with other tools | — Pending |
-| Date-only [[references]] | Simpler than full wiki linking; sufficient for daily notes workflow | — Pending |
+| Decision                              | Rationale                                                           | Outcome   |
+| ------------------------------------- | ------------------------------------------------------------------- | --------- |
+| WYSIWYG-style markdown editor         | User wants rendered-as-you-type experience, not split edit/preview  | — Pending |
+| Local blob store for images           | Keeps notes lightweight vs inline base64                            | — Pending |
+| Multiple permanent notes (not single) | More flexible than one scratchpad per workspace                     | — Pending |
+| Configurable week start day           | Accommodates both Monday (ISO) and Sunday (US) users                | — Pending |
+| Markdown file export (not JSON)       | Human-readable, portable, works with other tools                    | — Pending |
+| Date-only [[references]]              | Simpler than full wiki linking; sufficient for daily notes workflow | — Pending |
 
 ---
-*Last updated: 2026-03-15 after initialization*
+
+_Last updated: 2026-03-15 after initialization_

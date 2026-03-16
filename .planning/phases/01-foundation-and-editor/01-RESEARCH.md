@@ -13,66 +13,73 @@ The critical insight is that TipTap's StarterKit already bundles all the editing
 **Primary recommendation:** Scaffold with `npm create vite@latest -- --template react-ts`, add TipTap v3 with StarterKit + Markdown extension, persist serialized markdown to IndexedDB via `idb-keyval` behind a storage abstraction interface.
 
 <phase_requirements>
+
 ## Phase Requirements
 
-| ID | Description | Research Support |
-|----|-------------|-----------------|
-| DEVX-01 | React + TypeScript + ESLint + Prettier | Vite react-ts template provides React + TS; eslint-plugin-perfectionist for sorting; Prettier for formatting |
-| DEVX-02 | Strictest ESLint: no any, no unknown, no as casting, alphabetized imports/props/keys | typescript-eslint strict + perfectionist plugin covers all requirements |
-| DEVX-03 | Max 100 lines/file, no multi-component exports, no default exports | Custom ESLint rules + convention enforcement; named exports only |
-| DEVX-04 | Static files deployable on GitHub Pages | Vite builds to dist/ folder; set base path in vite.config.ts |
-| DATA-01 | All data stored locally in IndexedDB | idb-keyval wraps IndexedDB; storage abstraction interface for future flexibility |
-| DATA-04 | Persistent storage to prevent Safari eviction | navigator.storage.persist() call on app startup |
-| EDIT-01 | WYSIWYG markdown rendering (bold, italic, headings, lists, code blocks) | TipTap StarterKit includes all these; @tiptap/markdown for markdown content type |
-| EDIT-02 | Undo and redo within a session | TipTap StarterKit includes built-in undo/redo (History extension) |
-| EDIT-05 | Auto-save on every change (debounced) | TipTap onUpdate callback + debounce + storage abstraction write |
+| ID      | Description                                                                          | Research Support                                                                                             |
+| ------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| DEVX-01 | React + TypeScript + ESLint + Prettier                                               | Vite react-ts template provides React + TS; eslint-plugin-perfectionist for sorting; Prettier for formatting |
+| DEVX-02 | Strictest ESLint: no any, no unknown, no as casting, alphabetized imports/props/keys | typescript-eslint strict + perfectionist plugin covers all requirements                                      |
+| DEVX-03 | Max 100 lines/file, no multi-component exports, no default exports                   | Custom ESLint rules + convention enforcement; named exports only                                             |
+| DEVX-04 | Static files deployable on GitHub Pages                                              | Vite builds to dist/ folder; set base path in vite.config.ts                                                 |
+| DATA-01 | All data stored locally in IndexedDB                                                 | idb-keyval wraps IndexedDB; storage abstraction interface for future flexibility                             |
+| DATA-04 | Persistent storage to prevent Safari eviction                                        | navigator.storage.persist() call on app startup                                                              |
+| EDIT-01 | WYSIWYG markdown rendering (bold, italic, headings, lists, code blocks)              | TipTap StarterKit includes all these; @tiptap/markdown for markdown content type                             |
+| EDIT-02 | Undo and redo within a session                                                       | TipTap StarterKit includes built-in undo/redo (History extension)                                            |
+| EDIT-05 | Auto-save on every change (debounced)                                                | TipTap onUpdate callback + debounce + storage abstraction write                                              |
+
 </phase_requirements>
 
 ## Standard Stack
 
 ### Core
-| Library | Version | Purpose | Why Standard |
-|---------|---------|---------|--------------|
-| vite | 6.x | Build tool and dev server | Industry standard for React SPAs; fast HMR, ESM-native |
-| react | 19.x | UI framework | Project constraint (non-negotiable) |
-| @tiptap/react | 3.20.x | Rich text editor React bindings | Best WYSIWYG editor for React; ProseMirror-based, extensible |
-| @tiptap/pm | 3.20.x | ProseMirror peer dependency | Required by TipTap |
-| @tiptap/starter-kit | 3.20.x | Bundled common extensions | Includes Bold, Italic, Heading, Lists, CodeBlock, Undo/Redo, etc. |
-| @tiptap/markdown | 3.20.x | Markdown parse/serialize | Official bidirectional markdown support; CommonMark-compliant |
-| idb-keyval | 6.x | IndexedDB key-value wrapper | 295 bytes brotli'd; promise-based; stores structured-clonable data |
-| typescript | 5.x | Type system | Project constraint |
+
+| Library             | Version | Purpose                         | Why Standard                                                       |
+| ------------------- | ------- | ------------------------------- | ------------------------------------------------------------------ |
+| vite                | 6.x     | Build tool and dev server       | Industry standard for React SPAs; fast HMR, ESM-native             |
+| react               | 19.x    | UI framework                    | Project constraint (non-negotiable)                                |
+| @tiptap/react       | 3.20.x  | Rich text editor React bindings | Best WYSIWYG editor for React; ProseMirror-based, extensible       |
+| @tiptap/pm          | 3.20.x  | ProseMirror peer dependency     | Required by TipTap                                                 |
+| @tiptap/starter-kit | 3.20.x  | Bundled common extensions       | Includes Bold, Italic, Heading, Lists, CodeBlock, Undo/Redo, etc.  |
+| @tiptap/markdown    | 3.20.x  | Markdown parse/serialize        | Official bidirectional markdown support; CommonMark-compliant      |
+| idb-keyval          | 6.x     | IndexedDB key-value wrapper     | 295 bytes brotli'd; promise-based; stores structured-clonable data |
+| typescript          | 5.x     | Type system                     | Project constraint                                                 |
 
 ### Supporting
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| @vitejs/plugin-react | 4.x | Vite React plugin | Always (included in template) |
-| eslint | 9.x | Linting | Flat config format; type-aware rules |
-| @typescript-eslint/eslint-plugin | 8.x | TS-specific lint rules | Strict mode: no-explicit-any, no-unsafe-assignment, etc. |
-| @typescript-eslint/parser | 8.x | TS parser for ESLint | Required for type-aware linting |
-| eslint-plugin-perfectionist | 4.x | Sorting rules | Alphabetize imports, props, object keys |
-| eslint-plugin-react | latest | React-specific lint rules | JSX rules, hooks rules |
-| eslint-plugin-react-hooks | latest | Hooks lint rules | Enforce rules of hooks |
-| prettier | 3.x | Code formatting | Project constraint |
-| eslint-config-prettier | latest | Disable ESLint formatting rules | Prevent ESLint/Prettier conflicts |
+
+| Library                          | Version | Purpose                         | When to Use                                              |
+| -------------------------------- | ------- | ------------------------------- | -------------------------------------------------------- |
+| @vitejs/plugin-react             | 4.x     | Vite React plugin               | Always (included in template)                            |
+| eslint                           | 9.x     | Linting                         | Flat config format; type-aware rules                     |
+| @typescript-eslint/eslint-plugin | 8.x     | TS-specific lint rules          | Strict mode: no-explicit-any, no-unsafe-assignment, etc. |
+| @typescript-eslint/parser        | 8.x     | TS parser for ESLint            | Required for type-aware linting                          |
+| eslint-plugin-perfectionist      | 4.x     | Sorting rules                   | Alphabetize imports, props, object keys                  |
+| eslint-plugin-react              | latest  | React-specific lint rules       | JSX rules, hooks rules                                   |
+| eslint-plugin-react-hooks        | latest  | Hooks lint rules                | Enforce rules of hooks                                   |
+| prettier                         | 3.x     | Code formatting                 | Project constraint                                       |
+| eslint-config-prettier           | latest  | Disable ESLint formatting rules | Prevent ESLint/Prettier conflicts                        |
 
 ### Dev/Test
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| vitest | 2.x | Test runner | Unit and integration tests; uses Vite config |
-| @testing-library/react | 16.x | React component testing | Component behavior tests |
-| @testing-library/jest-dom | 6.x | DOM assertion matchers | toBeInTheDocument, toHaveTextContent, etc. |
-| @testing-library/user-event | 14.x | User interaction simulation | Click, type, keyboard events |
-| jsdom | latest | DOM environment for tests | Vitest environment |
+
+| Library                     | Version | Purpose                     | When to Use                                  |
+| --------------------------- | ------- | --------------------------- | -------------------------------------------- |
+| vitest                      | 2.x     | Test runner                 | Unit and integration tests; uses Vite config |
+| @testing-library/react      | 16.x    | React component testing     | Component behavior tests                     |
+| @testing-library/jest-dom   | 6.x     | DOM assertion matchers      | toBeInTheDocument, toHaveTextContent, etc.   |
+| @testing-library/user-event | 14.x    | User interaction simulation | Click, type, keyboard events                 |
+| jsdom                       | latest  | DOM environment for tests   | Vitest environment                           |
 
 ### Alternatives Considered
-| Instead of | Could Use | Tradeoff |
-|------------|-----------|----------|
-| TipTap | Lexical (Meta) | Lexical is lower-level; TipTap has better markdown support and extension ecosystem |
-| TipTap | Plate | Plate is Slate-based; TipTap (ProseMirror) has stronger markdown round-tripping |
-| idb-keyval | Dexie.js | Dexie is full query DB; overkill for Phase 1 key-value needs; consider for Phase 3 if needed |
-| idb-keyval | raw IndexedDB | Raw API is callback-hell; idb-keyval is 295 bytes and handles all edge cases |
+
+| Instead of | Could Use      | Tradeoff                                                                                     |
+| ---------- | -------------- | -------------------------------------------------------------------------------------------- |
+| TipTap     | Lexical (Meta) | Lexical is lower-level; TipTap has better markdown support and extension ecosystem           |
+| TipTap     | Plate          | Plate is Slate-based; TipTap (ProseMirror) has stronger markdown round-tripping              |
+| idb-keyval | Dexie.js       | Dexie is full query DB; overkill for Phase 1 key-value needs; consider for Phase 3 if needed |
+| idb-keyval | raw IndexedDB  | Raw API is callback-hell; idb-keyval is 295 bytes and handles all edge cases                 |
 
 **Installation:**
+
 ```bash
 # Scaffold
 npm create vite@latest paneful-notes -- --template react-ts
@@ -94,6 +101,7 @@ npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-
 ## Architecture Patterns
 
 ### Recommended Project Structure
+
 ```
 src/
 ├── components/
@@ -109,9 +117,11 @@ src/
 ```
 
 ### Pattern 1: Storage Abstraction Layer
+
 **What:** Define a `StorageAdapter` interface that all storage implementations conform to. This enables swapping IndexedDB for other backends later without touching editor code.
 **When to use:** Always -- this is the foundation for DATA-01.
 **Example:**
+
 ```typescript
 // storage-interface.ts
 export type StorageAdapter = {
@@ -134,9 +144,11 @@ export const idbStorage: StorageAdapter = {
 ```
 
 ### Pattern 2: Debounced Auto-Save via TipTap onUpdate
+
 **What:** TipTap fires `onUpdate` on every editor transaction. Debounce this to avoid excessive writes, then serialize content to markdown and persist via the storage adapter.
 **When to use:** EDIT-05 auto-save requirement.
 **Example:**
+
 ```typescript
 // use-persisted-content.ts (concept)
 // 1. Load markdown from storage on mount
@@ -146,9 +158,11 @@ export const idbStorage: StorageAdapter = {
 ```
 
 ### Pattern 3: Persistent Storage Request on Startup
+
 **What:** Call `navigator.storage.persist()` on app initialization to prevent Safari ITP from evicting IndexedDB data after 7 days of inactivity.
 **When to use:** Always -- DATA-04 requirement. Call in main.tsx before rendering.
 **Example:**
+
 ```typescript
 // main.tsx
 const requestPersistence = async (): Promise<void> => {
@@ -162,11 +176,13 @@ void requestPersistence();
 ```
 
 ### Pattern 4: Named Exports Only, Max 100 Lines
+
 **What:** Every file uses named exports (no `export default`). Each file stays under 100 lines of code (excluding blanks and comments). One component per file.
 **When to use:** Always -- DEVX-03 requirement.
 **Why:** Enforces small, focused modules. Named exports enable better tree-shaking and grep-ability.
 
 ### Anti-Patterns to Avoid
+
 - **Storing HTML in IndexedDB:** Store markdown strings, not TipTap's internal JSON or HTML. Markdown is portable and human-readable. Use `editor.markdown.getMarkdown()` and load with `contentType: 'markdown'`.
 - **Saving on every keystroke:** Always debounce onUpdate (300ms minimum). IndexedDB writes are async but still costly at keystroke frequency.
 - **Coupling editor to storage:** The editor component should not import idb-keyval directly. Use the storage abstraction so future phases can swap backends.
@@ -175,44 +191,49 @@ void requestPersistence();
 
 ## Don't Hand-Roll
 
-| Problem | Don't Build | Use Instead | Why |
-|---------|-------------|-------------|-----|
-| Rich text editing | Custom contentEditable | TipTap + StarterKit | ContentEditable is a nightmare of browser inconsistencies |
-| Markdown parsing/serialization | Custom markdown-to-HTML converter | @tiptap/markdown | Round-trip fidelity is deceptively hard; official extension handles edge cases |
-| IndexedDB access | Raw IndexedDB API | idb-keyval | Raw API uses request/transaction callbacks; error-prone |
-| Undo/Redo | Custom history stack | TipTap StarterKit (built-in) | ProseMirror's history is battle-tested with proper operation transforms |
-| Import sorting | Manual sorting discipline | eslint-plugin-perfectionist | Humans will not maintain alphabetical order consistently |
-| Debouncing | Custom setTimeout wrapper | A simple debounce utility (or lodash.debounce) | Edge cases around leading/trailing invocations |
+| Problem                        | Don't Build                       | Use Instead                                    | Why                                                                            |
+| ------------------------------ | --------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------ |
+| Rich text editing              | Custom contentEditable            | TipTap + StarterKit                            | ContentEditable is a nightmare of browser inconsistencies                      |
+| Markdown parsing/serialization | Custom markdown-to-HTML converter | @tiptap/markdown                               | Round-trip fidelity is deceptively hard; official extension handles edge cases |
+| IndexedDB access               | Raw IndexedDB API                 | idb-keyval                                     | Raw API uses request/transaction callbacks; error-prone                        |
+| Undo/Redo                      | Custom history stack              | TipTap StarterKit (built-in)                   | ProseMirror's history is battle-tested with proper operation transforms        |
+| Import sorting                 | Manual sorting discipline         | eslint-plugin-perfectionist                    | Humans will not maintain alphabetical order consistently                       |
+| Debouncing                     | Custom setTimeout wrapper         | A simple debounce utility (or lodash.debounce) | Edge cases around leading/trailing invocations                                 |
 
 **Key insight:** TipTap + StarterKit provides undo/redo, all formatting marks, and keyboard shortcuts out of the box. The `@tiptap/markdown` extension handles all serialization. Almost zero custom editor code is needed for Phase 1.
 
 ## Common Pitfalls
 
 ### Pitfall 1: TipTap Content Hydration Mismatch
+
 **What goes wrong:** Setting initial content as HTML when editor expects markdown (or vice versa) causes rendering errors or lost formatting.
 **Why it happens:** TipTap defaults to HTML content type. Markdown content must be explicitly loaded with `contentType: 'markdown'`.
 **How to avoid:** Always pass `contentType: 'markdown'` when setting content from storage. Always serialize with `editor.markdown.getMarkdown()`.
 **Warning signs:** Content renders as raw markdown text instead of formatted output.
 
 ### Pitfall 2: Safari ITP Data Eviction
+
 **What goes wrong:** Users on Safari lose all their notes after 7 days of not visiting the app.
 **Why it happens:** Safari's Intelligent Tracking Prevention deletes IndexedDB data for origins without recent user interaction, unless persistent storage is granted.
 **How to avoid:** Call `navigator.storage.persist()` on app startup. This MUST be in Phase 1, not deferred.
 **Warning signs:** QA reports of "data disappeared" specifically on Safari.
 
 ### Pitfall 3: ESLint Flat Config Confusion
+
 **What goes wrong:** Mixing old `.eslintrc` format with new flat config `eslint.config.js` causes rules to silently not apply.
 **Why it happens:** ESLint 9 uses flat config by default. Vite template generates `eslint.config.js`. Some guides still show old format.
 **How to avoid:** Use ONLY `eslint.config.js` (flat config). All plugins must be imported as ESM modules.
 **Warning signs:** ESLint reports no errors when it should (rules not loading).
 
 ### Pitfall 4: TipTap useEditor Returns Null Initially
+
 **What goes wrong:** Accessing `editor.` methods before editor is initialized causes runtime errors.
 **Why it happens:** `useEditor()` returns `null` on first render while ProseMirror initializes.
 **How to avoid:** Always guard with `if (!editor) return null` or optional chaining. Never assume editor is defined.
 **Warning signs:** "Cannot read property of null" errors on component mount.
 
 ### Pitfall 5: 100-Line File Limit With Strict Lint Config
+
 **What goes wrong:** ESLint config file itself or complex components exceed 100 lines, requiring awkward splits.
 **Why it happens:** DEVX-03 requires max 100 lines per file (excluding blanks and comments).
 **How to avoid:** Plan file decomposition from the start. ESLint config can be split into multiple files that are imported. Components should be small by design.
@@ -221,6 +242,7 @@ void requestPersistence();
 ## Code Examples
 
 ### TipTap Editor With Markdown + StarterKit
+
 ```typescript
 // Source: TipTap official docs (tiptap.dev)
 import { EditorContent, useEditor } from '@tiptap/react';
@@ -251,6 +273,7 @@ export function Editor({ content, onUpdate }: EditorProps) {
 ```
 
 ### Storage Adapter Implementation
+
 ```typescript
 // Source: idb-keyval GitHub (github.com/jakearchibald/idb-keyval)
 import { del, get, set } from 'idb-keyval';
@@ -272,6 +295,7 @@ export const idbStorage: StorageAdapter = {
 ```
 
 ### Debounced Auto-Save Hook Pattern
+
 ```typescript
 // Concept pattern for auto-save
 import { useCallback, useEffect, useRef } from 'react';
@@ -307,6 +331,7 @@ export function useDebouncedSave(
 ```
 
 ### ESLint Flat Config (Strict)
+
 ```typescript
 // eslint.config.js (flat config format)
 import eslint from '@eslint/js';
@@ -345,14 +370,15 @@ export default tseslint.config(
 
 ## State of the Art
 
-| Old Approach | Current Approach | When Changed | Impact |
-|--------------|------------------|--------------|--------|
-| tiptap-markdown (community) | @tiptap/markdown (official) | TipTap 3.7.0 (2024) | Official package is maintained; community package deprecated |
-| .eslintrc.json | eslint.config.js (flat config) | ESLint 9.0 (2024) | Must use flat config; old format not supported by default |
-| Webpack/CRA | Vite | 2022-2024 | Vite is the standard React build tool; CRA is deprecated |
-| React 18 | React 19 | Dec 2024 | TipTap 3.x supports React 19; use latest |
+| Old Approach                | Current Approach               | When Changed        | Impact                                                       |
+| --------------------------- | ------------------------------ | ------------------- | ------------------------------------------------------------ |
+| tiptap-markdown (community) | @tiptap/markdown (official)    | TipTap 3.7.0 (2024) | Official package is maintained; community package deprecated |
+| .eslintrc.json              | eslint.config.js (flat config) | ESLint 9.0 (2024)   | Must use flat config; old format not supported by default    |
+| Webpack/CRA                 | Vite                           | 2022-2024           | Vite is the standard React build tool; CRA is deprecated     |
+| React 18                    | React 19                       | Dec 2024            | TipTap 3.x supports React 19; use latest                     |
 
 **Deprecated/outdated:**
+
 - `tiptap-markdown` (community package): Maintainer confirmed it is no longer actively maintained; use `@tiptap/markdown` instead
 - Create React App (CRA): Officially deprecated; Vite is the recommended alternative
 - `.eslintrc.*` config format: ESLint 9+ uses flat config by default
@@ -377,32 +403,36 @@ export default tseslint.config(
 ## Validation Architecture
 
 ### Test Framework
-| Property | Value |
-|----------|-------|
-| Framework | Vitest 2.x + @testing-library/react 16.x |
-| Config file | vitest config embedded in vite.config.ts (see Wave 0) |
-| Quick run command | `npx vitest run --reporter=verbose` |
-| Full suite command | `npx vitest run --coverage` |
+
+| Property           | Value                                                 |
+| ------------------ | ----------------------------------------------------- |
+| Framework          | Vitest 2.x + @testing-library/react 16.x              |
+| Config file        | vitest config embedded in vite.config.ts (see Wave 0) |
+| Quick run command  | `npx vitest run --reporter=verbose`                   |
+| Full suite command | `npx vitest run --coverage`                           |
 
 ### Phase Requirements - Test Map
-| Req ID | Behavior | Test Type | Automated Command | File Exists? |
-|--------|----------|-----------|-------------------|-------------|
-| DEVX-01 | Project builds without errors | smoke | `npx tsc --noEmit && npx vite build` | N/A (build command) |
-| DEVX-02 | Zero lint warnings | smoke | `npx eslint src/` | N/A (lint command) |
-| DEVX-03 | Files under 100 lines, named exports only | lint | Custom ESLint rule or build script | Wave 0 |
-| DEVX-04 | Static build output | smoke | `npx vite build && ls dist/index.html` | N/A (build command) |
-| DATA-01 | Storage adapter reads/writes IndexedDB | unit | `npx vitest run src/storage/` | Wave 0 |
-| DATA-04 | Persistent storage requested | unit | `npx vitest run src/storage/` | Wave 0 |
-| EDIT-01 | Editor renders markdown formatting | integration | `npx vitest run src/components/editor/` | Wave 0 |
-| EDIT-02 | Undo/redo works | integration | `npx vitest run src/components/editor/` | Wave 0 |
-| EDIT-05 | Auto-save fires on content change | integration | `npx vitest run src/components/editor/` | Wave 0 |
+
+| Req ID  | Behavior                                  | Test Type   | Automated Command                       | File Exists?        |
+| ------- | ----------------------------------------- | ----------- | --------------------------------------- | ------------------- |
+| DEVX-01 | Project builds without errors             | smoke       | `npx tsc --noEmit && npx vite build`    | N/A (build command) |
+| DEVX-02 | Zero lint warnings                        | smoke       | `npx eslint src/`                       | N/A (lint command)  |
+| DEVX-03 | Files under 100 lines, named exports only | lint        | Custom ESLint rule or build script      | Wave 0              |
+| DEVX-04 | Static build output                       | smoke       | `npx vite build && ls dist/index.html`  | N/A (build command) |
+| DATA-01 | Storage adapter reads/writes IndexedDB    | unit        | `npx vitest run src/storage/`           | Wave 0              |
+| DATA-04 | Persistent storage requested              | unit        | `npx vitest run src/storage/`           | Wave 0              |
+| EDIT-01 | Editor renders markdown formatting        | integration | `npx vitest run src/components/editor/` | Wave 0              |
+| EDIT-02 | Undo/redo works                           | integration | `npx vitest run src/components/editor/` | Wave 0              |
+| EDIT-05 | Auto-save fires on content change         | integration | `npx vitest run src/components/editor/` | Wave 0              |
 
 ### Sampling Rate
+
 - **Per task commit:** `npx vitest run --reporter=verbose`
 - **Per wave merge:** `npx vitest run && npx eslint src/ && npx tsc --noEmit`
 - **Phase gate:** Full suite green + `npx vite build` succeeds with zero warnings
 
 ### Wave 0 Gaps
+
 - [ ] `vite.config.ts` -- add vitest test configuration (globals, jsdom, setup file)
 - [ ] `vitest.setup.ts` -- import @testing-library/jest-dom matchers
 - [ ] `tsconfig.json` -- add vitest/globals and @testing-library/jest-dom types
@@ -413,6 +443,7 @@ export default tseslint.config(
 ## Sources
 
 ### Primary (HIGH confidence)
+
 - [TipTap official docs - React installation](https://tiptap.dev/docs/editor/getting-started/install/react)
 - [TipTap official docs - Markdown extension](https://tiptap.dev/docs/editor/markdown/getting-started/installation)
 - [TipTap StarterKit docs](https://tiptap.dev/docs/editor/extensions/functionality/starterkit)
@@ -424,16 +455,19 @@ export default tseslint.config(
 - [eslint-plugin-perfectionist](https://perfectionist.dev/) - sorting rules documentation
 
 ### Secondary (MEDIUM confidence)
+
 - [TipTap Markdown release blog post](https://tiptap.dev/blog/release-notes/introducing-bidirectional-markdown-support-in-tiptap) - @tiptap/markdown announcement
 - [npm @tiptap/react](https://www.npmjs.com/package/@tiptap/react) - version 3.20.1 confirmed
 - [tiptap-markdown GitHub](https://github.com/aguingand/tiptap-markdown) - maintainer deprecation notice
 
 ### Tertiary (LOW confidence)
+
 - TipTap + React 19 compatibility claim -- docs say "being developed" for UI Components; core bindings assumed compatible but unverified
 
 ## Metadata
 
 **Confidence breakdown:**
+
 - Standard stack: HIGH - All libraries are well-established, version-pinned, and documented
 - Architecture: HIGH - Patterns are standard React + TipTap usage from official docs
 - Pitfalls: HIGH - Safari ITP, flat config, null editor are well-documented issues

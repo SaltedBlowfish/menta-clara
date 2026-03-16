@@ -117,84 +117,86 @@ Deferred to future release. Tracked but not in current roadmap.
 
 Explicitly excluded. Documented to prevent scope creep.
 
-| Feature | Reason |
-|---------|--------|
-| Cloud sync | Requires server, accounts, conflict resolution — contradicts zero-server constraint |
-| Wiki-style [[page links]] | Turns daily notes into knowledge graph; date references cover the need |
-| Plugin/extension system | Plugin APIs are a product unto themselves; keep feature set small and excellent |
-| AI features | Requires API keys or large models; breaks local-first/no-network promise |
-| Real-time collaboration | Requires server infrastructure; this is a personal tool |
-| User accounts/auth | No backend — local-only by design |
-| Mobile native app | Split-pane layout is desktop-focused; web works on mobile for basic viewing |
-| Nested folders | Date-based + workspace separation + search covers organization needs |
-| Version history | Undo/redo within session covers accidental edits; daily notes are inherently versioned by date |
-| Encryption at rest | OS-level disk encryption is the right layer for local browser data |
+| Feature                   | Reason                                                                                         |
+| ------------------------- | ---------------------------------------------------------------------------------------------- |
+| Cloud sync                | Requires server, accounts, conflict resolution — contradicts zero-server constraint            |
+| Wiki-style [[page links]] | Turns daily notes into knowledge graph; date references cover the need                         |
+| Plugin/extension system   | Plugin APIs are a product unto themselves; keep feature set small and excellent                |
+| AI features               | Requires API keys or large models; breaks local-first/no-network promise                       |
+| Real-time collaboration   | Requires server infrastructure; this is a personal tool                                        |
+| User accounts/auth        | No backend — local-only by design                                                              |
+| Mobile native app         | Split-pane layout is desktop-focused; web works on mobile for basic viewing                    |
+| Nested folders            | Date-based + workspace separation + search covers organization needs                           |
+| Version history           | Undo/redo within session covers accidental edits; daily notes are inherently versioned by date |
+| Encryption at rest        | OS-level disk encryption is the right layer for local browser data                             |
 
 ## Traceability
 
 Which phases cover which requirements. Updated during roadmap creation.
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| DEVX-01 | Phase 1 | Pending |
-| DEVX-02 | Phase 1 | Pending |
-| DEVX-03 | Phase 1 | Pending |
-| DEVX-04 | Phase 1 | Pending |
-| DATA-01 | Phase 1 | Pending |
-| DATA-04 | Phase 1 | Pending |
-| EDIT-01 | Phase 1 | Pending |
-| EDIT-02 | Phase 1 | Pending |
-| EDIT-05 | Phase 1 | Pending |
-| LAYO-01 | Phase 2 | Pending |
-| LAYO-02 | Phase 2 | Pending |
-| LAYO-03 | Phase 2 | Pending |
-| LAYO-04 | Phase 2 | Pending |
-| DALY-01 | Phase 2 | Pending |
-| DALY-02 | Phase 2 | Pending |
-| DALY-03 | Phase 2 | Pending |
-| WEEK-01 | Phase 2 | Pending |
-| WEEK-02 | Phase 2 | Pending |
-| WEEK-03 | Phase 2 | Pending |
-| PERM-01 | Phase 2 | Pending |
-| PERM-02 | Phase 2 | Pending |
-| PERM-03 | Phase 2 | Pending |
-| CALR-01 | Phase 2 | Pending |
-| CALR-02 | Phase 2 | Pending |
-| CALR-03 | Phase 2 | Pending |
-| CALR-04 | Phase 2 | Pending |
-| APPR-01 | Phase 2 | Pending |
-| APPR-02 | Phase 2 | Pending |
-| APPR-03 | Phase 2 | Pending |
-| KEYS-01 | Phase 2 | Pending |
-| KEYS-02 | Phase 2 | Pending |
-| KEYS-03 | Phase 2 | Pending |
-| KEYS-04 | Phase 2 | Pending |
-| A11Y-01 | Phase 2 | Pending |
-| A11Y-02 | Phase 2 | Pending |
-| A11Y-03 | Phase 2 | Pending |
-| A11Y-04 | Phase 2 | Pending |
-| A11Y-05 | Phase 2 | Pending |
-| TMPL-01 | Phase 3 | Pending |
-| TMPL-02 | Phase 3 | Pending |
-| TMPL-03 | Phase 3 | Pending |
-| TMPL-04 | Phase 3 | Pending |
-| TMPL-05 | Phase 3 | Pending |
-| WKSP-01 | Phase 3 | Pending |
-| WKSP-02 | Phase 3 | Pending |
-| WKSP-03 | Phase 3 | Pending |
-| SRCH-01 | Phase 3 | Pending |
-| SRCH-02 | Phase 3 | Pending |
-| SRCH-03 | Phase 3 | Pending |
-| DATA-02 | Phase 3 | Pending |
-| DATA-03 | Phase 3 | Pending |
-| EDIT-03 | Phase 3 | Pending |
-| EDIT-04 | Phase 3 | Pending |
+| Requirement | Phase   | Status  |
+| ----------- | ------- | ------- |
+| DEVX-01     | Phase 1 | Pending |
+| DEVX-02     | Phase 1 | Pending |
+| DEVX-03     | Phase 1 | Pending |
+| DEVX-04     | Phase 1 | Pending |
+| DATA-01     | Phase 1 | Pending |
+| DATA-04     | Phase 1 | Pending |
+| EDIT-01     | Phase 1 | Pending |
+| EDIT-02     | Phase 1 | Pending |
+| EDIT-05     | Phase 1 | Pending |
+| LAYO-01     | Phase 2 | Pending |
+| LAYO-02     | Phase 2 | Pending |
+| LAYO-03     | Phase 2 | Pending |
+| LAYO-04     | Phase 2 | Pending |
+| DALY-01     | Phase 2 | Pending |
+| DALY-02     | Phase 2 | Pending |
+| DALY-03     | Phase 2 | Pending |
+| WEEK-01     | Phase 2 | Pending |
+| WEEK-02     | Phase 2 | Pending |
+| WEEK-03     | Phase 2 | Pending |
+| PERM-01     | Phase 2 | Pending |
+| PERM-02     | Phase 2 | Pending |
+| PERM-03     | Phase 2 | Pending |
+| CALR-01     | Phase 2 | Pending |
+| CALR-02     | Phase 2 | Pending |
+| CALR-03     | Phase 2 | Pending |
+| CALR-04     | Phase 2 | Pending |
+| APPR-01     | Phase 2 | Pending |
+| APPR-02     | Phase 2 | Pending |
+| APPR-03     | Phase 2 | Pending |
+| KEYS-01     | Phase 2 | Pending |
+| KEYS-02     | Phase 2 | Pending |
+| KEYS-03     | Phase 2 | Pending |
+| KEYS-04     | Phase 2 | Pending |
+| A11Y-01     | Phase 2 | Pending |
+| A11Y-02     | Phase 2 | Pending |
+| A11Y-03     | Phase 2 | Pending |
+| A11Y-04     | Phase 2 | Pending |
+| A11Y-05     | Phase 2 | Pending |
+| TMPL-01     | Phase 3 | Pending |
+| TMPL-02     | Phase 3 | Pending |
+| TMPL-03     | Phase 3 | Pending |
+| TMPL-04     | Phase 3 | Pending |
+| TMPL-05     | Phase 3 | Pending |
+| WKSP-01     | Phase 3 | Pending |
+| WKSP-02     | Phase 3 | Pending |
+| WKSP-03     | Phase 3 | Pending |
+| SRCH-01     | Phase 3 | Pending |
+| SRCH-02     | Phase 3 | Pending |
+| SRCH-03     | Phase 3 | Pending |
+| DATA-02     | Phase 3 | Pending |
+| DATA-03     | Phase 3 | Pending |
+| EDIT-03     | Phase 3 | Pending |
+| EDIT-04     | Phase 3 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 53 total
 - Mapped to phases: 53
 - Unmapped: 0
 
 ---
-*Requirements defined: 2026-03-15*
-*Last updated: 2026-03-15 after roadmap creation*
+
+_Requirements defined: 2026-03-15_
+_Last updated: 2026-03-15 after roadmap creation_

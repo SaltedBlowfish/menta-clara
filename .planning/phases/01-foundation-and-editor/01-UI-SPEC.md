@@ -16,13 +16,13 @@ created: 2026-03-15
 
 ## Design System
 
-| Property | Value |
-|----------|-------|
-| Tool | none |
-| Preset | not applicable |
-| Component library | none |
-| Icon library | none |
-| Font | System font stack: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif` |
+| Property          | Value                                                                                                           |
+| ----------------- | --------------------------------------------------------------------------------------------------------------- |
+| Tool              | none                                                                                                            |
+| Preset            | not applicable                                                                                                  |
+| Component library | none                                                                                                            |
+| Icon library      | none                                                                                                            |
+| Font              | System font stack: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif` |
 
 **Rationale:** Phase 1 delivers a single-page editor with no UI chrome (no buttons, nav, sidebar, or modals). TipTap provides the editing surface. No component library is needed until Phase 2 introduces split panes, calendar, and controls. System fonts avoid font-loading latency, supporting the "open a tab and immediately start writing" core value.
 
@@ -34,15 +34,15 @@ created: 2026-03-15
 
 Declared values (must be multiples of 4):
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| xs | 4px | Inline code padding (all sides), list item spacing |
-| sm | 8px | Heading bottom margin |
-| md | 16px | Editor content inline padding (left/right), paragraph spacing, blockquote left padding, code block padding |
-| lg | 24px | Editor content block padding (top/bottom), heading top margin |
-| xl | 32px | Not used in Phase 1 |
-| 2xl | 48px | Horizontal margin on editor container (centers content) |
-| 3xl | 64px | Top margin on editor container |
+| Token | Value | Usage                                                                                                      |
+| ----- | ----- | ---------------------------------------------------------------------------------------------------------- |
+| xs    | 4px   | Inline code padding (all sides), list item spacing                                                         |
+| sm    | 8px   | Heading bottom margin                                                                                      |
+| md    | 16px  | Editor content inline padding (left/right), paragraph spacing, blockquote left padding, code block padding |
+| lg    | 24px  | Editor content block padding (top/bottom), heading top margin                                              |
+| xl    | 32px  | Not used in Phase 1                                                                                        |
+| 2xl   | 48px  | Horizontal margin on editor container (centers content)                                                    |
+| 3xl   | 64px  | Top margin on editor container                                                                             |
 
 Exceptions: none
 
@@ -54,12 +54,12 @@ Exceptions: none
 
 Phase 1 typography governs how the user's writing appears inside the TipTap editor. These are applied to TipTap's `.tiptap` content area via CSS.
 
-| Role | Size | Weight | Line Height | Element |
-|------|------|--------|-------------|---------|
-| Body / Code | 16px | 400 (regular) | 1.6 | `p`, `li`, `blockquote`, `code`, `pre code` |
-| Heading 3 | 18px | 600 (semibold) | 1.35 | `h3` |
-| Heading 2 | 22px | 600 (semibold) | 1.3 | `h2` |
-| Heading 1 | 28px | 600 (semibold) | 1.25 | `h1` |
+| Role        | Size | Weight         | Line Height | Element                                     |
+| ----------- | ---- | -------------- | ----------- | ------------------------------------------- |
+| Body / Code | 16px | 400 (regular)  | 1.6         | `p`, `li`, `blockquote`, `code`, `pre code` |
+| Heading 3   | 18px | 600 (semibold) | 1.35        | `h3`                                        |
+| Heading 2   | 22px | 600 (semibold) | 1.3         | `h2`                                        |
+| Heading 1   | 28px | 600 (semibold) | 1.25        | `h1`                                        |
 
 **Font sizes (4 declared):** 16px, 18px, 22px, 28px
 **Font weights (2 declared):** 400 (regular), 600 (semibold)
@@ -69,6 +69,7 @@ Phase 1 typography governs how the user's writing appears inside the TipTap edit
 Code elements (`code`, `pre code`) use the same 16px size as body text but are differentiated by the monospace font family and background color.
 
 **Additional typography rules:**
+
 - Paragraph spacing (`p + p`): 16px margin-top
 - List item spacing (`li + li`): 4px margin-top
 - Heading top margin: 24px (to separate from preceding content)
@@ -86,18 +87,19 @@ Code elements (`code`, `pre code`) use the same 16px size as body text but are d
 
 Phase 1 uses a minimal monochrome palette. Light mode only -- dark mode is introduced in Phase 2 (APPR-01, APPR-02).
 
-| Role | Value | Usage |
-|------|-------|-------|
-| Dominant (60%) | `#ffffff` | Page background |
-| Secondary (30%) | `#f5f5f5` | Code block background, inline code background |
-| Text primary | `#1a1a1a` | Body text, headings |
-| Text secondary | `#6b7280` | Blockquote border, placeholder text |
-| Accent (10%) | not used | No interactive elements in Phase 1 beyond editor content |
-| Destructive | not used | No destructive actions in Phase 1 |
+| Role            | Value     | Usage                                                    |
+| --------------- | --------- | -------------------------------------------------------- |
+| Dominant (60%)  | `#ffffff` | Page background                                          |
+| Secondary (30%) | `#f5f5f5` | Code block background, inline code background            |
+| Text primary    | `#1a1a1a` | Body text, headings                                      |
+| Text secondary  | `#6b7280` | Blockquote border, placeholder text                      |
+| Accent (10%)    | not used  | No interactive elements in Phase 1 beyond editor content |
+| Destructive     | not used  | No destructive actions in Phase 1                        |
 
 Accent reserved for: Nothing in Phase 1. Editor links rendered by TipTap will use `#2563eb` (blue-600) with underline, as this is standard for inline content links within the editing surface.
 
 **Editor-specific colors:**
+
 - TipTap placeholder text: `#9ca3af` (gray-400)
 - Selection highlight: browser default (do not override)
 - Code block background: `#f5f5f5`
@@ -110,18 +112,19 @@ Accent reserved for: Nothing in Phase 1. Editor links rendered by TipTap will us
 
 Phase 1 has no traditional UI chrome -- no buttons, dialogs, or navigation. The copywriting contract covers the editor's placeholder and the page itself.
 
-| Element | Copy |
-|---------|------|
-| Primary CTA | None -- the editor is immediately active on page load; no CTA needed |
-| Editor placeholder | "Start writing..." |
-| Page title (browser tab) | "Paneful Notes" |
-| Empty state heading | Not applicable -- editor is always present with placeholder |
-| Empty state body | Not applicable |
-| Error state (storage denied) | "Your browser could not enable persistent storage. Notes may be cleared if you don't visit for a while." |
-| Error state (storage write fail) | "Could not save your note. Check that your browser has available storage space." |
-| Destructive confirmation | None -- no destructive actions in Phase 1 |
+| Element                          | Copy                                                                                                     |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Primary CTA                      | None -- the editor is immediately active on page load; no CTA needed                                     |
+| Editor placeholder               | "Start writing..."                                                                                       |
+| Page title (browser tab)         | "Paneful Notes"                                                                                          |
+| Empty state heading              | Not applicable -- editor is always present with placeholder                                              |
+| Empty state body                 | Not applicable                                                                                           |
+| Error state (storage denied)     | "Your browser could not enable persistent storage. Notes may be cleared if you don't visit for a while." |
+| Error state (storage write fail) | "Could not save your note. Check that your browser has available storage space."                         |
+| Destructive confirmation         | None -- no destructive actions in Phase 1                                                                |
 
 **Console messages (developer-facing, not user-facing):**
+
 - Storage persist granted: `Persistent storage: granted`
 - Storage persist denied: `Persistent storage: denied`
 - Auto-save success: silent (no console noise)
@@ -147,16 +150,17 @@ Phase 1 has a single layout: the editor fills the viewport within a centered col
 +--------------------------------------------------+
 ```
 
-| Property | Value |
-|----------|-------|
-| Editor max-width | 720px |
-| Editor horizontal centering | `margin: 0 auto` |
-| Editor top padding | 64px |
-| Editor horizontal padding | 48px (collapses to 16px below 800px viewport) |
-| Editor min-height | `100vh` (editor container fills viewport height) |
-| Page overflow | Vertical scroll on editor content; no horizontal scroll |
+| Property                    | Value                                                   |
+| --------------------------- | ------------------------------------------------------- |
+| Editor max-width            | 720px                                                   |
+| Editor horizontal centering | `margin: 0 auto`                                        |
+| Editor top padding          | 64px                                                    |
+| Editor horizontal padding   | 48px (collapses to 16px below 800px viewport)           |
+| Editor min-height           | `100vh` (editor container fills viewport height)        |
+| Page overflow               | Vertical scroll on editor content; no horizontal scroll |
 
 **Responsive behavior:**
+
 - Above 800px: Editor centered with 48px horizontal padding inside the 720px max-width container
 - Below 800px: Editor takes full width with 16px horizontal padding
 - No breakpoint for vertical layout changes (single column at all sizes)
@@ -165,16 +169,16 @@ Phase 1 has a single layout: the editor fills the viewport within a centered col
 
 ## Interaction Contract
 
-| Interaction | Behavior |
-|-------------|----------|
-| Page load | Editor is focused and ready for typing immediately |
-| Typing | WYSIWYG rendering of markdown (bold, italic, headings, lists, code) |
-| Auto-save | Debounced at 300ms after last edit; silent; no visible indicator in Phase 1 |
-| Undo | Cmd+Z / Ctrl+Z (TipTap built-in) |
-| Redo | Cmd+Shift+Z / Ctrl+Shift+Z (TipTap built-in) |
-| Bold | Cmd+B / Ctrl+B (TipTap built-in) |
-| Italic | Cmd+I / Ctrl+I (TipTap built-in) |
-| Tab close + reopen | Content restored from IndexedDB exactly as left |
+| Interaction        | Behavior                                                                    |
+| ------------------ | --------------------------------------------------------------------------- |
+| Page load          | Editor is focused and ready for typing immediately                          |
+| Typing             | WYSIWYG rendering of markdown (bold, italic, headings, lists, code)         |
+| Auto-save          | Debounced at 300ms after last edit; silent; no visible indicator in Phase 1 |
+| Undo               | Cmd+Z / Ctrl+Z (TipTap built-in)                                            |
+| Redo               | Cmd+Shift+Z / Ctrl+Shift+Z (TipTap built-in)                                |
+| Bold               | Cmd+B / Ctrl+B (TipTap built-in)                                            |
+| Italic             | Cmd+I / Ctrl+I (TipTap built-in)                                            |
+| Tab close + reopen | Content restored from IndexedDB exactly as left                             |
 
 **No save indicator in Phase 1:** Auto-save is silent. A save indicator (e.g., "Saved" badge) is deferred to Phase 2 when the app chrome is introduced. Phase 1 validates that persistence works; Phase 2 communicates it to the user.
 
@@ -182,9 +186,9 @@ Phase 1 has a single layout: the editor fills the viewport within a centered col
 
 ## Registry Safety
 
-| Registry | Blocks Used | Safety Gate |
-|----------|-------------|-------------|
-| none | none | not applicable |
+| Registry | Blocks Used | Safety Gate    |
+| -------- | ----------- | -------------- |
+| none     | none        | not applicable |
 
 No component registries are used in Phase 1. TipTap extensions are installed via npm, not a component registry.
 

@@ -15,12 +15,14 @@ Safari's Intelligent Tracking Prevention (ITP) deletes all script-writable stora
 Apple implemented ITP to combat cross-site tracking. The side effect is that purely browser-based apps cannot treat IndexedDB as durable storage on Safari. Many developers only test on Chrome where this limitation does not exist.
 
 **How to avoid:**
+
 1. Call `navigator.storage.persist()` on app initialization (supported in Safari 17.0+, iOS 17+). This opts out of automatic eviction.
 2. Prompt users to "Add to Home Screen" on iOS/macOS -- home screen web apps have their own storage timer that only counts days of actual app use.
 3. Build the export/import feature early and surface a prominent "Back up your notes" reminder in the UI.
 4. On app startup, detect Safari and check `navigator.storage.persisted()`. If not persisted, show a one-time warning explaining the risk and guiding the user to grant persistent storage.
 
 **Warning signs:**
+
 - Zero Safari testing during development
 - No `navigator.storage.persist()` call in initialization code
 - No export/backup feature until late in development
@@ -40,6 +42,7 @@ The project demands strict TypeScript (no `any`, no `unknown`, no `as` casting).
 Rich text editors are among the most complex UI components. Their internal data models (document schemas, marks, decorations, plugin state) are inherently dynamic and resist static typing. The ProseMirror ecosystem was originally JavaScript-first; TypeScript support was retrofitted. TipTap wraps ProseMirror, adding another layer of type indirection.
 
 **How to avoid:**
+
 1. Pin TipTap and ProseMirror to exact versions (not ranges) and only upgrade deliberately.
 2. Use `@tiptap/pm` for all ProseMirror imports -- it ensures version alignment between TipTap and ProseMirror.
 3. Create a thin typed abstraction layer around the editor. Contain all editor interactions behind a well-typed interface so that type looseness is isolated to one module rather than spread throughout the app.
@@ -47,6 +50,7 @@ Rich text editors are among the most complex UI components. Their internal data 
 5. Evaluate whether a simpler editor (Milkdown, which is built on ProseMirror but with better TypeScript) might reduce friction.
 
 **Warning signs:**
+
 - Type errors appearing in editor-related files that require `as` casts to resolve
 - ProseMirror version mismatches in `package-lock.json`
 - Editor logic leaking into non-editor components
@@ -66,6 +70,7 @@ Storing pasted images as blobs in IndexedDB works at small scale but degrades as
 IndexedDB is designed for structured data, not as a blob store. Developers store images in the same object store as note text, query note objects that include blob references, and accidentally cause the browser to load megabytes of binary data when iterating over notes (e.g., for search or calendar dot indicators).
 
 **How to avoid:**
+
 1. Store images in a separate IndexedDB object store from note text. Notes reference images by ID, not by embedded blob.
 2. Never index binary data fields. Only index metadata (noteId, date, filename, size).
 3. Use lazy loading: only fetch image blobs when the note containing them is actively rendered.
@@ -74,6 +79,7 @@ IndexedDB is designed for structured data, not as a blob store. Developers store
 6. Batch image writes into single transactions rather than one transaction per image.
 
 **Warning signs:**
+
 - App startup time increasing over weeks of use
 - Note list or calendar rendering slowing down
 - Browser dev tools showing large IndexedDB reads on page load
@@ -93,6 +99,7 @@ The app defines keyboard shortcuts like CMD+[ and CMD+] for pane switching, CMD+
 There are no keystroke combinations guaranteed to be conflict-free across all browsers, operating systems, and assistive technologies. Developers test on one browser and assume shortcuts work everywhere. The WYSIWYG editor also brings its own shortcut layer that can conflict with app-level shortcuts.
 
 **How to avoid:**
+
 1. Audit shortcuts against browser defaults for Chrome, Firefox, Safari, and Edge before committing to them. MDN maintains lists; so do browser vendors.
 2. Never override single-modifier shortcuts (Alt+key) -- these are reserved for browser menus and screen reader navigation.
 3. Use `aria-keyshortcuts` attributes to announce shortcuts to assistive technology.
@@ -101,6 +108,7 @@ There are no keystroke combinations guaranteed to be conflict-free across all br
 6. Consider making shortcuts remappable in a future phase.
 
 **Warning signs:**
+
 - Shortcuts "not working" bug reports that are browser-specific
 - Screen reader testing reveals broken navigation
 - Editor shortcuts and app shortcuts firing simultaneously or not at all
@@ -120,6 +128,7 @@ The strict 100-line file limit forces decomposition of components that are natur
 The 100-line limit is an excellent heuristic for business logic and utility functions. But UI components with JSX, event handlers, and accessibility attributes are inherently more verbose. A well-structured 150-line component is often clearer than three 50-line files with shared state threaded between them.
 
 **How to avoid:**
+
 1. Configure the ESLint `max-lines` rule to skip blank lines and comments (`skipBlankLines: true, skipComments: true`). This typically saves 15-30 lines per file.
 2. Extract custom hooks aggressively -- a `useCalendar()` hook or `useEditor()` hook moves logic out of the component without fragmenting the UI.
 3. Separate type definitions into co-located `.types.ts` files -- types can be verbose but should not count against component line budgets.
@@ -127,6 +136,7 @@ The 100-line limit is an excellent heuristic for business logic and utility func
 5. Use the constraint as a design signal: if a component genuinely exceeds 100 lines of logic, that is a signal to extract a custom hook or utility, not to split the JSX arbitrarily.
 
 **Warning signs:**
+
 - Components with 6+ props being passed through just to satisfy file splitting
 - Files named `ComponentPartA.tsx` / `ComponentPartB.tsx` with no clear domain boundary
 - Hooks that exist only to reduce line count, not to encapsulate reusable logic
@@ -146,6 +156,7 @@ Developers assume that choosing an established editor library (TipTap, ProseMirr
 contenteditable is inherently accessible for basic text input. This creates a false sense of completeness. The complex parts -- announcing active formatting states via `aria-pressed`, making custom dropdowns keyboard-navigable, providing live region announcements for non-visual feedback -- require deliberate work that is invisible in visual testing.
 
 **How to avoid:**
+
 1. Use `aria-pressed` on all toggle buttons (bold, italic, etc.) to communicate active state.
 2. Implement `aria-live` regions for status messages (save confirmations, errors, word count changes).
 3. Make all toolbar interactions follow WAI-ARIA button, menu, and dialog patterns.
@@ -154,6 +165,7 @@ contenteditable is inherently accessible for basic text input. This creates a fa
 6. Ensure the editor has a visible focus indicator that meets WCAG contrast requirements.
 
 **Warning signs:**
+
 - No screen reader testing in the development workflow
 - Toolbar buttons without `aria-label` or `aria-pressed` attributes
 - Status messages that only appear visually (toast notifications without live regions)
@@ -166,45 +178,45 @@ Phase 1 (Editor integration) for base editor accessibility. Phase 2 (UI features
 
 ## Technical Debt Patterns
 
-| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
-|----------|-------------------|----------------|-----------------|
-| Storing images as base64 strings in note text | No separate storage layer needed | Notes become huge, search/list performance degrades, export files are bloated | Never -- design blob storage from the start |
-| Using `localStorage` for settings before IndexedDB is ready | Quick settings persistence | Two storage systems to maintain, localStorage has 5MB limit, no migration path | Only for non-critical preferences (theme toggle), never for note data |
-| Skipping `navigator.storage.persist()` | No permission prompt on first visit | Data loss on Safari, unreliable storage on all browsers under disk pressure | Never -- call it on first meaningful user action |
-| Putting all state in React context | Simple state sharing | Re-renders cascade through the entire app when any note changes, editor becomes laggy | Only for truly global, rarely-changing state (theme, workspace ID). Use dedicated state management for notes. |
-| Single IndexedDB object store for everything | Simpler schema | Cannot query notes without loading images, cannot upgrade note schema without touching images | Never -- separate stores for notes, images, templates, settings from the start |
-| Inline ESLint disables for type issues | Unblocks development | Accumulates into dozens of suppressed warnings that hide real bugs | Only in the editor integration module, with documented rationale per disable |
+| Shortcut                                                    | Immediate Benefit                   | Long-term Cost                                                                                | When Acceptable                                                                                               |
+| ----------------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Storing images as base64 strings in note text               | No separate storage layer needed    | Notes become huge, search/list performance degrades, export files are bloated                 | Never -- design blob storage from the start                                                                   |
+| Using `localStorage` for settings before IndexedDB is ready | Quick settings persistence          | Two storage systems to maintain, localStorage has 5MB limit, no migration path                | Only for non-critical preferences (theme toggle), never for note data                                         |
+| Skipping `navigator.storage.persist()`                      | No permission prompt on first visit | Data loss on Safari, unreliable storage on all browsers under disk pressure                   | Never -- call it on first meaningful user action                                                              |
+| Putting all state in React context                          | Simple state sharing                | Re-renders cascade through the entire app when any note changes, editor becomes laggy         | Only for truly global, rarely-changing state (theme, workspace ID). Use dedicated state management for notes. |
+| Single IndexedDB object store for everything                | Simpler schema                      | Cannot query notes without loading images, cannot upgrade note schema without touching images | Never -- separate stores for notes, images, templates, settings from the start                                |
+| Inline ESLint disables for type issues                      | Unblocks development                | Accumulates into dozens of suppressed warnings that hide real bugs                            | Only in the editor integration module, with documented rationale per disable                                  |
 
 ## Performance Traps
 
-| Trap | Symptoms | Prevention | When It Breaks |
-|------|----------|------------|----------------|
-| Loading all notes on startup to render calendar dots | Slow initial load, growing over time | Store note metadata (dates with content) in a separate lightweight index | ~100 notes (3-4 months of daily use) |
-| Re-rendering the editor on every keystroke via React state | Input lag, dropped characters, cursor jumping | Let the editor manage its own state; sync to React only on blur/save | Immediately with any non-trivial document |
-| Synchronous IndexedDB reads blocking the main thread | UI freezes during save/load | Use async IndexedDB APIs consistently; consider moving heavy reads to a Web Worker | ~50 notes with images |
-| Unthrottled autosave writing to IndexedDB on every change | Disk I/O spikes, battery drain on laptops | Debounce autosave (1-2 seconds after last keystroke) | Immediately on any device |
-| Full-text search scanning all note content on every query | Search takes seconds, UI freezes | Build a search index incrementally; consider a lightweight in-browser search index (e.g., MiniSearch) | ~200 notes |
-| CSS-in-JS or runtime styling in the editor | Jank during typing, layout thrashing | Use static CSS or CSS modules for editor styles; avoid runtime style computation in the editing path | Noticeable with documents over 500 words |
+| Trap                                                       | Symptoms                                      | Prevention                                                                                            | When It Breaks                            |
+| ---------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Loading all notes on startup to render calendar dots       | Slow initial load, growing over time          | Store note metadata (dates with content) in a separate lightweight index                              | ~100 notes (3-4 months of daily use)      |
+| Re-rendering the editor on every keystroke via React state | Input lag, dropped characters, cursor jumping | Let the editor manage its own state; sync to React only on blur/save                                  | Immediately with any non-trivial document |
+| Synchronous IndexedDB reads blocking the main thread       | UI freezes during save/load                   | Use async IndexedDB APIs consistently; consider moving heavy reads to a Web Worker                    | ~50 notes with images                     |
+| Unthrottled autosave writing to IndexedDB on every change  | Disk I/O spikes, battery drain on laptops     | Debounce autosave (1-2 seconds after last keystroke)                                                  | Immediately on any device                 |
+| Full-text search scanning all note content on every query  | Search takes seconds, UI freezes              | Build a search index incrementally; consider a lightweight in-browser search index (e.g., MiniSearch) | ~200 notes                                |
+| CSS-in-JS or runtime styling in the editor                 | Jank during typing, layout thrashing          | Use static CSS or CSS modules for editor styles; avoid runtime style computation in the editing path  | Noticeable with documents over 500 words  |
 
 ## Security Mistakes
 
-| Mistake | Risk | Prevention |
-|---------|------|------------|
-| Rendering user-pasted HTML without sanitization in WYSIWYG mode | XSS via pasted content from malicious websites | Use the editor's built-in sanitization (ProseMirror schema restricts allowed nodes/marks by default). Never use `dangerouslySetInnerHTML` for note rendering. |
-| Storing sensitive notes without warning about browser storage visibility | Other users of the shared computer can read notes via dev tools | Display a clear notice that notes are stored unencrypted in the browser. Consider optional encryption for a future phase. |
-| Export/import accepting arbitrary HTML in markdown files | XSS via crafted import files | Parse imported markdown strictly through a markdown parser (remark/unified), never interpret raw HTML in imports |
-| Blob URLs (`URL.createObjectURL`) not being revoked | Memory leaks from accumulated blob URLs | Revoke blob URLs when images are removed from view or notes are closed. Track active blob URLs in a cleanup registry. |
+| Mistake                                                                  | Risk                                                            | Prevention                                                                                                                                                    |
+| ------------------------------------------------------------------------ | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rendering user-pasted HTML without sanitization in WYSIWYG mode          | XSS via pasted content from malicious websites                  | Use the editor's built-in sanitization (ProseMirror schema restricts allowed nodes/marks by default). Never use `dangerouslySetInnerHTML` for note rendering. |
+| Storing sensitive notes without warning about browser storage visibility | Other users of the shared computer can read notes via dev tools | Display a clear notice that notes are stored unencrypted in the browser. Consider optional encryption for a future phase.                                     |
+| Export/import accepting arbitrary HTML in markdown files                 | XSS via crafted import files                                    | Parse imported markdown strictly through a markdown parser (remark/unified), never interpret raw HTML in imports                                              |
+| Blob URLs (`URL.createObjectURL`) not being revoked                      | Memory leaks from accumulated blob URLs                         | Revoke blob URLs when images are removed from view or notes are closed. Track active blob URLs in a cleanup registry.                                         |
 
 ## UX Pitfalls
 
-| Pitfall | User Impact | Better Approach |
-|---------|-------------|-----------------|
-| No visible indicator that data is saved | Users worry about data loss, compulsively export | Show a subtle "Saved" indicator with timestamp; use `beforeunload` to warn about unsaved changes |
-| Calendar requires mouse interaction | Keyboard-only users cannot navigate dates | Full arrow-key navigation in calendar grid following WAI-ARIA grid pattern |
-| Markdown syntax visible during editing | Defeats the purpose of WYSIWYG; looks like a code editor | Ensure the editor renders markdown as formatted text inline, hiding syntax characters. Test with non-technical users. |
-| Split-pane layout not responsive | Mobile/tablet users get overlapping panes or tiny text | Below a breakpoint, stack panes vertically with tab switching. Do not try to show both panes on mobile. |
-| No undo after destructive actions (delete note, delete workspace) | Accidental data loss | Implement soft-delete with a 30-day recovery period, or at minimum a confirmation dialog with the note title displayed |
-| Template system is all-or-nothing | Users want to modify templates but fear losing the original | Applying a template should insert content, not replace. Allow template editing separately from note editing. |
+| Pitfall                                                           | User Impact                                                 | Better Approach                                                                                                        |
+| ----------------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| No visible indicator that data is saved                           | Users worry about data loss, compulsively export            | Show a subtle "Saved" indicator with timestamp; use `beforeunload` to warn about unsaved changes                       |
+| Calendar requires mouse interaction                               | Keyboard-only users cannot navigate dates                   | Full arrow-key navigation in calendar grid following WAI-ARIA grid pattern                                             |
+| Markdown syntax visible during editing                            | Defeats the purpose of WYSIWYG; looks like a code editor    | Ensure the editor renders markdown as formatted text inline, hiding syntax characters. Test with non-technical users.  |
+| Split-pane layout not responsive                                  | Mobile/tablet users get overlapping panes or tiny text      | Below a breakpoint, stack panes vertically with tab switching. Do not try to show both panes on mobile.                |
+| No undo after destructive actions (delete note, delete workspace) | Accidental data loss                                        | Implement soft-delete with a 30-day recovery period, or at minimum a confirmation dialog with the note title displayed |
+| Template system is all-or-nothing                                 | Users want to modify templates but fear losing the original | Applying a template should insert content, not replace. Allow template editing separately from note editing.           |
 
 ## "Looks Done But Isn't" Checklist
 
@@ -219,27 +231,27 @@ Phase 1 (Editor integration) for base editor accessibility. Phase 2 (UI features
 
 ## Recovery Strategies
 
-| Pitfall | Recovery Cost | Recovery Steps |
-|---------|---------------|----------------|
-| Safari ITP data deletion | HIGH (data is gone) | Cannot recover deleted data. Mitigation: persistent storage API prevents it. Post-incident: help user reimport from their last export. |
-| Image blob storage degrading performance | MEDIUM | Migrate images from note object store to separate store or OPFS. Requires a one-time migration script run on app startup. |
-| Keyboard shortcut conflicts discovered late | LOW | Remap shortcuts in a config object. Update shortcut reference UI. Ship as a patch. |
-| Editor type incompatibility after library update | MEDIUM | Pin to last working version. Create typed wrapper interfaces. Gradually update types in isolation. |
-| Component over-fragmentation from line limits | LOW | Recombine files that share state. Adjust ESLint overrides with documented rationale. Refactor in a dedicated cleanup sprint. |
-| Accessibility failures caught in production | MEDIUM-HIGH | Audit with axe-core, fix ARIA attributes, add screen reader testing to CI. Costly if fundamental patterns (toolbar, dialogs) need restructuring. |
+| Pitfall                                          | Recovery Cost       | Recovery Steps                                                                                                                                   |
+| ------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Safari ITP data deletion                         | HIGH (data is gone) | Cannot recover deleted data. Mitigation: persistent storage API prevents it. Post-incident: help user reimport from their last export.           |
+| Image blob storage degrading performance         | MEDIUM              | Migrate images from note object store to separate store or OPFS. Requires a one-time migration script run on app startup.                        |
+| Keyboard shortcut conflicts discovered late      | LOW                 | Remap shortcuts in a config object. Update shortcut reference UI. Ship as a patch.                                                               |
+| Editor type incompatibility after library update | MEDIUM              | Pin to last working version. Create typed wrapper interfaces. Gradually update types in isolation.                                               |
+| Component over-fragmentation from line limits    | LOW                 | Recombine files that share state. Adjust ESLint overrides with documented rationale. Refactor in a dedicated cleanup sprint.                     |
+| Accessibility failures caught in production      | MEDIUM-HIGH         | Audit with axe-core, fix ARIA attributes, add screen reader testing to CI. Costly if fundamental patterns (toolbar, dialogs) need restructuring. |
 
 ## Pitfall-to-Phase Mapping
 
-| Pitfall | Prevention Phase | Verification |
-|---------|------------------|--------------|
-| Safari ITP data loss | Phase 1: Storage foundation | `navigator.storage.persisted()` returns true in Safari; export feature exists |
-| Editor TypeScript conflicts | Phase 1: Editor integration spike | Zero `as` casts outside editor module; all editor types compile without error |
-| Image blob performance | Phase 1: Storage architecture | Images in separate store; loading note list does not trigger blob reads (verify in Network/Performance tab) |
-| Keyboard shortcut conflicts | Phase 2: Keyboard navigation | Shortcuts tested in Chrome, Firefox, Safari; no collisions with browser defaults documented in test matrix |
-| 100-line file fragmentation | Phase 1: Project setup | ESLint configured with `skipBlankLines`/`skipComments`; custom hook extraction convention documented |
-| Editor accessibility gaps | Phase 1 + every subsequent phase | axe-core tests pass; VoiceOver testing completed for each new UI component |
-| Autosave performance | Phase 1: Storage layer | Debounced saves verified; no writes on every keystroke |
-| Multi-tab conflicts | Phase 3: Polish/edge cases | Two tabs open same note; last-write-wins or lock mechanism prevents corruption |
+| Pitfall                     | Prevention Phase                  | Verification                                                                                                |
+| --------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Safari ITP data loss        | Phase 1: Storage foundation       | `navigator.storage.persisted()` returns true in Safari; export feature exists                               |
+| Editor TypeScript conflicts | Phase 1: Editor integration spike | Zero `as` casts outside editor module; all editor types compile without error                               |
+| Image blob performance      | Phase 1: Storage architecture     | Images in separate store; loading note list does not trigger blob reads (verify in Network/Performance tab) |
+| Keyboard shortcut conflicts | Phase 2: Keyboard navigation      | Shortcuts tested in Chrome, Firefox, Safari; no collisions with browser defaults documented in test matrix  |
+| 100-line file fragmentation | Phase 1: Project setup            | ESLint configured with `skipBlankLines`/`skipComments`; custom hook extraction convention documented        |
+| Editor accessibility gaps   | Phase 1 + every subsequent phase  | axe-core tests pass; VoiceOver testing completed for each new UI component                                  |
+| Autosave performance        | Phase 1: Storage layer            | Debounced saves verified; no writes on every keystroke                                                      |
+| Multi-tab conflicts         | Phase 3: Polish/edge cases        | Two tabs open same note; last-write-wins or lock mechanism prevents corruption                              |
 
 ## Sources
 
@@ -259,5 +271,6 @@ Phase 1 (Editor integration) for base editor accessibility. Phase 2 (UI features
 - [CKEditor: Accessible Rich Text Editor](https://ckeditor.com/blog/accessible-rich-text-editor-eu-accessibility-act/)
 
 ---
-*Pitfalls research for: local-first browser-based note-taking app (Paneful Notes)*
-*Researched: 2026-03-15*
+
+_Pitfalls research for: local-first browser-based note-taking app (Paneful Notes)_
+_Researched: 2026-03-15_
