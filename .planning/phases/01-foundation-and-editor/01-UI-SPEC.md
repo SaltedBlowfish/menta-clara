@@ -35,10 +35,10 @@ Declared values (must be multiples of 4):
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| xs | 4px | Not used in Phase 1 |
-| sm | 8px | Not used in Phase 1 |
-| md | 16px | Editor content inline padding (left/right) |
-| lg | 24px | Editor content block padding (top/bottom) |
+| xs | 4px | Inline code padding (all sides), list item spacing |
+| sm | 8px | Heading bottom margin |
+| md | 16px | Editor content inline padding (left/right), paragraph spacing, blockquote left padding, code block padding |
+| lg | 24px | Editor content block padding (top/bottom), heading top margin |
 | xl | 32px | Not used in Phase 1 |
 | 2xl | 48px | Horizontal margin on editor container (centers content) |
 | 3xl | 64px | Top margin on editor container |
@@ -55,13 +55,17 @@ Phase 1 typography governs how the user's writing appears inside the TipTap edit
 
 | Role | Size | Weight | Line Height | Element |
 |------|------|--------|-------------|---------|
-| Body | 16px | 400 (regular) | 1.6 | `p`, `li`, `blockquote` |
-| Code | 14px | 400 (regular) | 1.5 | `code`, `pre code` |
-| Heading 1 | 28px | 600 (semibold) | 1.25 | `h1` |
-| Heading 2 | 22px | 600 (semibold) | 1.3 | `h2` |
+| Body / Code | 16px | 400 (regular) | 1.6 | `p`, `li`, `blockquote`, `code`, `pre code` |
 | Heading 3 | 18px | 600 (semibold) | 1.35 | `h3` |
+| Heading 2 | 22px | 600 (semibold) | 1.3 | `h2` |
+| Heading 1 | 28px | 600 (semibold) | 1.25 | `h1` |
+
+**Font sizes (4 declared):** 16px, 18px, 22px, 28px
+**Font weights (2 declared):** 400 (regular), 600 (semibold)
 
 **Monospace stack for code:** `"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace`
+
+Code elements (`code`, `pre code`) use the same 16px size as body text but are differentiated by the monospace font family and background color.
 
 **Additional typography rules:**
 - Paragraph spacing (`p + p`): 16px margin-top
@@ -72,8 +76,8 @@ Phase 1 typography governs how the user's writing appears inside the TipTap edit
 - Blockquote left padding: 16px
 - Code block padding: 16px all sides
 - Code block border-radius: 4px
-- Inline code padding: 2px 4px
-- Inline code border-radius: 3px
+- Inline code padding: 4px 4px
+- Inline code border-radius: 4px
 
 ---
 
