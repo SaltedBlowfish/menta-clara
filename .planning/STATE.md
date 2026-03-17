@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-03-17T05:03:04.522Z"
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-03-17T05:09:40.215Z"
 last_activity: 2026-03-16 -- Completed 03-01-PLAN.md
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 12
-  completed_plans: 8
+  completed_plans: 9
   percent: 67
 ---
 
@@ -59,6 +59,7 @@ _Updated after each plan completion_
 | Phase 02 P03 | 2min | 2 tasks | 9 files |
 | Phase 02 P04 | 4min | 3 tasks | 27 files |
 | Phase 03 P01 | 2min | 2 tasks | 12 files |
+| Phase 03 P02 | 4min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,9 @@ Recent decisions affecting current work:
 - [Phase 03-01]: DB upgrade uses oldVersion checks for forward-compatible migrations
 - [Phase 03-01]: Workspace default is 'personal' with no prefix for backward compatibility
 - [Phase 03-01]: ActiveNote context separated from workspace context (independent concerns)
+- [Phase 03-02]: CommandPalette uses forwardRef+useImperativeHandle for open/close control from app
+- [Phase 03-02]: Search extracts plain text from TipTap JSONContent by recursively walking content arrays
+- [Phase 03-02]: Permanent note titles resolved from setting:permanentNames record in DB
 
 ### Pending Todos
 
@@ -102,6 +106,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17T05:03:04.520Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-03-17T05:09:40.213Z
+Stopped at: Completed 03-02-PLAN.md
 Resume file: None

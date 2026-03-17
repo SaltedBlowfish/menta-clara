@@ -63,9 +63,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Search
 
-- [ ] **SRCH-01**: User can search across all notes in the current workspace
-- [ ] **SRCH-02**: Search results show matching notes with highlighted snippets
-- [ ] **SRCH-03**: User can click a search result to navigate to that note
+- [x] **SRCH-01**: User can search across all notes in the current workspace
+- [x] **SRCH-02**: Search results show matching notes with highlighted snippets
+- [x] **SRCH-03**: User can click a search result to navigate to that note
 
 ### Data
 
@@ -182,9 +182,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | WKSP-01     | Phase 3 | Complete |
 | WKSP-02     | Phase 3 | Complete |
 | WKSP-03     | Phase 3 | Complete |
-| SRCH-01     | Phase 3 | Pending |
-| SRCH-02     | Phase 3 | Pending |
-| SRCH-03     | Phase 3 | Pending |
+| SRCH-01     | Phase 3 | Complete |
+| SRCH-02     | Phase 3 | Complete |
+| SRCH-03     | Phase 3 | Complete |
 | DATA-02     | Phase 3 | Pending |
 | DATA-03     | Phase 3 | Pending |
 | EDIT-03     | Phase 3 | Pending |
