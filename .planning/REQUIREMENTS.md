@@ -11,8 +11,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **EDIT-01**: User can write and edit notes with WYSIWYG markdown rendering (bold, italic, headings, lists, code blocks, links render inline as typed)
 - [x] **EDIT-02**: User can undo and redo edits within a session
-- [ ] **EDIT-03**: User can paste images from clipboard; images display inline and are stored as blobs in browser DB
-- [ ] **EDIT-04**: User can type `[[YYYY-MM-DD]]` and it renders as a clickable link that navigates to that day's note
+- [x] **EDIT-03**: User can paste images from clipboard; images display inline and are stored as blobs in browser DB
+- [x] **EDIT-04**: User can type `[[YYYY-MM-DD]]` and it renders as a clickable link that navigates to that day's note
 - [x] **EDIT-05**: Notes auto-save to browser storage on every change (debounced) with no explicit save action needed
 
 ### Layout
@@ -187,8 +187,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SRCH-03     | Phase 3 | Complete |
 | DATA-02     | Phase 3 | Pending |
 | DATA-03     | Phase 3 | Pending |
-| EDIT-03     | Phase 3 | Pending |
-| EDIT-04     | Phase 3 | Pending |
+| EDIT-03     | Phase 3 | Complete |
+| EDIT-04     | Phase 3 | Complete |
 
 **Coverage:**
 
