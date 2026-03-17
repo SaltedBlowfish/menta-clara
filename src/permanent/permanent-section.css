@@ -1,3 +1,35 @@
+.note-browser-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding-right: 16px;
+}
+
+.note-browser-create {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 8px;
+}
+
+.note-browser-create:hover {
+  color: var(--color-text);
+}
+
+.note-browser-create:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.note-browser-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
 .permanent-editor-area {
   cursor: text;
   display: flex;

@@ -1,65 +1,83 @@
 import './permanent-section.css';
 import { useCallback } from 'react';
 
+import { useActiveNote } from '../app/use-active-note';
 import { NoteEditor } from '../editor/editor';
 import { useNote } from '../storage/use-note';
-import { InlineTitle } from './inline-title';
-import { NoteDropdown } from './note-dropdown';
+import { NoteBrowserItem } from './note-browser-item';
 import { usePermanentNotes } from './use-permanent-notes';
 
 export function PermanentSection() {
-  const { createNote, notes, renameNote, selectedNoteId, selectNote } =
+  const { createNote, notes, selectedNoteId, selectNote } =
     usePermanentNotes();
   const { content, saveContent } = useNote(selectedNoteId ?? '__unused__');
+  const { navigateToNote } = useActiveNote();
 
   const handleCreate = useCallback(() => {
     void createNote('Untitled');
   }, [createNote]);
 
-  const selectedName = selectedNoteId
-    ? (notes.find((n) => n.id === selectedNoteId)?.name ?? 'Untitled')
-    : '';
-
-  const handleRename = useCallback(
-    (name: string) => {
-      if (selectedNoteId) {
-        renameNote(selectedNoteId, name);
-      }
+  const handleOpenInEditor = useCallback(
+    (noteId: string) => {
+      navigateToNote({ id: noteId, type: 'permanent' });
     },
-    [renameNote, selectedNoteId],
+    [navigateToNote],
   );
+
+  if (notes.length === 0) {
+    return (
+      <>
+        <div className="note-browser-header">
+          <span className="section-title">Notes</span>
+          <button
+            aria-label="Create new note"
+            className="note-browser-create"
+            onClick={handleCreate}
+            type="button"
+          >
+            +
+          </button>
+        </div>
+        <div className="permanent-empty">
+          <p className="permanent-empty-heading">No notes yet</p>
+          <p className="permanent-empty-body">
+            Create a note from the editor to get started.
+          </p>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
-      <span className="section-title">Notes</span>
-      <NoteDropdown
-        notes={notes}
-        onCreateNote={handleCreate}
-        onSelectNote={selectNote}
-        selectedNoteId={selectedNoteId}
-      />
-      {selectedNoteId ? (
-        <div
-          className="permanent-editor-area"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              const tiptap = e.currentTarget.querySelector<HTMLElement>('.tiptap');
-              tiptap?.focus();
-            }
-          }}
-          role="presentation"
+      <div className="note-browser-header">
+        <span className="section-title">Notes</span>
+        <button
+          aria-label="Create new note"
+          className="note-browser-create"
+          onClick={handleCreate}
+          type="button"
         >
-          <InlineTitle name={selectedName} onRename={handleRename} />
+          +
+        </button>
+      </div>
+      <div aria-label="Permanent notes" className="note-browser-list" role="listbox">
+        {notes.map((note) => (
+          <NoteBrowserItem
+            isSelected={note.id === selectedNoteId}
+            key={note.id}
+            name={note.name}
+            noteId={note.id}
+            onOpenInEditor={handleOpenInEditor}
+            onSelect={selectNote}
+          />
+        ))}
+      </div>
+      {selectedNoteId ? (
+        <div className="permanent-editor-area">
           <NoteEditor content={content} onUpdate={saveContent} />
         </div>
-      ) : (
-        <div className="permanent-empty">
-          <p className="permanent-empty-heading">No permanent notes yet</p>
-          <p className="permanent-empty-body">
-            Create a note to keep content that isn&apos;t tied to a date.
-          </p>
-        </div>
-      )}
+      ) : null}
     </>
   );
 }
