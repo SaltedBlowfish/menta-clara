@@ -12,14 +12,12 @@ const dailyHints: Hint[] = [
   { keys: `${mod} ]`, label: 'Go to weekly note' },
   { keys: `${mod} B`, label: 'Bold' },
   { keys: `${mod} I`, label: 'Italic' },
-  { keys: 'Tab', label: 'Indent list' },
 ];
 
 const weeklyHints: Hint[] = [
   { keys: `${mod} [`, label: 'Go to daily note' },
   { keys: `${mod} B`, label: 'Bold' },
   { keys: `${mod} I`, label: 'Italic' },
-  { keys: 'Tab', label: 'Indent list' },
 ];
 
 const defaultHints: Hint[] = [

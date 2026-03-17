@@ -7,6 +7,7 @@ import { common, createLowlight } from 'lowlight';
 import './date-reference.css';
 import { DateReference } from './date-reference';
 import { ImageWithPaste } from './image-paste';
+import { TabKeymap } from './tab-keymap';
 
 const lowlight = createLowlight(common);
 
@@ -25,5 +26,6 @@ export const editorExtensions = [
     openOnClick: true,
   }),
   ListKeymap,
+  TabKeymap,
   DateReference,
 ];
