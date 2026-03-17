@@ -1,4 +1,5 @@
 import './daily-pane.css';
+import type { JSONContent } from '@tiptap/react';
 import { useCallback } from 'react';
 
 import { type ActiveNote } from '../app/active-note-context';
@@ -10,11 +11,12 @@ import { useDailyNote } from './use-daily-note';
 interface DailyPaneProps {
   activeNote: ActiveNote;
   date: Date;
+  defaultContent?: JSONContent;
 }
 
 export function DailyPane(props: DailyPaneProps) {
-  const { date } = props;
-  const { content, dateLabel, error, loading, saveContent } = useDailyNote(date);
+  const { date, defaultContent } = props;
+  const { content, dateLabel, error, loading, saveContent } = useDailyNote(date, defaultContent);
   const { isViewingToday, returnToToday } = useActiveNote();
 
   const handleEditorAreaClick = useCallback((e: React.MouseEvent) => {

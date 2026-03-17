@@ -19,7 +19,7 @@ interface UseWeeklyNoteResult {
   weekNoteId: string;
 }
 
-export function useWeeklyNote(date: Date): UseWeeklyNoteResult {
+export function useWeeklyNote(date: Date, defaultContent?: JSONContent): UseWeeklyNoteResult {
   const weekNoteId = getWeekId(date);
   const weekLabel = `Week ${String(getWeekNumber(date))}`;
   const { content, error, loading, saveContent } = useNote(weekNoteId);
@@ -28,9 +28,9 @@ export function useWeeklyNote(date: Date): UseWeeklyNoteResult {
   useEffect(() => {
     if (!loading && content === null && !autoCreated.current) {
       autoCreated.current = true;
-      saveContent(DEFAULT_CONTENT);
+      saveContent(defaultContent ?? DEFAULT_CONTENT);
     }
-  }, [content, loading, saveContent]);
+  }, [content, defaultContent, loading, saveContent]);
 
   return { content, error, loading, saveContent, weekLabel, weekNoteId };
 }

@@ -15,7 +15,7 @@ interface UseDailyNoteResult {
   saveContent: (content: JSONContent) => void;
 }
 
-export function useDailyNote(date: Date): UseDailyNoteResult {
+export function useDailyNote(date: Date, defaultContent?: JSONContent): UseDailyNoteResult {
   const noteId = 'daily:' + format(date, 'yyyy-MM-dd');
   const dateLabel = formatDateLabel(date);
   const { content, error, loading, saveContent } = useNote(noteId);
@@ -24,9 +24,18 @@ export function useDailyNote(date: Date): UseDailyNoteResult {
   useEffect(() => {
     if (!loading && content === null && !autoCreatedRef.current) {
       autoCreatedRef.current = true;
-      saveContent(formatDateHeading(date));
+      if (defaultContent) {
+        const heading = formatDateHeading(date);
+        const merged: JSONContent = {
+          content: [...(heading.content ?? []), ...(defaultContent.content ?? [])],
+          type: 'doc',
+        };
+        saveContent(merged);
+      } else {
+        saveContent(formatDateHeading(date));
+      }
     }
-  }, [content, date, loading, saveContent]);
+  }, [content, date, defaultContent, loading, saveContent]);
 
   useEffect(() => {
     autoCreatedRef.current = false;

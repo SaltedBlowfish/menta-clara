@@ -29,8 +29,8 @@ export function useWorkspaces(): UseWorkspacesResult {
   );
   const { activeWorkspaceId, setActiveWorkspaceId } = useContext(WorkspaceContext);
 
-  const activeWorkspace =
-    workspaces.find((w) => w.id === activeWorkspaceId) ?? workspaces[0] ?? DEFAULT_WORKSPACES[0];
+  const activeWorkspace: Workspace =
+    workspaces.find((w) => w.id === activeWorkspaceId) ?? workspaces[0] ?? { id: 'personal', name: 'Personal' };
 
   const createWorkspace = useCallback(
     (name: string): string => {
