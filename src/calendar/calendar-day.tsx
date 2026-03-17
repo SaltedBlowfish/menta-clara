@@ -3,6 +3,7 @@ import { format, getDate } from 'date-fns';
 interface CalendarDayProps {
   date: Date;
   hasNote: boolean;
+  isOtherMonth: boolean;
   isSelected: boolean;
   isToday: boolean;
   onSelect: (date: Date) => void;
@@ -11,6 +12,7 @@ interface CalendarDayProps {
 export function CalendarDay({
   date,
   hasNote,
+  isOtherMonth,
   isSelected,
   isToday,
   onSelect,
@@ -18,7 +20,8 @@ export function CalendarDay({
   const className =
     'calendar-day' +
     (isToday ? ' calendar-day-today' : '') +
-    (isSelected ? ' calendar-day-selected' : '');
+    (isSelected ? ' calendar-day-selected' : '') +
+    (isOtherMonth ? ' calendar-day-other' : '');
 
   return (
     <button

@@ -4,60 +4,22 @@
   height: 100%;
 }
 
-.daily-pane-header {
+.daily-pane > .section-title {
+  align-items: center;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 16px 48px 0;
-  max-width: calc(720px + 96px);
-  margin: 0 auto;
-  width: 100%;
-}
-
-.daily-pane-date {
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  font-weight: 400;
-}
-
-.back-to-today {
-  background: none;
-  border: none;
-  color: var(--color-link);
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 400;
-  padding: 0;
-  text-align: left;
-  text-decoration: none;
-}
-
-.back-to-today:hover {
-  text-decoration: underline;
+  height: 40px;
+  padding: 0 16px;
 }
 
 .daily-pane-editor {
-  cursor: text;
+  display: flex;
   flex: 1;
+  flex-direction: column;
   min-height: 0;
   overflow-y: auto;
-  padding: 24px 48px 48px;
-  width: 100%;
+  padding: 8px 16px 48px;
 }
 
-.daily-pane-editor .tiptap {
-  margin: 0 auto;
-  max-width: 720px;
-  min-height: 100%;
-}
-
-@media (max-width: 800px) {
-  .daily-pane-header {
-    padding: 16px 16px 0;
-    max-width: none;
-  }
-
-  .daily-pane-editor {
-    padding: 64px 16px 16px;
-  }
+.daily-pane-editor .ProseMirror {
+  flex: 1;
 }

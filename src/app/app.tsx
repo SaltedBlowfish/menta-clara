@@ -1,32 +1,24 @@
 import { format, isWeekend, parseISO } from 'date-fns';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { getISOWeek } from 'date-fns/getISOWeek';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import './app.css';
 import { type ActiveNote, ActiveNoteContext } from './active-note-context';
 import { CalendarSection } from '../calendar/calendar-section';
-import { type CommandPaletteHandle, CommandPalette } from '../command-palette/command-palette';
 import { DailyPane } from '../daily/daily-pane';
+import { handleExport, handleImport } from '../export/export-actions';
 import { SplitPane } from '../layout/split-pane';
-import { PermanentSection } from '../permanent/permanent-section';
 import { LiveRegion } from '../shared/live-region';
 import { useKeyboardShortcuts } from '../shared/use-keyboard-shortcuts';
-import { useExportCommands } from '../export/export-commands';
-import { useTemplateCommands } from '../template/template-commands';
 import { useTemplates } from '../template/use-templates';
 import { ThemeToggle } from '../theme/theme-toggle';
 import { WeeklySection } from '../weekly/weekly-section';
-import { useWorkspaceCommands } from '../workspace/workspace-commands';
-import { useWorkspaces } from '../workspace/use-workspaces';
 
 export function App() {
   const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
   const [announcement, setAnnouncement] = useState('');
-  const paletteRef = useRef<CommandPaletteHandle>(null);
 
-  const { defaults, deleteTemplate, getTemplateContent, renameTemplate, saveTemplate, setDefault, templates } =
-    useTemplates();
-  const ws = useWorkspaces();
-  const workspaceName = ws.activeWorkspace.name;
+  const { defaults, getTemplateContent } = useTemplates();
 
   const todayNoteId = `daily:${format(new Date(), 'yyyy-MM-dd')}`;
   const [activeNote, setActiveNote] = useState<ActiveNote>({
@@ -80,14 +72,6 @@ export function App() {
       key: ']',
       meta: true,
     },
-    {
-      handler: () => {
-        paletteRef.current?.open();
-        setAnnouncement('Command palette opened');
-      },
-      key: 'k',
-      meta: true,
-    },
   ], []);
 
   useKeyboardShortcuts(shortcuts);
@@ -103,68 +87,58 @@ export function App() {
     return () => window.removeEventListener('date-reference-click', handler);
   }, [navigateToNote]);
 
-  const handleNavigateDaily = useCallback((dateStr: string) => {
-    setSelectedDate(parseISO(dateStr));
-  }, []);
-
-  const templateCmds = useTemplateCommands({
-    announce: setAnnouncement, currentContent: null, deleteTemplate,
-    renameTemplate, saveTemplate, setDefault, templates,
-  });
-  const workspaceCmds = useWorkspaceCommands({
-    announce: setAnnouncement, createWorkspace: ws.createWorkspace,
-    deleteWorkspace: ws.deleteWorkspace, renameWorkspace: ws.renameWorkspace,
-    switchWorkspace: ws.switchWorkspace, workspaces: ws.workspaces,
-  });
-  const exportCommands = useExportCommands(setAnnouncement, ws.activeWorkspace.id);
-  const allCommands = useMemo(
-    () => [...templateCmds, ...workspaceCmds, ...exportCommands],
-    [templateCmds, workspaceCmds, exportCommands],
-  );
-
   const dailySlot = isWeekend(selectedDate) ? 'weekend' : 'weekday';
   const dailyDefaultId = defaults[dailySlot];
   const dailyDefault = dailyDefaultId ? getTemplateContent(dailyDefaultId) : null;
   const weeklyDefault = defaults.weekly ? getTemplateContent(defaults.weekly) : null;
 
+  const weekLabel = `Week ${String(getISOWeek(selectedDate))}`;
+
   return (
-    <>
-      <span className="workspace-label" aria-label="Current workspace">
-        {workspaceName}
-      </span>
-      <ActiveNoteContext.Provider value={activeNoteValue}>
-        <SplitPane
-          left={<DailyPane activeNote={activeNote} date={selectedDate} {...(dailyDefault ? { defaultContent: dailyDefault } : {})} />}
-          right={
-            <div className="right-pane-layout">
-              <div className="right-pane-toolbar">
-                <ThemeToggle />
-              </div>
-              <div className="right-pane-sections">
-                <div className="right-pane-section">
-                  <WeeklySection date={selectedDate} {...(weeklyDefault ? { defaultContent: weeklyDefault } : {})} />
-                </div>
-                <div className="right-pane-section">
-                  <PermanentSection />
-                </div>
-              </div>
-              <div className="right-pane-calendar">
-                <CalendarSection
-                  onSelectDay={handleSelectDay}
-                  selectedDate={selectedDate}
-                />
+    <ActiveNoteContext.Provider value={activeNoteValue}>
+      <SplitPane
+        left={<DailyPane date={selectedDate} {...(dailyDefault ? { defaultContent: dailyDefault } : {})} />}
+        right={
+          <div className="right-pane-layout">
+            <div className="right-pane-toolbar">
+              <span className="section-title toolbar-title">Weekly Note &rsaquo; {weekLabel}</span>
+              <button
+                aria-label="Import data"
+                className="toolbar-btn"
+                onClick={() => handleImport(setAnnouncement)}
+                type="button"
+              >
+                <svg fill="none" height="20" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 20 20" width="20">
+                  <path d="M3 14v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 3v10M6 9l4 4 4-4" />
+                </svg>
+              </button>
+              <button
+                aria-label="Export data"
+                className="toolbar-btn"
+                onClick={() => handleExport(setAnnouncement)}
+                type="button"
+              >
+                <svg fill="none" height="20" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 20 20" width="20">
+                  <path d="M3 14v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 13V3M6 7l4-4 4 4" />
+                </svg>
+              </button>
+              <ThemeToggle />
+            </div>
+            <div className="right-pane-sections">
+              <div className="right-pane-section">
+                <WeeklySection date={selectedDate} {...(weeklyDefault ? { defaultContent: weeklyDefault } : {})} />
               </div>
             </div>
-          }
-        />
-        <LiveRegion message={announcement} />
-        <CommandPalette
-          commands={allCommands}
-          onAnnounce={setAnnouncement}
-          onNavigateDaily={handleNavigateDaily}
-          ref={paletteRef}
-        />
-      </ActiveNoteContext.Provider>
-    </>
+            <div className="right-pane-calendar">
+              <CalendarSection
+                onSelectDay={handleSelectDay}
+                selectedDate={selectedDate}
+              />
+            </div>
+          </div>
+        }
+      />
+      <LiveRegion message={announcement} />
+    </ActiveNoteContext.Provider>
   );
 }

@@ -5,7 +5,7 @@
 }
 
 .split-pane-left {
-  flex: 0 0 var(--pane-ratio, 60%);
+  flex: 0 0 60%;
   overflow-y: auto;
   position: relative;
 }
@@ -19,34 +19,6 @@
 }
 
 .pane-divider {
-  background: transparent;
-  border: none;
-  cursor: col-resize;
-  flex: 0 0 12px;
-  position: relative;
-  z-index: 5;
-}
-
-.pane-divider::after {
   background: var(--color-border);
-  content: '';
-  height: 100%;
-  left: 50%;
-  position: absolute;
-  top: 0;
-  transform: translateX(-50%);
-  width: 1px;
-}
-
-.pane-divider:hover::after {
-  background: var(--color-text-secondary);
-}
-
-.pane-divider:active::after {
-  background: var(--color-accent);
-}
-
-.pane-divider:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: -2px;
+  flex: 0 0 1px;
 }

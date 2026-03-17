@@ -101,12 +101,27 @@ body {
   transform: translateX(-50%);
 }
 
-/* Workspace label */
-.workspace-label {
+/* Toolbar buttons */
+.toolbar-btn {
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: 4px;
   color: var(--color-text-secondary);
-  font-size: 14px;
-  font-weight: 400;
-  padding: 8px 16px 0;
+  cursor: pointer;
+  display: flex;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
+}
+
+.toolbar-btn:hover {
+  color: var(--color-text);
+}
+
+.toolbar-btn:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 /* Right pane layout */
@@ -120,8 +135,15 @@ body {
   align-items: center;
   display: flex;
   flex: 0 0 auto;
-  justify-content: flex-end;
-  padding: 4px 8px;
+  gap: 4px;
+  height: 40px;
+  padding: 0 8px;
+}
+
+.toolbar-title {
+  flex: 1;
+  padding: 0;
+  position: static;
 }
 
 .right-pane-sections {

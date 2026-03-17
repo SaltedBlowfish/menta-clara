@@ -1,6 +1,5 @@
 import './weekly-section.css';
 import type { JSONContent } from '@tiptap/react';
-import { useCallback } from 'react';
 
 import { StorageWarning } from '../app/storage-warning';
 import { NoteEditor } from '../editor/editor';
@@ -12,22 +11,14 @@ interface WeeklySectionProps {
 }
 
 export function WeeklySection({ date, defaultContent }: WeeklySectionProps) {
-  const { content, error, loading, saveContent, weekLabel } =
+  const { content, error, loading, saveContent, weekNoteId } =
     useWeeklyNote(date, defaultContent);
-
-  const handleEditorAreaClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      const tiptap = e.currentTarget.querySelector<HTMLElement>('.tiptap');
-      tiptap?.focus();
-    }
-  }, []);
 
   return (
     <>
-      <span className="section-title">Weekly Note &rsaquo; {weekLabel}</span>
-      <div className="weekly-editor-area" onClick={handleEditorAreaClick} role="presentation">
+      <div className="weekly-editor-area">
         {loading ? null : (
-          <NoteEditor content={content} onUpdate={saveContent} />
+          <NoteEditor content={content} noteId={weekNoteId} onUpdate={saveContent} />
         )}
       </div>
       {error ? <StorageWarning message={error} /> : null}

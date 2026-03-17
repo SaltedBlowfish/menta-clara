@@ -1,12 +1,14 @@
 import './calendar-grid.css';
 
 import {
+  addDays,
   eachDayOfInterval,
-  endOfMonth,
   format,
   getDay,
   isSameDay,
+  isSameMonth,
   startOfMonth,
+  subDays,
 } from 'date-fns';
 
 import { CalendarDay } from './calendar-day';
@@ -20,6 +22,7 @@ interface CalendarGridProps {
 }
 
 const WEEKDAYS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+const TOTAL_CELLS = 42; // 6 rows x 7 columns
 
 export function CalendarGrid({
   daysWithNotes,
@@ -29,9 +32,11 @@ export function CalendarGrid({
   today,
 }: CalendarGridProps) {
   const firstDay = startOfMonth(displayedMonth);
-  const lastDay = endOfMonth(displayedMonth);
-  const days = eachDayOfInterval({ end: lastDay, start: firstDay });
-  const leadingEmpty = (getDay(firstDay) + 6) % 7;
+  const leadingCount = (getDay(firstDay) + 6) % 7;
+
+  const gridStart = leadingCount > 0 ? subDays(firstDay, leadingCount) : firstDay;
+  const gridEnd = addDays(gridStart, TOTAL_CELLS - 1);
+  const days = eachDayOfInterval({ end: gridEnd, start: gridStart });
 
   return (
     <nav aria-label="Calendar">
@@ -39,13 +44,11 @@ export function CalendarGrid({
         {WEEKDAYS.map((day) => (
           <div className="calendar-weekday" key={day}>{day}</div>
         ))}
-        {Array.from({ length: leadingEmpty }, (_, i) => (
-          <div key={`empty-${String(i)}`} />
-        ))}
         {days.map((date) => (
           <CalendarDay
             date={date}
             hasNote={daysWithNotes.has(format(date, 'yyyy-MM-dd'))}
+            isOtherMonth={!isSameMonth(date, displayedMonth)}
             isSelected={isSameDay(date, selectedDate)}
             isToday={isSameDay(date, today)}
             key={date.toISOString()}

@@ -1,6 +1,6 @@
 import type { JSONContent } from '@tiptap/react';
 
-import { useEffect, useRef } from 'react';
+import { useMemo } from 'react';
 
 import { useNote } from '../storage/use-note';
 import { getWeekId, getWeekNumber } from './get-week-id';
@@ -23,14 +23,12 @@ export function useWeeklyNote(date: Date, defaultContent?: JSONContent): UseWeek
   const weekNoteId = getWeekId(date);
   const weekLabel = `Week ${String(getWeekNumber(date))}`;
   const { content, error, loading, saveContent } = useNote(weekNoteId);
-  const autoCreated = useRef(false);
 
-  useEffect(() => {
-    if (!loading && content === null && !autoCreated.current) {
-      autoCreated.current = true;
-      saveContent(defaultContent ?? DEFAULT_CONTENT);
-    }
-  }, [content, defaultContent, loading, saveContent]);
+  const displayContent = useMemo(() => {
+    if (content !== null) return content;
+    if (loading) return null;
+    return defaultContent ?? DEFAULT_CONTENT;
+  }, [content, defaultContent, loading]);
 
-  return { content, error, loading, saveContent, weekLabel, weekNoteId };
+  return { content: displayContent, error, loading, saveContent, weekLabel, weekNoteId };
 }

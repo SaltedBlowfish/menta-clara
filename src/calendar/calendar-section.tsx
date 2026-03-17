@@ -17,7 +17,7 @@ export function CalendarSection({ onSelectDay, selectedDate }: CalendarSectionPr
   const today = useMemo(() => new Date(), []);
 
   return (
-    <>
+    <div className="calendar-wrapper">
       <span className="section-title">Calendar</span>
       <div className="calendar-nav">
         <button
@@ -45,6 +45,6 @@ export function CalendarSection({ onSelectDay, selectedDate }: CalendarSectionPr
         selectedDate={selectedDate}
         today={today}
       />
-    </>
+    </div>
   );
 }
