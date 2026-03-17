@@ -18,6 +18,19 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* App shell */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-shell > .split-pane {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+}
+
 /* TipTap content area */
 .tiptap {
   font-size: 16px;
@@ -85,6 +98,17 @@ body {
 .tiptap pre code {
   background: none;
   padding: 0;
+}
+
+.tiptap a {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-decoration-color: var(--color-border);
+  text-underline-offset: 2px;
+}
+
+.tiptap a:hover {
+  text-decoration-color: var(--color-link);
 }
 
 /* Storage warning */

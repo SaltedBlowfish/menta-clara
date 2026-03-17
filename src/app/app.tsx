@@ -12,6 +12,7 @@ import { SplitPane } from '../layout/split-pane';
 import { PrivacyInfo } from '../onboarding/privacy-dialog';
 import { WelcomeDialog } from '../onboarding/welcome-dialog';
 import { LiveRegion } from '../shared/live-region';
+import { ShortcutHints } from '../shared/shortcut-hints';
 import { Tooltip } from '../shared/tooltip';
 import { useKeyboardShortcuts } from '../shared/use-keyboard-shortcuts';
 import { ThemeToggle } from '../theme/theme-toggle';
@@ -85,6 +86,19 @@ export function App() {
 
   useKeyboardShortcuts(shortcuts);
 
+  const [focusedPane, setFocusedPane] = useState<'daily' | 'weekly' | undefined>(undefined);
+
+  const handleFocusCapture = useCallback((e: React.FocusEvent) => {
+    const target = e.target;
+    if (target instanceof HTMLElement) {
+      if (target.closest('#daily-pane')) {
+        setFocusedPane('daily');
+      } else if (target.closest('#right-pane')) {
+        setFocusedPane('weekly');
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const handler = (e: Event) => {
       const dateStr = (e as CustomEvent<string>).detail;
@@ -131,22 +145,25 @@ export function App() {
 
   return (
     <ActiveNoteContext.Provider value={activeNoteValue}>
-      <SplitPane
-        left={<DailyPane date={selectedDate} onSelectDate={handleSelectDayFromStack} />}
-        right={
-          <Pane actions={weeklyActions} title={`Weekly Note \u203a ${weekLabel}`}>
-            <div className="right-pane-sections">
-              <WeeklySection date={selectedDate} />
-            </div>
-            <div className="right-pane-calendar">
-              <CalendarSection
-                onSelectDay={handleSelectDay}
-                selectedDate={selectedDate}
-              />
-            </div>
-          </Pane>
-        }
-      />
+      <div className="app-shell" onFocusCapture={handleFocusCapture}>
+        <SplitPane
+          left={<DailyPane date={selectedDate} onSelectDate={handleSelectDayFromStack} />}
+          right={
+            <Pane actions={weeklyActions} title={`Weekly Note \u203a ${weekLabel}`}>
+              <div className="right-pane-sections">
+                <WeeklySection date={selectedDate} />
+              </div>
+              <div className="right-pane-calendar">
+                <CalendarSection
+                  onSelectDay={handleSelectDay}
+                  selectedDate={selectedDate}
+                />
+              </div>
+            </Pane>
+          }
+        />
+        <ShortcutHints context={focusedPane} />
+      </div>
       <LiveRegion message={announcement} />
       <WelcomeDialog />
     </ActiveNoteContext.Provider>

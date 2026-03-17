@@ -1,4 +1,6 @@
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import Link from '@tiptap/extension-link';
+import ListKeymap from '@tiptap/extension-list-keymap';
 import StarterKit from '@tiptap/starter-kit';
 import { common, createLowlight } from 'lowlight';
 
@@ -18,5 +20,10 @@ export const editorExtensions = [
   ImageWithPaste.configure({
     inline: false,
   }),
+  Link.configure({
+    autolink: true,
+    openOnClick: true,
+  }),
+  ListKeymap,
   DateReference,
 ];

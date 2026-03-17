@@ -21,7 +21,7 @@
   --color-input-text: #1a1a1a;
   --color-backdrop: rgba(0, 0, 0, 0.4);
   --color-highlight: #fef3cd;
-  --color-link: #2563eb;
+  --color-link: #78716c;
 }
 
 [data-theme="dark"] {
@@ -46,7 +46,7 @@
   --color-input-text: #e5e5e5;
   --color-backdrop: rgba(0, 0, 0, 0.6);
   --color-highlight: #451a03;
-  --color-link: #60a5fa;
+  --color-link: #a8a29e;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -72,6 +72,6 @@
     --color-input-text: #e5e5e5;
     --color-backdrop: rgba(0, 0, 0, 0.6);
     --color-highlight: #451a03;
-    --color-link: #60a5fa;
+    --color-link: #a8a29e;
   }
 }

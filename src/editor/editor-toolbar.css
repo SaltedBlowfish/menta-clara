@@ -1,0 +1,41 @@
+.editor-toolbar {
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  flex: 0 0 auto;
+  gap: 2px;
+  overflow-x: auto;
+  padding: 4px 8px;
+}
+
+.editor-toolbar-divider {
+  background: var(--color-border);
+  height: 20px;
+  margin: 0 4px;
+  width: 1px;
+}
+
+.editor-toolbar button {
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  height: 28px;
+  justify-content: center;
+  min-width: 28px;
+  padding: 0 6px;
+}
+
+.editor-toolbar button:hover {
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+.editor-toolbar button.is-active {
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+}

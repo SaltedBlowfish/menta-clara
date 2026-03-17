@@ -2,6 +2,7 @@ import type { JSONContent } from '@tiptap/react';
 
 import { EditorContent } from '@tiptap/react';
 
+import { EditorToolbar } from './editor-toolbar';
 import { useEditorConfig } from './use-editor-config';
 
 interface NoteEditorProps {
@@ -18,5 +19,10 @@ export function NoteEditor(props: NoteEditorProps) {
     return null;
   }
 
-  return <EditorContent editor={editor} />;
+  return (
+    <>
+      <EditorToolbar editor={editor} />
+      <EditorContent editor={editor} />
+    </>
+  );
 }

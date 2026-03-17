@@ -37,8 +37,14 @@ describe('NoteEditor', () => {
   });
 
   it('renders EditorContent when editor is ready', () => {
+    const chainable = new Proxy({} as Record<string, unknown>, {
+      get: (_, prop) => prop === 'run' ? vi.fn() : () => chainable,
+    });
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- mock editor for render test
-    mockUseEditorConfig.mockReturnValue(Object.create(null));
+    mockUseEditorConfig.mockReturnValue({
+      chain: () => chainable,
+      isActive: () => false,
+    } as never);
     render(<NoteEditor content={null} onUpdate={vi.fn()} />);
     expect(screen.getByTestId('editor-content')).toBeInTheDocument();
   });
