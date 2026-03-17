@@ -1,0 +1,9 @@
+.date-reference {
+  color: var(--color-link);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.date-reference:hover {
+  text-decoration-thickness: 2px;
+}

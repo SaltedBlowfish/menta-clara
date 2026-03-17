@@ -2,6 +2,10 @@ import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import StarterKit from '@tiptap/starter-kit';
 import { common, createLowlight } from 'lowlight';
 
+import './date-reference.css';
+import { DateReference } from './date-reference';
+import { ImageWithPaste } from './image-paste';
+
 const lowlight = createLowlight(common);
 
 export const editorExtensions = [
@@ -11,4 +15,8 @@ export const editorExtensions = [
   CodeBlockLowlight.configure({
     lowlight,
   }),
+  ImageWithPaste.configure({
+    inline: false,
+  }),
+  DateReference,
 ];
