@@ -96,7 +96,7 @@ describe('useNote', () => {
     }));
   });
 
-  it('deletes note when content is empty', async () => {
+  it('saves empty content as a record instead of deleting', async () => {
     store.set('current', {
       content: NON_EMPTY_CONTENT,
       id: 'current',
@@ -104,9 +104,14 @@ describe('useNote', () => {
     });
     const { result } = renderHook(() => useNote());
     await flush();
+    vi.mocked(dbCache.putRecord).mockClear();
 
     act(() => { result.current.saveContent(EMPTY_CONTENT); });
 
-    expect(dbCache.deleteRecord).toHaveBeenCalledWith('current');
+    expect(dbCache.putRecord).toHaveBeenCalledWith(expect.objectContaining({
+      content: EMPTY_CONTENT,
+      id: 'current',
+    }));
+    expect(dbCache.deleteRecord).not.toHaveBeenCalled();
   });
 });

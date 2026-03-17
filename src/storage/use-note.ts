@@ -13,9 +13,6 @@ function isNote(value: unknown): value is Note {
 function isEmptyContent(content: JSONContent): boolean {
   const nodes = content.content;
   if (!nodes || nodes.length === 0) return true;
-  // Only empty if every node is a blank paragraph (no text, no other node types).
-  // Headings, lists, blockquotes etc. are never considered empty — even without
-  // text — because their presence means the user intentionally created them.
   return nodes.every((node) =>
     node.type === 'paragraph' && (!node.content || node.content.length === 0),
   );
@@ -39,12 +36,22 @@ export function useNote(noteId = 'current'): UseNoteResult {
   const content = isNote(raw) ? raw.content : null;
 
   const saveContent = useCallback((newContent: JSONContent) => {
-    if (isEmptyContent(newContent)) {
-      deleteRecord(noteId);
-    } else {
-      putRecord({ content: newContent, id: noteId, updatedAt: Date.now() });
-    }
+    // Always save, even if empty. Deleting notes on keystroke causes the
+    // editor to unmount via the carry-over flow. Cleanup of genuinely
+    // abandoned empty notes happens on navigation instead.
+    putRecord({ content: newContent, id: noteId, updatedAt: Date.now() });
   }, [noteId]);
 
   return { content, error: null, loading, saveContent };
+}
+
+/**
+ * Delete a note if its content is empty. Call this on navigation
+ * (e.g. when the user switches to a different day) — never during typing.
+ */
+export function cleanupIfEmpty(noteId: string): void {
+  const raw = getRecord(noteId);
+  if (isNote(raw) && isEmptyContent(raw.content)) {
+    deleteRecord(noteId);
+  }
 }
