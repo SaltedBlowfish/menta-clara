@@ -9,8 +9,7 @@ import { DailyPane } from '../daily/daily-pane';
 import { handleExport, handleImport } from '../export/export-actions';
 import { Pane } from '../layout/pane';
 import { SplitPane } from '../layout/split-pane';
-import { PrivacyInfo } from '../onboarding/privacy-dialog';
-import { WelcomeDialog } from '../onboarding/welcome-dialog';
+import { AboutDialog } from '../onboarding/about-dialog';
 import { LiveRegion } from '../shared/live-region';
 import { ShortcutHints } from '../shared/shortcut-hints';
 import { Tooltip } from '../shared/tooltip';
@@ -139,7 +138,7 @@ export function App() {
         </button>
       </Tooltip>
       <ThemeToggle />
-      <PrivacyInfo />
+      <AboutDialog />
     </>
   );
 
@@ -165,7 +164,6 @@ export function App() {
         <ShortcutHints context={focusedPane} />
       </div>
       <LiveRegion message={announcement} />
-      <WelcomeDialog />
     </ActiveNoteContext.Provider>
   );
 }
