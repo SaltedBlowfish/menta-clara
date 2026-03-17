@@ -1,5 +1,6 @@
 import './daily-pane.css';
 import type { JSONContent } from '@tiptap/react';
+import { useCallback } from 'react';
 
 import { StorageWarning } from '../app/storage-warning';
 import { NoteEditor } from '../editor/editor';
@@ -14,11 +15,18 @@ export function DailyPane(props: DailyPaneProps) {
   const { date, defaultContent } = props;
   const { content, dateLabel, error, loading, noteId, saveContent } = useDailyNote(date, defaultContent);
 
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      e.preventDefault();
+      e.currentTarget.querySelector<HTMLElement>('.tiptap')?.focus();
+    }
+  }, []);
+
   return (
     <div className="daily-pane">
       <span className="section-title">Daily Note &rsaquo; {dateLabel}</span>
       {loading ? null : (
-        <div className="daily-pane-editor">
+        <div className="daily-pane-editor" onMouseDown={handleMouseDown}>
           <NoteEditor content={content} noteId={noteId} onUpdate={saveContent} />
         </div>
       )}
