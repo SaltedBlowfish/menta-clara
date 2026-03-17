@@ -73,9 +73,7 @@ export function App() {
     {
       handler: () => {
         document
-          .querySelector<HTMLElement>(
-            '#right-pane button, #right-pane [contenteditable="true"]',
-          )
+          .querySelector<HTMLElement>('#right-pane .tiptap')
           ?.focus();
       },
       key: ']',
