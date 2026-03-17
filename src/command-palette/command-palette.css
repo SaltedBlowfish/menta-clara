@@ -1,0 +1,72 @@
+.palette-backdrop {
+  animation: palette-fade-in 150ms ease;
+  background: var(--color-backdrop);
+  inset: 0;
+  position: fixed;
+  z-index: 100;
+}
+
+.palette-surface {
+  animation: palette-scale-in 150ms ease;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+  left: 50%;
+  max-width: 560px;
+  position: fixed;
+  top: 20vh;
+  transform: translateX(-50%);
+  width: calc(100% - 64px);
+  z-index: 101;
+}
+
+.palette-input-wrapper {
+  position: relative;
+}
+
+.palette-search-icon {
+  color: var(--color-text-secondary);
+  left: 12px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.palette-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 16px;
+  height: 48px;
+  outline: none;
+  padding: 0 16px 0 40px;
+  width: 100%;
+}
+
+.palette-hint {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  padding: 8px 16px;
+}
+
+@keyframes palette-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes palette-scale-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}

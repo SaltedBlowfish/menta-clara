@@ -1,9 +1,10 @@
-import { format } from 'date-fns';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { format, parseISO } from 'date-fns';
+import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 
 import './app.css';
 import { type ActiveNote, ActiveNoteContext } from './active-note-context';
 import { CalendarSection } from '../calendar/calendar-section';
+import { type CommandPaletteHandle, CommandPalette } from '../command-palette/command-palette';
 import { DailyPane } from '../daily/daily-pane';
 import { SplitPane } from '../layout/split-pane';
 import { PermanentSection } from '../permanent/permanent-section';
@@ -13,10 +14,13 @@ import { ThemeToggle } from '../theme/theme-toggle';
 import { WeeklySection } from '../weekly/weekly-section';
 import { WorkspaceContext } from '../workspace/workspace-context';
 
+const EMPTY_COMMANDS: ReadonlyArray<never> = [];
+
 export function App() {
   const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
   const [announcement, setAnnouncement] = useState('');
   const { activeWorkspaceId } = useContext(WorkspaceContext);
+  const paletteRef = useRef<CommandPaletteHandle>(null);
 
   const workspaceName =
     activeWorkspaceId === 'personal' ? 'Personal' : activeWorkspaceId;
@@ -75,7 +79,8 @@ export function App() {
     },
     {
       handler: () => {
-        // Phase 3 Plan 02: CMD+K search will be wired here
+        paletteRef.current?.open();
+        setAnnouncement('Command palette opened');
       },
       key: 'k',
       meta: true,
@@ -83,6 +88,10 @@ export function App() {
   ], []);
 
   useKeyboardShortcuts(shortcuts);
+
+  const handleNavigateDaily = useCallback((dateStr: string) => {
+    setSelectedDate(parseISO(dateStr));
+  }, []);
 
   return (
     <>
@@ -115,6 +124,12 @@ export function App() {
           }
         />
         <LiveRegion message={announcement} />
+        <CommandPalette
+          commands={EMPTY_COMMANDS}
+          onAnnounce={setAnnouncement}
+          onNavigateDaily={handleNavigateDaily}
+          ref={paletteRef}
+        />
       </ActiveNoteContext.Provider>
     </>
   );
