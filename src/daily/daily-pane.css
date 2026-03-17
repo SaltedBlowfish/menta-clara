@@ -20,6 +20,22 @@
   font-weight: 400;
 }
 
+.back-to-today {
+  background: none;
+  border: none;
+  color: var(--color-link);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 0;
+  text-align: left;
+  text-decoration: none;
+}
+
+.back-to-today:hover {
+  text-decoration: underline;
+}
+
 .daily-pane-editor {
   cursor: text;
   flex: 1;

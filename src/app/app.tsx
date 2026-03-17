@@ -1,7 +1,8 @@
 import { format } from 'date-fns';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 
 import './app.css';
+import { type ActiveNote, ActiveNoteContext } from './active-note-context';
 import { CalendarSection } from '../calendar/calendar-section';
 import { DailyPane } from '../daily/daily-pane';
 import { SplitPane } from '../layout/split-pane';
@@ -10,15 +11,48 @@ import { LiveRegion } from '../shared/live-region';
 import { useKeyboardShortcuts } from '../shared/use-keyboard-shortcuts';
 import { ThemeToggle } from '../theme/theme-toggle';
 import { WeeklySection } from '../weekly/weekly-section';
+import { WorkspaceContext } from '../workspace/workspace-context';
 
 export function App() {
   const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
   const [announcement, setAnnouncement] = useState('');
+  const { activeWorkspaceId } = useContext(WorkspaceContext);
+
+  const workspaceName =
+    activeWorkspaceId === 'personal' ? 'Personal' : activeWorkspaceId;
+
+  const todayNoteId = `daily:${format(new Date(), 'yyyy-MM-dd')}`;
+  const [activeNote, setActiveNote] = useState<ActiveNote>({
+    id: todayNoteId,
+    type: 'daily',
+  });
+
+  const navigateToNote = useCallback((note: ActiveNote) => {
+    setActiveNote(note);
+  }, []);
+
+  const returnToToday = useCallback(() => {
+    const today = new Date();
+    setActiveNote({
+      id: `daily:${format(today, 'yyyy-MM-dd')}`,
+      type: 'daily',
+    });
+    setSelectedDate(today);
+  }, []);
+
+  const activeNoteValue = useMemo(
+    () => ({ activeNote, navigateToNote, returnToToday }),
+    [activeNote, navigateToNote, returnToToday],
+  );
 
   const handleSelectDay = useCallback((date: Date) => {
     setSelectedDate(date);
     setAnnouncement(`Viewing ${format(date, 'MMMM d, yyyy')}`);
-  }, []);
+    navigateToNote({
+      id: `daily:${format(date, 'yyyy-MM-dd')}`,
+      type: 'daily',
+    });
+  }, [navigateToNote]);
 
   const shortcuts = useMemo(() => [
     {
@@ -39,38 +73,49 @@ export function App() {
       key: ']',
       meta: true,
     },
-    // Phase 3: CMD+K for search, CMD+W for workspace switching
+    {
+      handler: () => {
+        // Phase 3 Plan 02: CMD+K search will be wired here
+      },
+      key: 'k',
+      meta: true,
+    },
   ], []);
 
   useKeyboardShortcuts(shortcuts);
 
   return (
     <>
-      <SplitPane
-        left={<DailyPane date={selectedDate} />}
-        right={
-          <div className="right-pane-layout">
-            <div className="right-pane-toolbar">
-              <ThemeToggle />
-            </div>
-            <div className="right-pane-sections">
-              <div className="right-pane-section">
-                <WeeklySection date={selectedDate} />
+      <span className="workspace-label" aria-label="Current workspace">
+        {workspaceName}
+      </span>
+      <ActiveNoteContext.Provider value={activeNoteValue}>
+        <SplitPane
+          left={<DailyPane activeNote={activeNote} date={selectedDate} />}
+          right={
+            <div className="right-pane-layout">
+              <div className="right-pane-toolbar">
+                <ThemeToggle />
               </div>
-              <div className="right-pane-section">
-                <PermanentSection />
+              <div className="right-pane-sections">
+                <div className="right-pane-section">
+                  <WeeklySection date={selectedDate} />
+                </div>
+                <div className="right-pane-section">
+                  <PermanentSection />
+                </div>
+              </div>
+              <div className="right-pane-calendar">
+                <CalendarSection
+                  onSelectDay={handleSelectDay}
+                  selectedDate={selectedDate}
+                />
               </div>
             </div>
-            <div className="right-pane-calendar">
-              <CalendarSection
-                onSelectDay={handleSelectDay}
-                selectedDate={selectedDate}
-              />
-            </div>
-          </div>
-        }
-      />
-      <LiveRegion message={announcement} />
+          }
+        />
+        <LiveRegion message={announcement} />
+      </ActiveNoteContext.Provider>
     </>
   );
 }

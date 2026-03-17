@@ -101,6 +101,14 @@ body {
   transform: translateX(-50%);
 }
 
+/* Workspace label */
+.workspace-label {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  padding: 8px 16px 0;
+}
+
 /* Right pane layout */
 .right-pane-layout {
   display: flex;

@@ -1,17 +1,21 @@
 import './daily-pane.css';
 import { useCallback } from 'react';
 
+import { type ActiveNote } from '../app/active-note-context';
+import { useActiveNote } from '../app/use-active-note';
 import { StorageWarning } from '../app/storage-warning';
 import { NoteEditor } from '../editor/editor';
 import { useDailyNote } from './use-daily-note';
 
 interface DailyPaneProps {
+  activeNote: ActiveNote;
   date: Date;
 }
 
 export function DailyPane(props: DailyPaneProps) {
   const { date } = props;
   const { content, dateLabel, error, loading, saveContent } = useDailyNote(date);
+  const { isViewingToday, returnToToday } = useActiveNote();
 
   const handleEditorAreaClick = useCallback((e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -25,6 +29,11 @@ export function DailyPane(props: DailyPaneProps) {
       <div className="daily-pane-header">
         <span className="section-title">Daily Note</span>
         <span className="daily-pane-date">{dateLabel}</span>
+        {!isViewingToday ? (
+          <button className="back-to-today" onClick={returnToToday} type="button">
+            &lt; Back to today
+          </button>
+        ) : null}
       </div>
       {loading ? null : (
         <div className="daily-pane-editor" onClick={handleEditorAreaClick} role="presentation">
