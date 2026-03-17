@@ -21,14 +21,15 @@ export const ImageWithPaste = Image.extend({
             const items = event.clipboardData?.items;
             if (!items) return false;
 
-            for (const item of Array.from(items)) {
+            for (const item of Array.from(items) as DataTransferItem[]) {
               if (item.type.startsWith('image/')) {
                 const file = item.getAsFile();
                 if (!file) continue;
+                const mimeType = item.type;
                 event.preventDefault();
 
                 void (async () => {
-                  const imageId = await storeImage(file, item.type);
+                  const imageId = await storeImage(file, mimeType);
                   const url = URL.createObjectURL(file);
                   const node = imageType.create({
                     'data-image-id': imageId,

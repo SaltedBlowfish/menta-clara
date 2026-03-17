@@ -1,6 +1,8 @@
-import { mergeAttributes, Node } from '@tiptap/core';
+import { mergeAttributes, Node, nodeInputRule } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { format, isValid, parseISO } from 'date-fns';
+
+const DATE_REFERENCE_REGEX = /\[\[(\d{4}-\d{2}-\d{2})\]\]$/;
 
 export const DateReference = Node.create({
   name: 'dateReference',
@@ -14,16 +16,15 @@ export const DateReference = Node.create({
 
   addInputRules() {
     return [
-      {
-        find: /\[\[(\d{4}-\d{2}-\d{2})\]\]$/,
-        handler: ({ match, range, state }) => {
+      nodeInputRule({
+        find: DATE_REFERENCE_REGEX,
+        getAttributes: (match) => {
           const dateStr = match[1];
-          if (!dateStr || !isValid(parseISO(dateStr))) return;
-          const node = this.type.create({ date: dateStr });
-          const tr = state.tr.replaceWith(range.from, range.to, node);
-          state.tr = tr;
+          if (!dateStr || !isValid(parseISO(dateStr))) return false;
+          return { date: dateStr };
         },
-      },
+        type: this.type,
+      }),
     ];
   },
 
@@ -52,7 +53,7 @@ export const DateReference = Node.create({
       new Plugin({
         key: new PluginKey('dateReferenceClick'),
         props: {
-          handleClick: (view, _pos, event) => {
+          handleClick: (_view, _pos, event) => {
             const target = event.target;
             if (!(target instanceof HTMLElement)) return false;
             const dateRef = target.closest<HTMLElement>('[data-date-ref]');
