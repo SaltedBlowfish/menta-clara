@@ -49,11 +49,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Templates
 
-- [ ] **TMPL-01**: User can save the current note content as a named template
-- [ ] **TMPL-02**: User can load a template into the current note
-- [ ] **TMPL-03**: User can set a default daily template for weekdays
-- [ ] **TMPL-04**: User can set a default daily template for weekends
-- [ ] **TMPL-05**: User can set a default weekly template
+- [x] **TMPL-01**: User can save the current note content as a named template
+- [x] **TMPL-02**: User can load a template into the current note
+- [x] **TMPL-03**: User can set a default daily template for weekdays
+- [x] **TMPL-04**: User can set a default daily template for weekends
+- [x] **TMPL-05**: User can set a default weekly template
 
 ### Workspaces
 
@@ -174,11 +174,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | A11Y-03     | Phase 2 | Complete |
 | A11Y-04     | Phase 2 | Complete |
 | A11Y-05     | Phase 2 | Complete |
-| TMPL-01     | Phase 3 | Pending |
-| TMPL-02     | Phase 3 | Pending |
-| TMPL-03     | Phase 3 | Pending |
-| TMPL-04     | Phase 3 | Pending |
-| TMPL-05     | Phase 3 | Pending |
+| TMPL-01     | Phase 3 | Complete |
+| TMPL-02     | Phase 3 | Complete |
+| TMPL-03     | Phase 3 | Complete |
+| TMPL-04     | Phase 3 | Complete |
+| TMPL-05     | Phase 3 | Complete |
 | WKSP-01     | Phase 3 | Complete |
 | WKSP-02     | Phase 3 | Complete |
 | WKSP-03     | Phase 3 | Complete |
