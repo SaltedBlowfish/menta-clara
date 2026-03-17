@@ -57,9 +57,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Workspaces
 
-- [ ] **WKSP-01**: User can create named workspaces from a menu at the top left
-- [ ] **WKSP-02**: User can switch between workspaces; content never crosses workspace boundaries
-- [ ] **WKSP-03**: Each workspace has its own daily notes, weekly notes, permanent notes, templates, and settings
+- [x] **WKSP-01**: User can create named workspaces from a menu at the top left
+- [x] **WKSP-02**: User can switch between workspaces; content never crosses workspace boundaries
+- [x] **WKSP-03**: Each workspace has its own daily notes, weekly notes, permanent notes, templates, and settings
 
 ### Search
 
@@ -179,9 +179,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TMPL-03     | Phase 3 | Pending |
 | TMPL-04     | Phase 3 | Pending |
 | TMPL-05     | Phase 3 | Pending |
-| WKSP-01     | Phase 3 | Pending |
-| WKSP-02     | Phase 3 | Pending |
-| WKSP-03     | Phase 3 | Pending |
+| WKSP-01     | Phase 3 | Complete |
+| WKSP-02     | Phase 3 | Complete |
+| WKSP-03     | Phase 3 | Complete |
 | SRCH-01     | Phase 3 | Pending |
 | SRCH-02     | Phase 3 | Pending |
 | SRCH-03     | Phase 3 | Pending |
