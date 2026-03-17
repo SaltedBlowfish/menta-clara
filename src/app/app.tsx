@@ -1,4 +1,4 @@
-import { format, isWeekend, parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { getISOWeek } from 'date-fns/getISOWeek';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -53,6 +53,13 @@ export function App() {
     });
   }, [navigateToNote]);
 
+  const handleSelectDayFromStack = useCallback((dateStr: string) => {
+    const date = parseISO(dateStr);
+    setSelectedDate(date);
+    setAnnouncement(`Viewing ${format(date, 'MMMM d, yyyy')}`);
+    navigateToNote({ id: `daily:${dateStr}`, type: 'daily' });
+  }, [navigateToNote]);
+
   const shortcuts = useMemo(() => [
     {
       handler: () => {
@@ -87,9 +94,6 @@ export function App() {
     return () => window.removeEventListener('date-reference-click', handler);
   }, [navigateToNote]);
 
-  const dailySlot = isWeekend(selectedDate) ? 'weekend' : 'weekday';
-  const dailyDefaultId = defaults[dailySlot];
-  const dailyDefault = dailyDefaultId ? getTemplateContent(dailyDefaultId) : null;
   const weeklyDefault = defaults.weekly ? getTemplateContent(defaults.weekly) : null;
 
   const weekLabel = `Week ${String(getISOWeek(selectedDate))}`;
@@ -97,7 +101,7 @@ export function App() {
   return (
     <ActiveNoteContext.Provider value={activeNoteValue}>
       <SplitPane
-        left={<DailyPane date={selectedDate} {...(dailyDefault ? { defaultContent: dailyDefault } : {})} />}
+        left={<DailyPane date={selectedDate} onSelectDate={handleSelectDayFromStack} />}
         right={
           <div className="right-pane-layout">
             <div className="right-pane-toolbar">

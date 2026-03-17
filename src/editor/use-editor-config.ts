@@ -26,10 +26,20 @@ export function useEditorConfig(options: UseEditorConfigOptions) {
     },
   });
 
+  const pendingNoteRef = useRef<string | undefined>(undefined);
+
+  // When noteId changes, mark it as pending so we know to apply content when it arrives
+  useEffect(() => {
+    if (noteId !== appliedNoteRef.current) {
+      pendingNoteRef.current = noteId;
+    }
+  }, [noteId]);
+
   useEffect(() => {
     if (!editor || content === null) return;
-    if (appliedNoteRef.current !== noteId) {
+    if (pendingNoteRef.current !== undefined) {
       appliedNoteRef.current = noteId;
+      pendingNoteRef.current = undefined;
       editor.commands.setContent(content);
     }
   }, [editor, content, noteId]);

@@ -4,11 +4,24 @@
   height: 100%;
 }
 
-.daily-pane > .section-title {
+.daily-pane-header {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  height: 40px;
+  padding: 0 8px 0 0;
+}
+
+.daily-pane-header > .section-title {
+  flex: 1;
   align-items: center;
   display: flex;
   height: 40px;
   padding: 0 16px;
+}
+
+.daily-stack-btn {
+  flex: 0 0 auto;
 }
 
 .daily-pane-editor {
