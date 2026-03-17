@@ -1,0 +1,81 @@
+dialog.welcome-dialog {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  color: var(--color-text);
+  max-width: 460px;
+  padding: 32px;
+  width: calc(100vw - 32px);
+}
+
+dialog.welcome-dialog::backdrop {
+  background: var(--color-backdrop);
+}
+
+.welcome-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.welcome-body {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.welcome-body p + p {
+  margin-top: 12px;
+}
+
+.welcome-privacy {
+  background: var(--color-bg-secondary);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 16px;
+  padding: 12px 16px;
+}
+
+.welcome-privacy p + p {
+  margin-top: 8px;
+}
+
+.welcome-muted {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.welcome-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.welcome-btn {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+}
+
+.welcome-btn-secondary {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.welcome-btn-secondary:hover {
+  background: var(--color-bg-secondary);
+}
+
+.welcome-btn-primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.welcome-btn-primary:hover {
+  opacity: 0.9;
+}

@@ -4,17 +4,19 @@ import { getISOWeek } from 'date-fns/getISOWeek';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import './app.css';
-import { type ActiveNote, ActiveNoteContext } from './active-note-context';
 import { CalendarSection } from '../calendar/calendar-section';
 import { DailyPane } from '../daily/daily-pane';
 import { handleExport, handleImport } from '../export/export-actions';
 import { Pane } from '../layout/pane';
 import { SplitPane } from '../layout/split-pane';
+import { PrivacyInfo } from '../onboarding/privacy-dialog';
+import { WelcomeDialog } from '../onboarding/welcome-dialog';
 import { LiveRegion } from '../shared/live-region';
 import { Tooltip } from '../shared/tooltip';
 import { useKeyboardShortcuts } from '../shared/use-keyboard-shortcuts';
 import { ThemeToggle } from '../theme/theme-toggle';
 import { WeeklySection } from '../weekly/weekly-section';
+import { type ActiveNote, ActiveNoteContext } from './active-note-context';
 
 export function App() {
   const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
@@ -123,6 +125,7 @@ export function App() {
         </button>
       </Tooltip>
       <ThemeToggle />
+      <PrivacyInfo />
     </>
   );
 
@@ -145,6 +148,7 @@ export function App() {
         }
       />
       <LiveRegion message={announcement} />
+      <WelcomeDialog />
     </ActiveNoteContext.Provider>
   );
 }
