@@ -13,12 +13,12 @@ function isNote(value: unknown): value is Note {
 function isEmptyContent(content: JSONContent): boolean {
   const nodes = content.content;
   if (!nodes || nodes.length === 0) return true;
-  return nodes.every((node) => {
-    if (node.type === 'paragraph' || node.type === 'heading') {
-      return !node.content || node.content.length === 0;
-    }
-    return false;
-  });
+  // Only empty if every node is a blank paragraph (no text, no other node types).
+  // Headings, lists, blockquotes etc. are never considered empty — even without
+  // text — because their presence means the user intentionally created them.
+  return nodes.every((node) =>
+    node.type === 'paragraph' && (!node.content || node.content.length === 0),
+  );
 }
 
 interface UseNoteResult {

@@ -16,6 +16,7 @@ export function useEditorConfig(options: UseEditorConfigOptions) {
   const onUpdateRef = useRef(onUpdate);
   onUpdateRef.current = onUpdate;
   const appliedNoteRef = useRef<string | undefined>(undefined);
+  const appliedContentRef = useRef<JSONContent | null>(null);
 
   const editor = useEditor({
     content: '',
@@ -26,9 +27,17 @@ export function useEditorConfig(options: UseEditorConfigOptions) {
     },
   });
 
-  if (editor && content !== null && appliedNoteRef.current !== noteId) {
-    appliedNoteRef.current = noteId;
-    editor.commands.setContent(content);
+  if (editor && content !== null) {
+    const noteChanged = appliedNoteRef.current !== noteId;
+    const contentChanged = appliedContentRef.current !== content;
+    // Always apply on note change. For same note, only apply if the editor
+    // is not focused — this means the change came from an external source
+    // (e.g. sample data loaded) rather than the user typing.
+    if (noteChanged || (contentChanged && !editor.isFocused)) {
+      appliedNoteRef.current = noteId;
+      appliedContentRef.current = content;
+      editor.commands.setContent(content);
+    }
   }
 
   return editor;
