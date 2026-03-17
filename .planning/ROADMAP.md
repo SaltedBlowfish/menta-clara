@@ -73,13 +73,15 @@ Plans:
 4. User can paste an image from clipboard and see it render inline in the note, with the image stored locally in the browser
 5. User can type [[2026-03-15]] and see it render as a clickable link that navigates to that day's note; user can export all data as a markdown zip and import markdown files to populate notes
 
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
 
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [ ] 03-01-PLAN.md -- Foundation: DB migration (images store), workspace context provider, navigation model (ActiveNote state, back-to-today)
+- [ ] 03-02-PLAN.md -- Command palette (CMD+K) with full-text search, result highlighting, keyboard navigation, command registry
+- [ ] 03-03-PLAN.md -- Editor extensions (image paste, date references) and note browser refactor (permanent notes list replaces dropdown)
+- [ ] 03-04-PLAN.md -- Template CRUD (save, rename, delete, defaults) and workspace CRUD, all via palette commands
+- [ ] 03-05-PLAN.md -- Data export/import (markdown zip with fflate), final wiring, end-to-end verification checkpoint
 
 ## Progress
 
@@ -90,4 +92,4 @@ Phases execute in numeric order: 1 -> 2 -> 3
 | -------------------------- | -------------- | ----------- | --------- |
 | 1. Foundation and Editor   | 3/3            | Complete    | 2026-03-15 |
 | 2. Core Product Experience | 4/4            | Complete    | 2026-03-16 |
-| 3. Power Features          | 0/?            | Not started | -         |
+| 3. Power Features          | 0/5            | Not started | -         |
