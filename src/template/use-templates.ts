@@ -1,8 +1,9 @@
 import type { JSONContent } from '@tiptap/react';
-import { useCallback, useEffect, useState } from 'react';
+
+import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
 import { usePersistedState } from '../shared/use-persisted-state';
-import { getDatabase, NOTES_STORE } from '../storage/database';
+import { deleteRecord, getRecord, getRangeRecords, hasRecord, putRecord, requestLoad, requestRangeLoad, subscribe } from '../storage/db-cache';
 
 export interface Template {
   content: JSONContent;
@@ -20,42 +21,34 @@ function isTemplateRecord(v: unknown): v is Template & { updatedAt: number } {
   return typeof v === 'object' && v !== null && 'id' in v && 'content' in v && 'name' in v;
 }
 
+const RANGE_PREFIX = 'template:';
+
 export function useTemplates() {
-  const [templates, setTemplates] = useState<ReadonlyArray<Template>>([]);
   const [defaults, setDefaults] = usePersistedState<TemplateDefaults>(
     'setting:templateDefaults',
     { weekday: null, weekend: null, weekly: null },
   );
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      const db = await getDatabase();
-      const records: unknown[] = await db.getAll(NOTES_STORE, IDBKeyRange.bound('template:', 'template:\uffff'));
-      if (!cancelled) {
-        setTemplates(records.filter(isTemplateRecord).map((r) => ({ content: r.content, id: r.id, name: r.name })));
-      }
-    }
-    void load();
-    return () => { cancelled = true; };
-  }, []);
+  const rangeRecords = useSyncExternalStore(subscribe, () => getRangeRecords(RANGE_PREFIX));
+  if (rangeRecords === undefined) {
+    requestRangeLoad(RANGE_PREFIX);
+  }
+
+  const templates = useMemo<ReadonlyArray<Template>>(() => {
+    if (!rangeRecords) return [];
+    return rangeRecords
+      .filter(isTemplateRecord)
+      .map((r) => ({ content: r.content, id: r.id, name: r.name }));
+  }, [rangeRecords]);
 
   const saveTemplate = useCallback((name: string, content: JSONContent): string => {
     const id = `template:${crypto.randomUUID()}`;
-    void (async () => {
-      const db = await getDatabase();
-      await db.put(NOTES_STORE, { content, id, name, updatedAt: Date.now() });
-    })();
-    setTemplates((prev) => [...prev, { content, id, name }]);
+    putRecord({ content, id, name, updatedAt: Date.now() });
     return id;
   }, []);
 
   const deleteTemplate = useCallback((templateId: string) => {
-    void (async () => {
-      const db = await getDatabase();
-      await db.delete(NOTES_STORE, templateId);
-    })();
-    setTemplates((prev) => prev.filter((t) => t.id !== templateId));
+    deleteRecord(templateId);
     setDefaults({
       weekday: defaults.weekday === templateId ? null : defaults.weekday,
       weekend: defaults.weekend === templateId ? null : defaults.weekend,
@@ -64,13 +57,14 @@ export function useTemplates() {
   }, [defaults, setDefaults]);
 
   const renameTemplate = useCallback((templateId: string, newName: string) => {
-    setTemplates((prev) => prev.map((t) => (t.id === templateId ? { ...t, name: newName } : t)));
-    void (async () => {
-      const db = await getDatabase();
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- reading back DB record
-      const rec = (await db.get(NOTES_STORE, templateId)) as (Template & { updatedAt: number }) | undefined;
-      if (rec) await db.put(NOTES_STORE, { ...rec, name: newName, updatedAt: Date.now() });
-    })();
+    // Read current record from cache to preserve content
+    const raw = hasRecord(templateId) ? getRecord(templateId) : null;
+    if (isTemplateRecord(raw)) {
+      putRecord({ ...raw, name: newName, updatedAt: Date.now() });
+    } else {
+      // Not in cache yet — load then rename
+      requestLoad(templateId);
+    }
   }, []);
 
   const getTemplateContent = useCallback(

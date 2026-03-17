@@ -1,5 +1,6 @@
 import { format, parseISO } from 'date-fns';
 import { getISOWeek } from 'date-fns/getISOWeek';
+// eslint-disable-next-line no-restricted-imports -- DOM event subscription
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import './app.css';
@@ -7,18 +8,17 @@ import { type ActiveNote, ActiveNoteContext } from './active-note-context';
 import { CalendarSection } from '../calendar/calendar-section';
 import { DailyPane } from '../daily/daily-pane';
 import { handleExport, handleImport } from '../export/export-actions';
+import { Pane } from '../layout/pane';
 import { SplitPane } from '../layout/split-pane';
 import { LiveRegion } from '../shared/live-region';
+import { Tooltip } from '../shared/tooltip';
 import { useKeyboardShortcuts } from '../shared/use-keyboard-shortcuts';
-import { useTemplates } from '../template/use-templates';
 import { ThemeToggle } from '../theme/theme-toggle';
 import { WeeklySection } from '../weekly/weekly-section';
 
 export function App() {
   const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
   const [announcement, setAnnouncement] = useState('');
-
-  const { defaults, getTemplateContent } = useTemplates();
 
   const todayNoteId = `daily:${format(new Date(), 'yyyy-MM-dd')}`;
   const [activeNote, setActiveNote] = useState<ActiveNote>({
@@ -94,44 +94,46 @@ export function App() {
     return () => window.removeEventListener('date-reference-click', handler);
   }, [navigateToNote]);
 
-  const weeklyDefault = defaults.weekly ? getTemplateContent(defaults.weekly) : null;
-
   const weekLabel = `Week ${String(getISOWeek(selectedDate))}`;
+
+  const weeklyActions = (
+    <>
+      <Tooltip label="Import">
+        <button
+          aria-label="Import data"
+          className="toolbar-btn"
+          onClick={() => handleImport(setAnnouncement)}
+          type="button"
+        >
+          <svg fill="none" height="20" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 20 20" width="20">
+            <path d="M3 14v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 3v10M6 9l4 4 4-4" />
+          </svg>
+        </button>
+      </Tooltip>
+      <Tooltip label="Export">
+        <button
+          aria-label="Export data"
+          className="toolbar-btn"
+          onClick={() => handleExport(setAnnouncement)}
+          type="button"
+        >
+          <svg fill="none" height="20" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 20 20" width="20">
+            <path d="M3 14v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 13V3M6 7l4-4 4 4" />
+          </svg>
+        </button>
+      </Tooltip>
+      <ThemeToggle />
+    </>
+  );
 
   return (
     <ActiveNoteContext.Provider value={activeNoteValue}>
       <SplitPane
         left={<DailyPane date={selectedDate} onSelectDate={handleSelectDayFromStack} />}
         right={
-          <div className="right-pane-layout">
-            <div className="right-pane-toolbar">
-              <span className="section-title toolbar-title">Weekly Note &rsaquo; {weekLabel}</span>
-              <button
-                aria-label="Import data"
-                className="toolbar-btn"
-                onClick={() => handleImport(setAnnouncement)}
-                type="button"
-              >
-                <svg fill="none" height="20" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 20 20" width="20">
-                  <path d="M3 14v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 3v10M6 9l4 4 4-4" />
-                </svg>
-              </button>
-              <button
-                aria-label="Export data"
-                className="toolbar-btn"
-                onClick={() => handleExport(setAnnouncement)}
-                type="button"
-              >
-                <svg fill="none" height="20" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 20 20" width="20">
-                  <path d="M3 14v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2M10 13V3M6 7l4-4 4 4" />
-                </svg>
-              </button>
-              <ThemeToggle />
-            </div>
+          <Pane actions={weeklyActions} title={`Weekly Note \u203a ${weekLabel}`}>
             <div className="right-pane-sections">
-              <div className="right-pane-section">
-                <WeeklySection date={selectedDate} {...(weeklyDefault ? { defaultContent: weeklyDefault } : {})} />
-              </div>
+              <WeeklySection date={selectedDate} />
             </div>
             <div className="right-pane-calendar">
               <CalendarSection
@@ -139,7 +141,7 @@ export function App() {
                 selectedDate={selectedDate}
               />
             </div>
-          </div>
+          </Pane>
         }
       />
       <LiveRegion message={announcement} />

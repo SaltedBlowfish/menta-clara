@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
 import { usePersistedState } from '../shared/use-persisted-state';
 
@@ -10,38 +10,24 @@ function getSystemTheme(): Theme {
     : 'light';
 }
 
+const mql = window.matchMedia('(prefers-color-scheme: dark)');
+
+function subscribeToSystemTheme(cb: () => void) {
+  mql.addEventListener('change', cb);
+  return () => mql.removeEventListener('change', cb);
+}
+
 export function useTheme(): { theme: Theme; toggle: () => void } {
   const [preference, setPreference] = usePersistedState<Theme | null>(
     'setting:theme',
     null,
   );
 
-  const resolvedTheme: Theme = preference ?? getSystemTheme();
+  const systemTheme = useSyncExternalStore(subscribeToSystemTheme, getSystemTheme);
+  const resolvedTheme: Theme = preference ?? systemTheme;
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', resolvedTheme);
-  }, [resolvedTheme]);
-
-  useEffect(() => {
-    if (preference !== null) {
-      return;
-    }
-
-    const mql = window.matchMedia('(prefers-color-scheme: dark)');
-
-    function handleChange() {
-      document.documentElement.setAttribute(
-        'data-theme',
-        getSystemTheme(),
-      );
-    }
-
-    mql.addEventListener('change', handleChange);
-
-    return () => {
-      mql.removeEventListener('change', handleChange);
-    };
-  }, [preference]);
+  // Sync DOM attribute during render
+  document.documentElement.setAttribute('data-theme', resolvedTheme);
 
   const toggle = useCallback(() => {
     setPreference(resolvedTheme === 'light' ? 'dark' : 'light');

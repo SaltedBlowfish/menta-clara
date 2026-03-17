@@ -1,19 +1,20 @@
-import './weekly-section.css';
-import type { JSONContent } from '@tiptap/react';
 import { useCallback } from 'react';
 
 import { StorageWarning } from '../app/storage-warning';
 import { NoteEditor } from '../editor/editor';
+import { PaneContent } from '../layout/pane';
+import { CarryOverPrompt } from '../shared/carry-over-prompt';
+import { useCarryOver } from '../shared/use-carry-over';
 import { useWeeklyNote } from './use-weekly-note';
 
 interface WeeklySectionProps {
   date: Date;
-  defaultContent?: JSONContent;
 }
 
-export function WeeklySection({ date, defaultContent }: WeeklySectionProps) {
-  const { content, error, loading, saveContent, weekNoteId } =
-    useWeeklyNote(date, defaultContent);
+export function WeeklySection({ date }: WeeklySectionProps) {
+  const { content, error, isNew, loading, saveContent, weekNoteId } =
+    useWeeklyNote(date);
+  const { carryOver, handleCarryOver, handleStartBlank, resolvedContent } = useCarryOver(weekNoteId, isNew);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -22,13 +23,25 @@ export function WeeklySection({ date, defaultContent }: WeeklySectionProps) {
     }
   }, []);
 
+  const editorContent = isNew ? resolvedContent : content;
+  const showPrompt = isNew && carryOver === 'prompt';
+  const showEditor = !showPrompt && !loading && editorContent !== null;
+
   return (
     <>
-      <div className="weekly-editor-area" onMouseDown={handleMouseDown}>
-        {loading ? null : (
-          <NoteEditor content={content} noteId={weekNoteId} onUpdate={saveContent} />
-        )}
-      </div>
+      {showPrompt ? (
+        <CarryOverPrompt
+          label="last week's note"
+          onCarryOver={handleCarryOver}
+          onStartBlank={handleStartBlank}
+        />
+      ) : (
+        <PaneContent onMouseDown={handleMouseDown}>
+          {showEditor && (
+            <NoteEditor content={editorContent} noteId={weekNoteId} onUpdate={saveContent} />
+          )}
+        </PaneContent>
+      )}
       {error ? <StorageWarning message={error} /> : null}
     </>
   );

@@ -1,8 +1,22 @@
 .calendar-grid {
   display: grid;
   gap: 2px;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: auto repeat(7, 1fr);
   padding: 0 16px 8px;
+}
+
+.calendar-weeknumber-header {
+  width: 20px;
+}
+
+.calendar-weeknumber {
+  align-items: center;
+  color: var(--color-text-secondary);
+  display: flex;
+  font-size: 10px;
+  justify-content: center;
+  opacity: 0.6;
+  width: 20px;
 }
 .calendar-weekday {
   aspect-ratio: 1;

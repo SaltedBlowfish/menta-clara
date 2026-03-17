@@ -10,6 +10,7 @@ import {
   startOfMonth,
   subDays,
 } from 'date-fns';
+import { getISOWeek } from 'date-fns/getISOWeek';
 
 import { CalendarDay } from './calendar-day';
 
@@ -41,20 +42,32 @@ export function CalendarGrid({
   return (
     <nav aria-label="Calendar">
       <div className="calendar-grid">
+        <div className="calendar-weeknumber-header" />
         {WEEKDAYS.map((day) => (
           <div className="calendar-weekday" key={day}>{day}</div>
         ))}
-        {days.map((date) => (
-          <CalendarDay
-            date={date}
-            hasNote={daysWithNotes.has(format(date, 'yyyy-MM-dd'))}
-            isOtherMonth={!isSameMonth(date, displayedMonth)}
-            isSelected={isSameDay(date, selectedDate)}
-            isToday={isSameDay(date, today)}
-            key={date.toISOString()}
-            onSelect={onSelectDay}
-          />
-        ))}
+        {days.flatMap((date, i) => {
+          const cells = [];
+          if (i % 7 === 0) {
+            cells.push(
+              <div className="calendar-weeknumber" key={`w${i}`}>
+                {getISOWeek(date)}
+              </div>,
+            );
+          }
+          cells.push(
+            <CalendarDay
+              date={date}
+              hasNote={daysWithNotes.has(format(date, 'yyyy-MM-dd'))}
+              isOtherMonth={!isSameMonth(date, displayedMonth)}
+              isSelected={isSameDay(date, selectedDate)}
+              isToday={isSameDay(date, today)}
+              key={date.toISOString()}
+              onSelect={onSelectDay}
+            />,
+          );
+          return cells;
+        })}
       </div>
     </nav>
   );

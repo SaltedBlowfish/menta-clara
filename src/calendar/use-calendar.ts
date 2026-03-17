@@ -1,7 +1,7 @@
 import { addMonths, format, startOfMonth, subMonths } from 'date-fns';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 
-import { getDatabase, NOTES_STORE } from '../storage/database';
+import { getRangeRecords, requestRangeLoad, subscribe } from '../storage/db-cache';
 
 interface UseCalendarResult {
   daysWithNotes: ReadonlySet<string>;
@@ -11,49 +11,46 @@ interface UseCalendarResult {
   monthLabel: string;
 }
 
-async function fetchDaysWithNotes(month: Date): Promise<ReadonlySet<string>> {
-  const year = month.getFullYear();
-  const monthNum = month.getMonth() + 1;
-  const monthStr = `${String(year)}-${String(monthNum).padStart(2, '0')}`;
-  const db = await getDatabase();
-  const range = IDBKeyRange.bound(
-    `daily:${monthStr}-01`,
-    `daily:${monthStr}-31`,
-  );
-  const keys = await db.getAllKeys(NOTES_STORE, range);
-  const stringKeys = keys.map(String);
-  return new Set(stringKeys.map((key) => key.replace('daily:', '')));
-}
-
 export function useCalendar(selectedDate: Date): UseCalendarResult {
-  const [displayedMonth, setDisplayedMonth] = useState<Date>(
-    () => startOfMonth(selectedDate),
-  );
-  const [daysWithNotes, setDaysWithNotes] = useState<ReadonlySet<string>>(
-    () => new Set(),
-  );
+  const [monthOverride, setMonthOverride] = useState<Date | null>(null);
+  const prevSelectedRef = useRef(selectedDate);
 
-  useEffect(() => {
-    setDisplayedMonth(startOfMonth(selectedDate));
-  }, [selectedDate]);
+  // Reset override when selectedDate changes
+  if (prevSelectedRef.current !== selectedDate) {
+    prevSelectedRef.current = selectedDate;
+    if (monthOverride !== null) {
+      setMonthOverride(null);
+    }
+  }
 
-  useEffect(() => {
-    let cancelled = false;
+  const displayedMonth = monthOverride ?? startOfMonth(selectedDate);
 
-    void fetchDaysWithNotes(displayedMonth).then((dates) => {
-      if (!cancelled) setDaysWithNotes(dates);
-    });
+  const year = displayedMonth.getFullYear();
+  const monthNum = displayedMonth.getMonth() + 1;
+  const monthStr = `${String(year)}-${String(monthNum).padStart(2, '0')}`;
+  const rangePrefix = `daily:${monthStr}-`;
 
-    return () => { cancelled = true; };
-  }, [displayedMonth]);
+  const rangeRecords = useSyncExternalStore(subscribe, () => getRangeRecords(rangePrefix));
+  if (rangeRecords === undefined) {
+    requestRangeLoad(rangePrefix);
+  }
+
+  const daysWithNotes = useMemo<ReadonlySet<string>>(() => {
+    if (!rangeRecords) return new Set();
+    return new Set(
+      rangeRecords
+        .filter((r): r is { id: string } => typeof r === 'object' && r !== null && 'id' in r)
+        .map((r) => r.id.replace('daily:', '')),
+    );
+  }, [rangeRecords]);
 
   const goToNextMonth = useCallback(() => {
-    setDisplayedMonth((prev) => addMonths(prev, 1));
-  }, []);
+    setMonthOverride((prev) => addMonths(prev ?? startOfMonth(selectedDate), 1));
+  }, [selectedDate]);
 
   const goToPreviousMonth = useCallback(() => {
-    setDisplayedMonth((prev) => subMonths(prev, 1));
-  }, []);
+    setMonthOverride((prev) => subMonths(prev ?? startOfMonth(selectedDate), 1));
+  }, [selectedDate]);
 
   const monthLabel = format(displayedMonth, 'MMMM yyyy');
 

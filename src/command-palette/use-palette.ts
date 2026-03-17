@@ -1,6 +1,7 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useRef, useState } from 'react';
 
 import type { SearchResult } from '../search/search-notes';
+
 import { searchNotes } from '../search/search-notes';
 import { WorkspaceContext } from '../workspace/workspace-context';
 
@@ -19,24 +20,50 @@ export interface UsePaletteResult {
 
 export function usePalette(): UsePaletteResult {
   const [isOpen, setIsOpen] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValueState] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
   const [results, setResults] = useState<ReadonlyArray<SearchResult>>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const savedFocusRef = useRef<Element | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { activeWorkspaceId } = useContext(WorkspaceContext);
   const isCommandMode = inputValue.startsWith('>');
+
+  const setInputValue = useCallback((value: string) => {
+    setInputValueState(value);
+    clearTimeout(timerRef.current);
+
+    const isCmd = value.startsWith('>');
+    const query = value.trim();
+    if (isCmd || !query) {
+      setResults([]);
+      setSearchLoading(false);
+      return;
+    }
+
+    setSearchLoading(true);
+    timerRef.current = setTimeout(() => {
+      searchNotes(query, activeWorkspaceId).then((r) => {
+        setResults(r);
+        setActiveIndex(0);
+        setSearchLoading(false);
+      }).catch(() => {
+        setSearchLoading(false);
+      });
+    }, 200);
+  }, [activeWorkspaceId]);
 
   const open = useCallback(() => {
     savedFocusRef.current = document.activeElement;
     setIsOpen(true);
-    setInputValue('');
+    setInputValueState('');
     setActiveIndex(0);
     setResults([]);
   }, []);
 
   const close = useCallback(() => {
     setIsOpen(false);
+    clearTimeout(timerRef.current);
     const el = savedFocusRef.current;
     if (el instanceof HTMLElement) {
       el.focus();
@@ -55,29 +82,6 @@ export function usePalette(): UsePaletteResult {
     },
     [results.length],
   );
-
-  useEffect(() => {
-    if (!isOpen || isCommandMode) {
-      setResults([]);
-      return;
-    }
-    const query = inputValue.trim();
-    if (!query) {
-      setResults([]);
-      return;
-    }
-    setSearchLoading(true);
-    const timer = setTimeout(() => {
-      searchNotes(query, activeWorkspaceId).then((r) => {
-        setResults(r);
-        setActiveIndex(0);
-        setSearchLoading(false);
-      }).catch(() => {
-        setSearchLoading(false);
-      });
-    }, 200);
-    return () => clearTimeout(timer);
-  }, [inputValue, isOpen, isCommandMode, activeWorkspaceId]);
 
   return {
     activeIndex,

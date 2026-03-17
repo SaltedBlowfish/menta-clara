@@ -1,4 +1,5 @@
 import './theme-toggle.css';
+import { Tooltip } from '../shared/tooltip';
 import { useTheme } from './use-theme';
 
 function SunIcon() {
@@ -42,16 +43,18 @@ function MoonIcon() {
 export function ThemeToggle() {
   const { theme, toggle } = useTheme();
 
+  const label = theme === 'light' ? 'Dark mode' : 'Light mode';
+
   return (
-    <button
-      aria-label={
-        theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'
-      }
-      className="theme-toggle"
-      onClick={toggle}
-      type="button"
-    >
-      {theme === 'light' ? <MoonIcon /> : <SunIcon />}
-    </button>
+    <Tooltip label={label}>
+      <button
+        aria-label={`Switch to ${label.toLowerCase()}`}
+        className="theme-toggle"
+        onClick={toggle}
+        type="button"
+      >
+        {theme === 'light' ? <MoonIcon /> : <SunIcon />}
+      </button>
+    </Tooltip>
   );
 }

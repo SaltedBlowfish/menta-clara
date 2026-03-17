@@ -1,0 +1,35 @@
+.tooltip-anchor {
+  display: inline-flex;
+}
+
+[popover].tooltip {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text);
+  font-size: 12px;
+  inset: unset;
+  margin: 6px 0 0;
+  padding: 4px 8px;
+  pointer-events: none;
+  position: fixed;
+  position-area: bottom;
+  white-space: nowrap;
+}
+
+[popover].tooltip:popover-open {
+  opacity: 1;
+}
+
+@starting-style {
+  [popover].tooltip:popover-open {
+    opacity: 0;
+  }
+}
+
+[popover].tooltip {
+  transition:
+    opacity 120ms ease,
+    overlay 120ms ease allow-discrete,
+    display 120ms ease allow-discrete;
+}

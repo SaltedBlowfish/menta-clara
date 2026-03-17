@@ -1,34 +1,24 @@
 import type { JSONContent } from '@tiptap/react';
 
-import { useMemo } from 'react';
-
 import { useNote } from '../storage/use-note';
 import { getWeekId, getWeekNumber } from './get-week-id';
-
-const DEFAULT_CONTENT: JSONContent = {
-  content: [{ content: [], type: 'paragraph' }],
-  type: 'doc',
-};
 
 interface UseWeeklyNoteResult {
   content: JSONContent | null;
   error: string | null;
+  isNew: boolean;
   loading: boolean;
   saveContent: (content: JSONContent) => void;
   weekLabel: string;
   weekNoteId: string;
 }
 
-export function useWeeklyNote(date: Date, defaultContent?: JSONContent): UseWeeklyNoteResult {
+export function useWeeklyNote(date: Date): UseWeeklyNoteResult {
   const weekNoteId = getWeekId(date);
   const weekLabel = `Week ${String(getWeekNumber(date))}`;
   const { content, error, loading, saveContent } = useNote(weekNoteId);
 
-  const displayContent = useMemo(() => {
-    if (content !== null) return content;
-    if (loading) return null;
-    return defaultContent ?? DEFAULT_CONTENT;
-  }, [content, defaultContent, loading]);
+  const isNew = !loading && content === null;
 
-  return { content: displayContent, error, loading, saveContent, weekLabel, weekNoteId };
+  return { content, error, isNew, loading, saveContent, weekLabel, weekNoteId };
 }

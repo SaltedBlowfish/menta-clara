@@ -1,5 +1,5 @@
 import './inline-title.css';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 interface InlineTitleProps {
   name: string;
@@ -9,10 +9,12 @@ interface InlineTitleProps {
 export function InlineTitle({ name, onRename }: InlineTitleProps) {
   const [value, setValue] = useState(name);
   const inputRef = useRef<HTMLInputElement>(null);
+  const prevNameRef = useRef(name);
 
-  useEffect(() => {
+  if (prevNameRef.current !== name) {
+    prevNameRef.current = name;
     setValue(name);
-  }, [name]);
+  }
 
   const handleBlur = useCallback(() => {
     const trimmed = value.trim();

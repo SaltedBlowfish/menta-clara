@@ -1,33 +1,30 @@
-.daily-pane {
+.pane {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.daily-pane-header {
+.pane-header {
   align-items: center;
   display: flex;
   flex: 0 0 auto;
+  gap: 4px;
   height: 40px;
-  padding: 0 8px 0 0;
+  padding: 0 8px;
 }
 
-.daily-pane-header > .section-title {
+.pane-header > .section-title {
+  align-items: center;
+  display: flex;
   flex: 1;
-  align-items: center;
-  display: flex;
   height: 40px;
-  padding: 0 16px;
+  padding: 0 8px;
 }
 
-.daily-stack-btn {
-  flex: 0 0 auto;
-}
-
-.daily-pane-editor {
+.pane-content {
   cursor: text;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 8px 16px 48px;
+  padding: 0 16px 48px;
 }

@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 
 import { useActiveNote } from '../app/use-active-note';
 import { NoteEditor } from '../editor/editor';
+import { Tooltip } from '../shared/tooltip';
 import { useNote } from '../storage/use-note';
 import { NoteBrowserItem } from './note-browser-item';
 import { usePermanentNotes } from './use-permanent-notes';
@@ -14,7 +15,7 @@ export function PermanentSection() {
   const { navigateToNote } = useActiveNote();
 
   const handleCreate = useCallback(() => {
-    void createNote('Untitled');
+    createNote('Untitled');
   }, [createNote]);
 
   const handleOpenInEditor = useCallback(
@@ -29,14 +30,16 @@ export function PermanentSection() {
       <>
         <div className="note-browser-header">
           <span className="section-title">Notes</span>
-          <button
-            aria-label="Create new note"
-            className="note-browser-create"
-            onClick={handleCreate}
-            type="button"
-          >
-            +
-          </button>
+          <Tooltip label="New note">
+            <button
+              aria-label="Create new note"
+              className="note-browser-create"
+              onClick={handleCreate}
+              type="button"
+            >
+              +
+            </button>
+          </Tooltip>
         </div>
         <div className="permanent-empty">
           <p className="permanent-empty-heading">No notes yet</p>

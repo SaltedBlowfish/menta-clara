@@ -37,6 +37,19 @@ export default tseslint.config(
         'error',
         { max: 100, skipBlankLines: true, skipComments: true },
       ],
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              importNames: ['useEffect'],
+              message:
+                'useEffect is banned. Use useSyncExternalStore for data loading, render-time ref checks for derived state, or event handlers for side effects. Only DOM event subscriptions (addEventListener/removeEventListener) are allowed — use use-keyboard-shortcuts or a useSyncExternalStore wrapper instead.',
+              name: 'react',
+            },
+          ],
+        },
+      ],
       'no-restricted-syntax': [
         'error',
         {

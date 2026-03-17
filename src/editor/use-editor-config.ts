@@ -1,7 +1,7 @@
 import type { JSONContent } from '@tiptap/react';
 
 import { useEditor } from '@tiptap/react';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import { editorExtensions } from './extensions';
 
@@ -26,23 +26,10 @@ export function useEditorConfig(options: UseEditorConfigOptions) {
     },
   });
 
-  const pendingNoteRef = useRef<string | undefined>(undefined);
-
-  // When noteId changes, mark it as pending so we know to apply content when it arrives
-  useEffect(() => {
-    if (noteId !== appliedNoteRef.current) {
-      pendingNoteRef.current = noteId;
-    }
-  }, [noteId]);
-
-  useEffect(() => {
-    if (!editor || content === null) return;
-    if (pendingNoteRef.current !== undefined) {
-      appliedNoteRef.current = noteId;
-      pendingNoteRef.current = undefined;
-      editor.commands.setContent(content);
-    }
-  }, [editor, content, noteId]);
+  if (editor && content !== null && appliedNoteRef.current !== noteId) {
+    appliedNoteRef.current = noteId;
+    editor.commands.setContent(content);
+  }
 
   return editor;
 }

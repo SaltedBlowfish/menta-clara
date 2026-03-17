@@ -1,6 +1,7 @@
 import './card-stack.css';
 
 import { format, parseISO } from 'date-fns';
+// eslint-disable-next-line no-restricted-imports -- DOM event subscriptions
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { DailyNoteEntry } from './use-daily-notes-list';

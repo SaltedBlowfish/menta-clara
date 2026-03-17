@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports -- DOM event subscription
 import { useEffect } from 'react';
 
 interface KeyboardShortcut {

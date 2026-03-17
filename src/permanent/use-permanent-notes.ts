@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo, useSyncExternalStore } from 'react';
 
 import { usePersistedState } from '../shared/use-persisted-state';
-import { getDatabase, NOTES_STORE } from '../storage/database';
+import { deleteRecord, getRangeRecords, putRecord, requestRangeLoad, subscribe } from '../storage/db-cache';
 
 interface PermanentNote {
   id: string;
@@ -9,14 +9,16 @@ interface PermanentNote {
 }
 
 interface UsePermanentNotesResult {
-  createNote: (name: string) => Promise<string>;
-  deleteNote: (noteId: string) => Promise<void>;
+  createNote: (name: string) => void;
+  deleteNote: (noteId: string) => void;
   loading: boolean;
   notes: ReadonlyArray<PermanentNote>;
   renameNote: (noteId: string, name: string) => void;
   selectedNoteId: string | null;
   selectNote: (noteId: string) => void;
 }
+
+const RANGE_PREFIX = 'permanent:';
 
 export function usePermanentNotes(): UsePermanentNotesResult {
   const [names, setNames] = usePersistedState<Record<string, string>>(
@@ -25,66 +27,51 @@ export function usePermanentNotes(): UsePermanentNotesResult {
   );
   const [selectedNoteId, setSelectedNoteId] =
     usePersistedState<string | null>('setting:selectedPermanentNote', null);
-  const [loading, setLoading] = useState(true);
-  const [noteIds, setNoteIds] = useState<ReadonlyArray<string>>([]);
 
-  useEffect(() => {
-    let cancelled = false;
+  const rangeRecords = useSyncExternalStore(subscribe, () => getRangeRecords(RANGE_PREFIX));
+  if (rangeRecords === undefined) {
+    requestRangeLoad(RANGE_PREFIX);
+  }
 
-    async function load() {
-      const db = await getDatabase();
-      const range = IDBKeyRange.bound('permanent:', 'permanent:\uffff');
-      const keys = await db.getAllKeys(NOTES_STORE, range);
+  const loading = rangeRecords === undefined;
 
-      if (!cancelled) {
-        setNoteIds(keys.map(String));
-        setLoading(false);
-      }
-    }
+  const noteIds = useMemo(() => {
+    if (!rangeRecords) return [];
+    return rangeRecords
+      .filter((r): r is { id: string } => typeof r === 'object' && r !== null && 'id' in r)
+      .map((r) => r.id);
+  }, [rangeRecords]);
 
-    void load();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const notes: ReadonlyArray<PermanentNote> = noteIds.map((id) => ({
-    id,
-    name: names[id] ?? 'Untitled',
-  }));
+  const notes: ReadonlyArray<PermanentNote> = useMemo(
+    () => noteIds.map((id) => ({ id, name: names[id] ?? 'Untitled' })),
+    [noteIds, names],
+  );
 
   const createNote = useCallback(
-    async (name: string): Promise<string> => {
+    (name: string) => {
       const uuid = crypto.randomUUID();
       const noteId = `permanent:${uuid}`;
-      const db = await getDatabase();
 
-      await db.put(NOTES_STORE, {
+      putRecord({
         content: { content: [{ content: [], type: 'paragraph' }], type: 'doc' },
         id: noteId,
         updatedAt: Date.now(),
       });
 
-      setNoteIds((prev) => [...prev, noteId]);
       setNames({ ...names, [noteId]: name });
       setSelectedNoteId(noteId);
-
-      return noteId;
     },
     [names, setNames, setSelectedNoteId],
   );
 
   const deleteNote = useCallback(
-    async (noteId: string): Promise<void> => {
-      const db = await getDatabase();
-      await db.delete(NOTES_STORE, noteId);
+    (noteId: string) => {
+      deleteRecord(noteId);
 
       const updated = { ...names };
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- cleaning up deleted note entry
       delete updated[noteId];
       setNames(updated);
-      setNoteIds((prev) => prev.filter((id) => id !== noteId));
 
       if (selectedNoteId === noteId) {
         const remaining = noteIds.filter((id) => id !== noteId);

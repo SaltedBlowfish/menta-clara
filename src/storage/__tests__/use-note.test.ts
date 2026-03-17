@@ -1,99 +1,112 @@
 import { act, renderHook } from '@testing-library/react';
 
-import { getDatabase } from '../database';
+import * as dbCache from '../db-cache';
 import { useNote } from '../use-note';
 
+// In-memory backing store for the cache mock
 const store = new Map<string, unknown>();
+const subscribers = new Set<() => void>();
 
-vi.mock('../database', () => ({
-  getDatabase: vi.fn().mockResolvedValue({
-    get: vi.fn((_store: string, key: string) =>
-      Promise.resolve(store.get(key)),
-    ),
-    put: vi.fn((_store: string, value: { id: string }) => {
-      store.set(value.id, value);
-      return Promise.resolve();
-    }),
-  }),
-  NOTES_STORE: 'notes',
-}));
-
-async function tick() {
-  await act(() => Promise.resolve());
+function notify() {
+  for (const cb of subscribers) cb();
 }
 
-async function advanceTimers(ms: number) {
-  await act(() => {
-    vi.advanceTimersByTime(ms);
-    return Promise.resolve();
+vi.mock('../db-cache', () => ({
+  deleteRecord: vi.fn((key: string) => {
+    store.set(key, null);
+    notify();
+  }),
+  getRecord: vi.fn((key: string) => store.get(key)),
+  hasRecord: vi.fn((key: string) => store.has(key)),
+  putRecord: vi.fn((value: { id: string }) => {
+    store.set(value.id, value);
+    notify();
+  }),
+  requestLoad: vi.fn((key: string) => {
+    // Simulate async load completing synchronously for tests
+    if (!store.has(key)) {
+      store.set(key, null);
+      // Notify on next microtask to simulate async
+      void Promise.resolve().then(notify);
+    }
+  }),
+  subscribe: vi.fn((cb: () => void) => {
+    subscribers.add(cb);
+    return () => { subscribers.delete(cb); };
+  }),
+}));
+
+async function flush() {
+  await act(async () => {
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
   });
 }
 
-beforeEach(() => {
-  vi.useFakeTimers();
-  store.clear();
-});
+const NON_EMPTY_CONTENT = {
+  content: [{ content: [{ text: 'hello', type: 'text' }], type: 'paragraph' }],
+  type: 'doc',
+};
 
-afterEach(() => {
-  vi.useRealTimers();
+const EMPTY_CONTENT = {
+  content: [{ type: 'paragraph' }],
+  type: 'doc',
+};
+
+beforeEach(() => {
+  store.clear();
+  subscribers.clear();
+  vi.clearAllMocks();
 });
 
 describe('useNote', () => {
-  it('returns loading true then resolves to false', async () => {
+  it('triggers requestLoad and resolves to not loading', async () => {
     const { result } = renderHook(() => useNote());
-    expect(result.current.loading).toBe(true);
-    await tick();
+    await flush();
     expect(result.current.loading).toBe(false);
+    expect(dbCache.requestLoad).toHaveBeenCalledWith('current');
   });
 
   it('returns null content for missing note', async () => {
     const { result } = renderHook(() => useNote());
-    await tick();
+    await flush();
     expect(result.current.content).toBeNull();
-    expect(result.current.error).toBeNull();
   });
 
-  it('loads existing note from database', async () => {
+  it('loads existing note from database', () => {
     store.set('current', {
-      content: { content: [], type: 'doc' },
+      content: NON_EMPTY_CONTENT,
       id: 'current',
       updatedAt: 1000,
     });
     const { result } = renderHook(() => useNote());
-    await tick();
-    expect(result.current.content).toEqual({ content: [], type: 'doc' });
+    expect(result.current.content).toEqual(NON_EMPTY_CONTENT);
   });
 
-  it('debounces saveContent writes', async () => {
-    const db = vi.mocked(await getDatabase());
+  it('saves content via putRecord on saveContent call', async () => {
     const { result } = renderHook(() => useNote());
-    await tick();
-    db.put.mockClear();
+    await flush();
 
-    act(() => { result.current.saveContent({ content: [], type: 'doc' }); });
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    expect(db.put).not.toHaveBeenCalled();
+    act(() => { result.current.saveContent(NON_EMPTY_CONTENT); });
 
-    await advanceTimers(300);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    expect(db.put).toHaveBeenCalledWith('notes', expect.objectContaining({
-      content: { content: [], type: 'doc' },
+    expect(dbCache.putRecord).toHaveBeenCalledWith(expect.objectContaining({
+      content: NON_EMPTY_CONTENT,
       id: 'current',
     }));
   });
 
-  it('sets error state on write failure', async () => {
-    const db = vi.mocked(await getDatabase());
-    db.put.mockRejectedValueOnce(new Error('quota'));
-
+  it('deletes note when content is empty', async () => {
+    store.set('current', {
+      content: NON_EMPTY_CONTENT,
+      id: 'current',
+      updatedAt: 1000,
+    });
     const { result } = renderHook(() => useNote());
-    await tick();
+    await flush();
 
-    act(() => { result.current.saveContent({ content: [], type: 'doc' }); });
-    await advanceTimers(300);
+    act(() => { result.current.saveContent(EMPTY_CONTENT); });
 
-    expect(result.current.error).toBe(
-      'Could not save your note. Check that your browser has available storage space.',
-    );
+    expect(dbCache.deleteRecord).toHaveBeenCalledWith('current');
   });
 });

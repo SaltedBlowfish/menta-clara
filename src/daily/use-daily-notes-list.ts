@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
 
-import { getDatabase, NOTES_STORE } from '../storage/database';
+import { getRangeRecords, requestRangeLoad, subscribe } from '../storage/db-cache';
 
 export interface DailyNoteEntry {
   date: string;     // yyyy-MM-dd
@@ -8,45 +8,38 @@ export interface DailyNoteEntry {
   updatedAt: number;
 }
 
+const RANGE_PREFIX = 'daily:';
+
 export function useDailyNotesList(): {
   entries: DailyNoteEntry[];
   loading: boolean;
   refresh: () => void;
 } {
-  const [entries, setEntries] = useState<DailyNoteEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [tick, setTick] = useState(0);
+  const rangeRecords = useSyncExternalStore(subscribe, () => getRangeRecords(RANGE_PREFIX));
+  if (rangeRecords === undefined) {
+    requestRangeLoad(RANGE_PREFIX);
+  }
 
-  const refresh = () => setTick((t) => t + 1);
+  const loading = rangeRecords === undefined;
 
-  useEffect(() => {
-    let cancelled = false;
+  const entries = useMemo<DailyNoteEntry[]>(() => {
+    if (!rangeRecords) return [];
+    return rangeRecords
+      .filter((note): note is { id: string; updatedAt: number } =>
+        typeof note === 'object' && note !== null && 'id' in note && 'updatedAt' in note,
+      )
+      .map((note) => ({
+        date: note.id.replace('daily:', ''),
+        id: note.id,
+        updatedAt: note.updatedAt,
+      }))
+      .sort((a, b) => b.date.localeCompare(a.date));
+  }, [rangeRecords]);
 
-    async function load() {
-      try {
-        const db = await getDatabase();
-        const range = IDBKeyRange.bound('daily:', 'daily:\uffff');
-        const all = await db.getAll(NOTES_STORE, range);
-        if (cancelled) return;
-
-        const mapped: DailyNoteEntry[] = all
-          .filter((note) => typeof note === 'object' && note !== null && 'id' in note)
-          .map((note) => ({
-            date: (note as { id: string }).id.replace('daily:', ''),
-            id: (note as { id: string }).id,
-            updatedAt: (note as { updatedAt: number }).updatedAt ?? 0,
-          }))
-          .sort((a, b) => b.date.localeCompare(a.date)); // newest first
-
-        setEntries(mapped);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    void load();
-    return () => { cancelled = true; };
-  }, [tick]);
+  const refresh = () => {
+    // Range cache is automatically invalidated on save/delete via db-cache,
+    // so this is a no-op now. Kept for API compatibility.
+  };
 
   return { entries, loading, refresh };
 }
