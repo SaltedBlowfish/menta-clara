@@ -1,5 +1,5 @@
 import { format, isWeekend, parseISO } from 'date-fns';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import './app.css';
 import { type ActiveNote, ActiveNoteContext } from './active-note-context';
@@ -10,6 +10,7 @@ import { SplitPane } from '../layout/split-pane';
 import { PermanentSection } from '../permanent/permanent-section';
 import { LiveRegion } from '../shared/live-region';
 import { useKeyboardShortcuts } from '../shared/use-keyboard-shortcuts';
+import { useExportCommands } from '../export/export-commands';
 import { useTemplateCommands } from '../template/template-commands';
 import { useTemplates } from '../template/use-templates';
 import { ThemeToggle } from '../theme/theme-toggle';
@@ -91,6 +92,17 @@ export function App() {
 
   useKeyboardShortcuts(shortcuts);
 
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const dateStr = (e as CustomEvent<string>).detail;
+      const date = parseISO(dateStr);
+      setSelectedDate(date);
+      navigateToNote({ id: `daily:${dateStr}`, type: 'daily' });
+    };
+    window.addEventListener('date-reference-click', handler);
+    return () => window.removeEventListener('date-reference-click', handler);
+  }, [navigateToNote]);
+
   const handleNavigateDaily = useCallback((dateStr: string) => {
     setSelectedDate(parseISO(dateStr));
   }, []);
@@ -104,9 +116,10 @@ export function App() {
     deleteWorkspace: ws.deleteWorkspace, renameWorkspace: ws.renameWorkspace,
     switchWorkspace: ws.switchWorkspace, workspaces: ws.workspaces,
   });
+  const exportCommands = useExportCommands(setAnnouncement, ws.activeWorkspace.id);
   const allCommands = useMemo(
-    () => [...templateCmds, ...workspaceCmds],
-    [templateCmds, workspaceCmds],
+    () => [...templateCmds, ...workspaceCmds, ...exportCommands],
+    [templateCmds, workspaceCmds, exportCommands],
   );
 
   const dailySlot = isWeekend(selectedDate) ? 'weekend' : 'weekday';

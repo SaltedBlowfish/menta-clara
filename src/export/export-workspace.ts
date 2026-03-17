@@ -75,14 +75,14 @@ export async function exportWorkspace(workspaceId: string): Promise<Blob> {
     let md = jsonToMarkdown(note.content);
     // Rewrite image references to relative paths
     for (const [imgId, filename] of imageMap) {
-      md = md.replaceAll(imgId, `../images/${filename}`);
+      md = md.split(imgId).join(`../images/${filename}`);
     }
     files[path] = strToU8(md);
   }
 
   files['settings.json'] = strToU8(JSON.stringify({ permanentNames: names }, null, 2));
   const zipped = zipSync(files);
-  const blob = new Blob([zipped], { type: 'application/zip' });
+  const blob = new Blob([zipped as BlobPart], { type: 'application/zip' });
 
   // Trigger download
   const url = URL.createObjectURL(blob);

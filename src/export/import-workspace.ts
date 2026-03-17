@@ -48,7 +48,7 @@ async function importImages(files: Record<string, Uint8Array>): Promise<void> {
     if (!path.startsWith('images/')) continue;
     const ext = path.split('.').pop() ?? 'png';
     const mimeMap: Record<string, string> = { gif: 'image/gif', jpeg: 'image/jpeg', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
-    const blob = new Blob([data], { type: mimeMap[ext] ?? 'image/png' });
+    const blob = new Blob([data as BlobPart], { type: mimeMap[ext] ?? 'image/png' });
     await storeImage(blob, mimeMap[ext] ?? 'image/png');
   }
 }
