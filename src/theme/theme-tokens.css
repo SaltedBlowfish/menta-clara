@@ -1,26 +1,26 @@
 :root,
 [data-theme="light"] {
-  --color-bg: #ffffff;
-  --color-bg-secondary: #f5f5f5;
-  --color-text: #1a1a1a;
-  --color-text-secondary: #6b7280;
-  --color-border: #e5e7eb;
-  --color-accent: #1a1a1a;
-  --color-destructive: #dc2626;
-  --color-focus: #2563eb;
-  --color-code-bg: #f0f0f0;
-  --color-blockquote-border: #d1d5db;
+  --color-bg: #faf8f5;
+  --color-bg-secondary: #f0ede8;
+  --color-text: #44403c;
+  --color-text-secondary: #78716c;
+  --color-border: #e7e5e0;
+  --color-accent: #44403c;
+  --color-destructive: #c2410c;
+  --color-focus: #a8a29e;
+  --color-code-bg: #edeae5;
+  --color-blockquote-border: #d6d3cd;
   --color-warning-bg: #fef3cd;
   --color-warning-text: #856404;
-  --color-calendar-dot: #1a1a1a;
-  --color-calendar-today-ring: #1a1a1a;
-  --color-calendar-selected-bg: #1a1a1a;
-  --color-calendar-selected-text: #ffffff;
-  --color-calendar-hover: #f5f5f5;
-  --color-input-bg: #ffffff;
-  --color-input-text: #1a1a1a;
-  --color-backdrop: rgba(0, 0, 0, 0.4);
-  --color-highlight: #fef3cd;
+  --color-calendar-dot: #78716c;
+  --color-calendar-today-ring: #57534e;
+  --color-calendar-selected-bg: #57534e;
+  --color-calendar-selected-text: #faf8f5;
+  --color-calendar-hover: #f0ede8;
+  --color-input-bg: #faf8f5;
+  --color-input-text: #44403c;
+  --color-backdrop: rgba(68, 64, 60, 0.3);
+  --color-highlight: #f5f0e0;
   --color-link: #78716c;
 }
 
