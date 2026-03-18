@@ -11,7 +11,7 @@ interface CalendarSectionProps {
 }
 
 export function CalendarSection({ onSelectDay, selectedDate }: CalendarSectionProps) {
-  const { daysWithNotes, displayedMonth, goToNextMonth, goToPreviousMonth, monthLabel } =
+  const { daysWithNotes, displayedMonth, goToNextMonth, goToPreviousMonth, monthLabel, weeksWithNotes } =
     useCalendar(selectedDate);
 
   const today = useMemo(() => new Date(), []);
@@ -44,6 +44,7 @@ export function CalendarSection({ onSelectDay, selectedDate }: CalendarSectionPr
         onSelectDay={onSelectDay}
         selectedDate={selectedDate}
         today={today}
+        weeksWithNotes={weeksWithNotes}
       />
     </div>
   );

@@ -20,6 +20,7 @@ interface CalendarGridProps {
   onSelectDay: (date: Date) => void;
   selectedDate: Date;
   today: Date;
+  weeksWithNotes: ReadonlySet<number>;
 }
 
 const WEEKDAYS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
@@ -31,6 +32,7 @@ export function CalendarGrid({
   onSelectDay,
   selectedDate,
   today,
+  weeksWithNotes,
 }: CalendarGridProps) {
   const firstDay = startOfMonth(displayedMonth);
   const leadingCount = (getDay(firstDay) + 6) % 7;
@@ -49,9 +51,10 @@ export function CalendarGrid({
         {days.flatMap((date, i) => {
           const cells = [];
           if (i % 7 === 0) {
+            const week = getISOWeek(date);
             cells.push(
-              <div className="calendar-weeknumber" key={`w${i}`}>
-                {getISOWeek(date)}
+              <div className={`calendar-weeknumber${weeksWithNotes.has(week) ? ' has-note' : ''}`} key={`w${i}`}>
+                {week}
               </div>,
             );
           }

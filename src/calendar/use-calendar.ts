@@ -9,6 +9,7 @@ interface UseCalendarResult {
   goToNextMonth: () => void;
   goToPreviousMonth: () => void;
   monthLabel: string;
+  weeksWithNotes: ReadonlySet<number>;
 }
 
 export function useCalendar(selectedDate: Date): UseCalendarResult {
@@ -44,6 +45,25 @@ export function useCalendar(selectedDate: Date): UseCalendarResult {
     );
   }, [rangeRecords]);
 
+  // Weekly notes: query all weekly: records and extract week numbers
+  const weeklyRecords = useSyncExternalStore(subscribe, () => getRangeRecords('weekly:'));
+  if (weeklyRecords === undefined) {
+    requestRangeLoad('weekly:');
+  }
+
+  const weeksWithNotes = useMemo<ReadonlySet<number>>(() => {
+    if (!weeklyRecords) return new Set();
+    const weeks = new Set<number>();
+    for (const r of weeklyRecords) {
+      if (typeof r === 'object' && r !== null && 'id' in r) {
+        // id format: "weekly:YYYY-WNN"
+        const match = /W(\d+)$/.exec((r as { id: string }).id);
+        if (match?.[1]) weeks.add(Number(match[1]));
+      }
+    }
+    return weeks;
+  }, [weeklyRecords]);
+
   const goToNextMonth = useCallback(() => {
     setMonthOverride((prev) => addMonths(prev ?? startOfMonth(selectedDate), 1));
   }, [selectedDate]);
@@ -54,5 +74,5 @@ export function useCalendar(selectedDate: Date): UseCalendarResult {
 
   const monthLabel = format(displayedMonth, 'MMMM yyyy');
 
-  return { daysWithNotes, displayedMonth, goToNextMonth, goToPreviousMonth, monthLabel };
+  return { daysWithNotes, displayedMonth, goToNextMonth, goToPreviousMonth, monthLabel, weeksWithNotes };
 }
