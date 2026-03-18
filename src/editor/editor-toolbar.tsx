@@ -42,6 +42,7 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
       <div className="editor-toolbar-divider" />
       <Btn active={editor.isActive('bulletList')} label={`Bullet list  ${mod}${shift}8`} onClick={run(editor, (e) => e.chain().focus().toggleBulletList().run())}>&#8226;</Btn>
       <Btn active={editor.isActive('orderedList')} label={`Numbered list  ${mod}${shift}7`} onClick={run(editor, (e) => e.chain().focus().toggleOrderedList().run())}>1.</Btn>
+      <Btn active={editor.isActive('taskList')} label={`Checklist  ${mod}${shift}9`} onClick={run(editor, (e) => e.chain().focus().toggleTaskList().run())}>&#9745;</Btn>
       <Btn active={editor.isActive('blockquote')} label={`Blockquote  ${mod}${shift}B`} onClick={run(editor, (e) => e.chain().focus().toggleBlockquote().run())}>&ldquo;</Btn>
       <Btn active={editor.isActive('codeBlock')} label={`Code block  ${mod}${alt}C`} onClick={run(editor, (e) => e.chain().focus().toggleCodeBlock().run())}>{'{ }'}</Btn>
       <div className="editor-toolbar-divider" />

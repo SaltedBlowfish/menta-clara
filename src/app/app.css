@@ -100,6 +100,38 @@ body {
   padding: 0;
 }
 
+.tiptap ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+
+.tiptap ul[data-type="taskList"] li {
+  align-items: flex-start;
+  display: flex;
+  gap: 8px;
+}
+
+.tiptap ul[data-type="taskList"] li label {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+
+.tiptap ul[data-type="taskList"] li label input[type="checkbox"] {
+  accent-color: var(--color-accent);
+  cursor: pointer;
+  height: 16px;
+  width: 16px;
+}
+
+.tiptap ul[data-type="taskList"] li div {
+  flex: 1;
+}
+
+.tiptap ul[data-type="taskList"] li[data-checked="true"] > div > p {
+  color: var(--color-text-secondary);
+  text-decoration: line-through;
+}
+
 .tiptap a {
   color: var(--color-link);
   text-decoration: underline;

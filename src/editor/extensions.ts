@@ -1,6 +1,8 @@
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Link from '@tiptap/extension-link';
 import ListKeymap from '@tiptap/extension-list-keymap';
+import TaskItem from '@tiptap/extension-task-item';
+import TaskList from '@tiptap/extension-task-list';
 import StarterKit from '@tiptap/starter-kit';
 import { common, createLowlight } from 'lowlight';
 
@@ -25,6 +27,8 @@ export const editorExtensions = [
     autolink: true,
     openOnClick: true,
   }),
+  TaskList,
+  TaskItem.configure({ nested: true }),
   ListKeymap,
   TabKeymap,
   DateReference,
