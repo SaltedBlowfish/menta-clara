@@ -1,24 +1,35 @@
+import type { Editor } from '@tiptap/core';
+
 import { Extension } from '@tiptap/core';
+
+function trySink(editor: Editor): boolean {
+  if (editor.can().sinkListItem('taskItem')) {
+    return editor.commands.sinkListItem('taskItem');
+  }
+  if (editor.can().sinkListItem('listItem')) {
+    return editor.commands.sinkListItem('listItem');
+  }
+  return true;
+}
+
+function tryLift(editor: Editor): boolean {
+  if (editor.can().liftListItem('taskItem')) {
+    return editor.commands.liftListItem('taskItem');
+  }
+  if (editor.can().liftListItem('listItem')) {
+    return editor.commands.liftListItem('listItem');
+  }
+  return true;
+}
 
 export const TabKeymap = Extension.create({
   name: 'tabKeymap',
 
   addKeyboardShortcuts() {
     return {
-      'Shift-Tab': () => {
-        // In a list, lift the item. Otherwise just trap the key.
-        if (this.editor.can().liftListItem('listItem')) {
-          return this.editor.commands.liftListItem('listItem');
-        }
-        return true;
-      },
-      Tab: () => {
-        // In a list, sink the item. Otherwise just trap the key.
-        if (this.editor.can().sinkListItem('listItem')) {
-          return this.editor.commands.sinkListItem('listItem');
-        }
-        return true;
-      },
+      'Mod-Shift-x': () => this.editor.commands.toggleStrike(),
+      'Shift-Tab': () => tryLift(this.editor),
+      Tab: () => trySink(this.editor),
     };
   },
 });

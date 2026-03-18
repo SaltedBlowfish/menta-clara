@@ -37,7 +37,7 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
       <div className="editor-toolbar-divider" />
       <Btn active={editor.isActive('bold')} label={`Bold  ${mod}B`} onClick={run(editor, (e) => e.chain().focus().toggleBold().run())}><strong>B</strong></Btn>
       <Btn active={editor.isActive('italic')} label={`Italic  ${mod}I`} onClick={run(editor, (e) => e.chain().focus().toggleItalic().run())}><em>I</em></Btn>
-      <Btn active={editor.isActive('strike')} label={`Strikethrough  ${mod}${shift}S`} onClick={run(editor, (e) => e.chain().focus().toggleStrike().run())}><s>S</s></Btn>
+      <Btn active={editor.isActive('strike')} label={`Strikethrough  ${mod}${shift}X`} onClick={run(editor, (e) => e.chain().focus().toggleStrike().run())}><s>S</s></Btn>
       <Btn active={editor.isActive('code')} label={`Inline code  ${mod}E`} onClick={run(editor, (e) => e.chain().focus().toggleCode().run())}>{'</>'}</Btn>
       <div className="editor-toolbar-divider" />
       <Btn active={editor.isActive('bulletList')} label={`Bullet list  ${mod}${shift}8`} onClick={run(editor, (e) => e.chain().focus().toggleBulletList().run())}>&#8226;</Btn>
