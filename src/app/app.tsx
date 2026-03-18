@@ -7,12 +7,14 @@ import './app.css';
 import { CalendarSection } from '../calendar/calendar-section';
 import { DailyPane } from '../daily/daily-pane';
 import { handleExport, handleImport } from '../export/export-actions';
+import { MobileLayout } from '../layout/mobile-layout';
 import { Pane } from '../layout/pane';
 import { SplitPane } from '../layout/split-pane';
 import { AboutDialog } from '../onboarding/about-dialog';
 import { LiveRegion } from '../shared/live-region';
 import { ShortcutHints } from '../shared/shortcut-hints';
 import { Tooltip } from '../shared/tooltip';
+import { useIsMobile } from '../shared/use-is-mobile';
 import { useKeyboardShortcuts } from '../shared/use-keyboard-shortcuts';
 import { ThemeToggle } from '../theme/theme-toggle';
 import { WeeklySection } from '../weekly/weekly-section';
@@ -21,6 +23,7 @@ import { type ActiveNote, ActiveNoteContext } from './active-note-context';
 export function App() {
   const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
   const [announcement, setAnnouncement] = useState('');
+  const isMobile = useIsMobile();
 
   const todayNoteId = `daily:${format(new Date(), 'yyyy-MM-dd')}`;
   const [activeNote, setActiveNote] = useState<ActiveNote>({
@@ -72,9 +75,7 @@ export function App() {
     },
     {
       handler: () => {
-        document
-          .querySelector<HTMLElement>('#right-pane .tiptap')
-          ?.focus();
+        document.querySelector<HTMLElement>('#right-pane .tiptap')?.focus();
       },
       key: ']',
       meta: true,
@@ -140,27 +141,35 @@ export function App() {
     </>
   );
 
+  const dailyContent = <DailyPane date={selectedDate} onSelectDate={handleSelectDayFromStack} />;
+  const weeklyContent = (
+    <Pane actions={weeklyActions} title={`Weekly Note \u203a ${weekLabel}`}>
+      <div className="right-pane-sections">
+        <WeeklySection date={selectedDate} />
+      </div>
+      {!isMobile && (
+        <div className="right-pane-calendar">
+          <CalendarSection onSelectDay={handleSelectDay} selectedDate={selectedDate} />
+        </div>
+      )}
+    </Pane>
+  );
+  const calendarContent = (
+    <Pane actions={weeklyActions} title="Calendar">
+      <CalendarSection onSelectDay={handleSelectDay} selectedDate={selectedDate} />
+    </Pane>
+  );
+
   return (
     <ActiveNoteContext.Provider value={activeNoteValue}>
-      <div className="app-shell" onFocusCapture={handleFocusCapture}>
-        <SplitPane
-          left={<DailyPane date={selectedDate} onSelectDate={handleSelectDayFromStack} />}
-          right={
-            <Pane actions={weeklyActions} title={`Weekly Note \u203a ${weekLabel}`}>
-              <div className="right-pane-sections">
-                <WeeklySection date={selectedDate} />
-              </div>
-              <div className="right-pane-calendar">
-                <CalendarSection
-                  onSelectDay={handleSelectDay}
-                  selectedDate={selectedDate}
-                />
-              </div>
-            </Pane>
-          }
-        />
-        <ShortcutHints context={focusedPane} />
-      </div>
+      {isMobile ? (
+        <MobileLayout calendar={calendarContent} daily={dailyContent} weekly={weeklyContent} />
+      ) : (
+        <div className="app-shell" onFocusCapture={handleFocusCapture}>
+          <SplitPane left={dailyContent} right={weeklyContent} />
+          <ShortcutHints context={focusedPane} />
+        </div>
+      )}
       <LiveRegion message={announcement} />
     </ActiveNoteContext.Provider>
   );
