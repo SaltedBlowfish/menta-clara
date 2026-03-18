@@ -1,7 +1,5 @@
+import { mod } from './platform';
 import './shortcut-hints.css';
-
-const isMac = /mac/i.test(navigator.userAgent);
-const mod = isMac ? '\u2318' : 'Ctrl';
 
 interface Hint {
   keys: string;

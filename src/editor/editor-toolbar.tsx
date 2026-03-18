@@ -1,5 +1,6 @@
 import type { Editor } from '@tiptap/react';
 
+import { alt, mod, shift } from '../shared/platform';
 import { Tooltip } from '../shared/tooltip';
 import './editor-toolbar.css';
 
@@ -30,19 +31,19 @@ function run(editor: Editor, fn: (e: Editor) => void) {
 export function EditorToolbar({ editor }: { editor: Editor }) {
   return (
     <div className="editor-toolbar">
-      <Btn active={editor.isActive('heading', { level: 1 })} label="Heading 1" onClick={run(editor, (e) => e.chain().focus().toggleHeading({ level: 1 }).run())}>H1</Btn>
-      <Btn active={editor.isActive('heading', { level: 2 })} label="Heading 2" onClick={run(editor, (e) => e.chain().focus().toggleHeading({ level: 2 }).run())}>H2</Btn>
-      <Btn active={editor.isActive('heading', { level: 3 })} label="Heading 3" onClick={run(editor, (e) => e.chain().focus().toggleHeading({ level: 3 }).run())}>H3</Btn>
+      <Btn active={editor.isActive('heading', { level: 1 })} label={`Heading 1  ${mod}${alt}1`} onClick={run(editor, (e) => e.chain().focus().toggleHeading({ level: 1 }).run())}>H1</Btn>
+      <Btn active={editor.isActive('heading', { level: 2 })} label={`Heading 2  ${mod}${alt}2`} onClick={run(editor, (e) => e.chain().focus().toggleHeading({ level: 2 }).run())}>H2</Btn>
+      <Btn active={editor.isActive('heading', { level: 3 })} label={`Heading 3  ${mod}${alt}3`} onClick={run(editor, (e) => e.chain().focus().toggleHeading({ level: 3 }).run())}>H3</Btn>
       <div className="editor-toolbar-divider" />
-      <Btn active={editor.isActive('bold')} label="Bold" onClick={run(editor, (e) => e.chain().focus().toggleBold().run())}><strong>B</strong></Btn>
-      <Btn active={editor.isActive('italic')} label="Italic" onClick={run(editor, (e) => e.chain().focus().toggleItalic().run())}><em>I</em></Btn>
-      <Btn active={editor.isActive('strike')} label="Strikethrough" onClick={run(editor, (e) => e.chain().focus().toggleStrike().run())}><s>S</s></Btn>
-      <Btn active={editor.isActive('code')} label="Inline code" onClick={run(editor, (e) => e.chain().focus().toggleCode().run())}>{'</>'}</Btn>
+      <Btn active={editor.isActive('bold')} label={`Bold  ${mod}B`} onClick={run(editor, (e) => e.chain().focus().toggleBold().run())}><strong>B</strong></Btn>
+      <Btn active={editor.isActive('italic')} label={`Italic  ${mod}I`} onClick={run(editor, (e) => e.chain().focus().toggleItalic().run())}><em>I</em></Btn>
+      <Btn active={editor.isActive('strike')} label={`Strikethrough  ${mod}${shift}S`} onClick={run(editor, (e) => e.chain().focus().toggleStrike().run())}><s>S</s></Btn>
+      <Btn active={editor.isActive('code')} label={`Inline code  ${mod}E`} onClick={run(editor, (e) => e.chain().focus().toggleCode().run())}>{'</>'}</Btn>
       <div className="editor-toolbar-divider" />
-      <Btn active={editor.isActive('bulletList')} label="Bullet list" onClick={run(editor, (e) => e.chain().focus().toggleBulletList().run())}>&#8226;</Btn>
-      <Btn active={editor.isActive('orderedList')} label="Numbered list" onClick={run(editor, (e) => e.chain().focus().toggleOrderedList().run())}>1.</Btn>
-      <Btn active={editor.isActive('blockquote')} label="Blockquote" onClick={run(editor, (e) => e.chain().focus().toggleBlockquote().run())}>&ldquo;</Btn>
-      <Btn active={editor.isActive('codeBlock')} label="Code block" onClick={run(editor, (e) => e.chain().focus().toggleCodeBlock().run())}>{'{ }'}</Btn>
+      <Btn active={editor.isActive('bulletList')} label={`Bullet list  ${mod}${shift}8`} onClick={run(editor, (e) => e.chain().focus().toggleBulletList().run())}>&#8226;</Btn>
+      <Btn active={editor.isActive('orderedList')} label={`Numbered list  ${mod}${shift}7`} onClick={run(editor, (e) => e.chain().focus().toggleOrderedList().run())}>1.</Btn>
+      <Btn active={editor.isActive('blockquote')} label={`Blockquote  ${mod}${shift}B`} onClick={run(editor, (e) => e.chain().focus().toggleBlockquote().run())}>&ldquo;</Btn>
+      <Btn active={editor.isActive('codeBlock')} label={`Code block  ${mod}${alt}C`} onClick={run(editor, (e) => e.chain().focus().toggleCodeBlock().run())}>{'{ }'}</Btn>
       <div className="editor-toolbar-divider" />
       <Btn active={false} label="Horizontal rule" onClick={run(editor, (e) => e.chain().focus().setHorizontalRule().run())}>&#8213;</Btn>
     </div>
