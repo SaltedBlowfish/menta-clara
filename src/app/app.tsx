@@ -11,7 +11,6 @@ import { MobileLayout } from '../layout/mobile-layout';
 import { Pane } from '../layout/pane';
 import { SplitPane } from '../layout/split-pane';
 import { AboutDialog } from '../onboarding/about-dialog';
-import { SyncDialog } from '../sync/sync-dialog';
 import { LiveRegion } from '../shared/live-region';
 import { ShortcutHints } from '../shared/shortcut-hints';
 import { Tooltip } from '../shared/tooltip';
@@ -137,7 +136,6 @@ export function App() {
           </svg>
         </button>
       </Tooltip>
-      <SyncDialog />
       <ThemeToggle />
       <AboutDialog />
     </>
