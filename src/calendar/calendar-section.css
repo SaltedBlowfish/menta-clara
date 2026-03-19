@@ -2,6 +2,12 @@
   max-width: 240px;
 }
 
+@media (max-width: 767px) {
+  .calendar-wrapper {
+    max-width: none;
+  }
+}
+
 .calendar-nav {
   align-items: center;
   display: flex;

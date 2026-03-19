@@ -31,6 +31,7 @@ export function CardStack({ currentDate, entries, onClose, onSelect }: CardStack
   entriesRef.current = entries;
   const activeIndexRef = useRef(activeIndex);
   activeIndexRef.current = activeIndex;
+  const touchStartY = useRef<number | null>(null);
 
   const handleWheel = useCallback((e: WheelEvent) => {
     e.preventDefault();
@@ -49,6 +50,26 @@ export function CardStack({ currentDate, entries, onClose, onSelect }: CardStack
     el.addEventListener('wheel', handleWheel, { passive: false });
     return () => el.removeEventListener('wheel', handleWheel);
   }, [handleWheel]);
+
+  // Touch swipe navigation
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    if (touch) touchStartY.current = touch.clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (touchStartY.current === null) return;
+    const touch = e.changedTouches[0];
+    if (!touch) return;
+    const dy = touch.clientY - touchStartY.current;
+    touchStartY.current = null;
+    if (Math.abs(dy) < 30) return;
+    if (dy < 0) {
+      setActiveIndex((prev) => Math.min(entriesRef.current.length - 1, prev + 1));
+    } else {
+      setActiveIndex((prev) => Math.max(0, prev - 1));
+    }
+  }, []);
 
   // Keyboard navigation
   useEffect(() => {
@@ -82,7 +103,7 @@ export function CardStack({ currentDate, entries, onClose, onSelect }: CardStack
   }, []);
 
   return (
-    <div className="card-stack-overlay" ref={containerRef}>
+    <div className="card-stack-overlay" onTouchEnd={handleTouchEnd} onTouchStart={handleTouchStart} ref={containerRef}>
       <div className="card-stack-scene">
         {entries.map((entry, i) => {
           const offset = i - activeIndex;
