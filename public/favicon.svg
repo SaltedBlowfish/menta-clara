@@ -1,10 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1139 1706">
 <style>
+  .bg { fill: #f0ede8; }
   path { fill: #44403c; }
   @media (prefers-color-scheme: dark) {
+    .bg { fill: #292524; }
     path { fill: #e5e5e5; }
   }
 </style>
+<circle class="bg" cx="570" cy="853" r="570" />
 <g transform="translate(0,1706) scale(0.1,-0.1)" stroke="none">
 <path d="M2 12868 c1 -2306 3 -4159 5 -4118 16 466 94 983 222 1480 58 226 73
 278 141 481 259 776 627 1489 1195 2309 185 268 550 734 795 1015 488 559
