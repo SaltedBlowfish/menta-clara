@@ -11,6 +11,7 @@ import { MobileLayout } from '../layout/mobile-layout';
 import { Pane } from '../layout/pane';
 import { SplitPane } from '../layout/split-pane';
 import { AboutDialog } from '../onboarding/about-dialog';
+import { ConflictDialog } from '../sync/conflict-dialog';
 import { SyncDialog } from '../sync/sync-dialog';
 import { LiveRegion } from '../shared/live-region';
 import { ShortcutHints } from '../shared/shortcut-hints';
@@ -179,6 +180,7 @@ export function App() {
         </div>
       )}
       <LiveRegion message={announcement} />
+      <ConflictDialog />
     </ActiveNoteContext.Provider>
   );
 }

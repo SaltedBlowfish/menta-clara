@@ -1,0 +1,76 @@
+dialog.conflict-dialog {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  color: var(--color-text);
+  margin: auto;
+  max-width: 480px;
+  padding: 28px;
+  width: calc(100vw - 32px);
+}
+
+dialog.conflict-dialog::backdrop {
+  background: var(--color-backdrop);
+}
+
+.conflict-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.conflict-note-id {
+  color: var(--color-text-secondary);
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.conflict-description {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.conflict-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.conflict-option {
+  align-items: flex-start;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font-family: inherit;
+  gap: 2px;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.conflict-option:hover {
+  background: var(--color-bg-secondary);
+}
+
+.conflict-option-label {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.conflict-option-description {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.conflict-counter {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  text-align: center;
+}
