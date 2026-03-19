@@ -21,7 +21,7 @@ const weeklyHints: Hint[] = [
 const defaultHints: Hint[] = [
   { keys: `${mod} [`, label: 'Daily note' },
   { keys: `${mod} ]`, label: 'Weekly note' },
-  { keys: `${mod} T`, label: 'Today' },
+  { keys: `${mod} .`, label: 'Today' },
 ];
 
 interface ShortcutHintsProps {

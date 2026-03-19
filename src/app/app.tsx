@@ -84,7 +84,7 @@ export function App() {
     },
     {
       handler: handleToday,
-      key: 't',
+      key: '.',
       meta: true,
     },
   ], [handleToday]);
