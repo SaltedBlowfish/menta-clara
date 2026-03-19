@@ -66,6 +66,37 @@ export function putRecordSilent(value: { [key: string]: unknown; id: string }): 
   suppressBroadcast = false;
 }
 
+/**
+ * Apply many remote records in one batch. Updates cache for all records,
+ * writes to IndexedDB in a single transaction, then notifies once.
+ * Does not trigger the broadcast hook (prevents echo).
+ */
+export function putRecordsBatch(values: ReadonlyArray<{ [key: string]: unknown; id: string }>): void {
+  if (values.length === 0) return;
+
+  // Update cache for all records without notifying
+  for (const value of values) {
+    cache.set(value.id, value);
+  }
+
+  // Clear all range caches once (cheaper than per-record invalidation)
+  rangeCache.clear();
+  pendingRanges.clear();
+
+  // Write to IndexedDB in a single transaction
+  void (async () => {
+    const db = await getDatabase();
+    const tx = db.transaction(NOTES_STORE, 'readwrite');
+    for (const value of values) {
+      void tx.store.put(value);
+    }
+    await tx.done;
+  })();
+
+  // Notify once at the end
+  notify();
+}
+
 export function deleteRecord(key: string): void {
   cache.set(key, null);
   invalidateRanges(key);

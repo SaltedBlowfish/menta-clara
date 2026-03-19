@@ -2,7 +2,7 @@ import Peer from 'peerjs';
 import type { DataConnection } from 'peerjs';
 
 import { getDatabase, NOTES_STORE } from '../storage/database';
-import { putRecordSilent, setOnRecordChange } from '../storage/db-cache';
+import { putRecordSilent, putRecordsBatch, setOnRecordChange } from '../storage/db-cache';
 
 // ── Types ──
 
@@ -64,22 +64,21 @@ async function getAllNotes(): Promise<SyncNote[]> {
   return all.filter(isSyncNote).filter((n) => !n.id.startsWith('setting:'));
 }
 
-function applyRemoteNotes(notes: SyncNote[]) {
-  for (const remote of notes) {
-    if (remote.id.startsWith('setting:')) continue;
-    putRecordSilent(remote);
-  }
-}
-
 function handleMessage(data: unknown) {
-  if (typeof data !== 'object' || data === null || !('type' in data)) return;
-  const msg = data as Message;
+  try {
+    if (typeof data !== 'object' || data === null || !('type' in data)) return;
+    const msg = data as Message;
 
-  if (msg.type === 'sync') {
-    applyRemoteNotes(msg.notes);
-  } else if (msg.type === 'update') {
-    if (msg.note.id.startsWith('setting:')) return;
-    putRecordSilent(msg.note);
+    if (msg.type === 'sync') {
+      // Bulk sync — apply all notes in one batch (single notify, single DB transaction)
+      const notes = msg.notes.filter((n) => !n.id.startsWith('setting:'));
+      putRecordsBatch(notes);
+    } else if (msg.type === 'update') {
+      if (msg.note.id.startsWith('setting:')) return;
+      putRecordSilent(msg.note);
+    }
+  } catch (err) {
+    console.error('Sync message error:', err);
   }
 }
 
@@ -112,7 +111,8 @@ function setupConnection(connection: DataConnection) {
     cleanup();
   });
 
-  connection.on('error', () => {
+  connection.on('error', (err) => {
+    console.error('PeerJS connection error:', err);
     setStatus('error');
   });
 }
