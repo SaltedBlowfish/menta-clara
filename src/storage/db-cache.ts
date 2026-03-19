@@ -59,41 +59,19 @@ export function putRecord(value: { [key: string]: unknown; id: string; }): void 
   })();
 }
 
-// Optional hook for conflict detection during sync
-let onConflict: ((noteId: string, local: unknown, incoming: unknown) => void) | null = null;
-
-export function setOnConflict(cb: ((noteId: string, local: unknown, incoming: unknown) => void) | null): void {
-  onConflict = cb;
-}
-
-function getTimestamp(record: unknown): number {
-  if (typeof record === 'object' && record !== null && 'updatedAt' in record) {
-    const t = (record as { updatedAt: unknown }).updatedAt;
-    return typeof t === 'number' ? t : 0;
-  }
-  return 0;
-}
-
-function hasContent(record: unknown): boolean {
-  return typeof record === 'object' && record !== null && 'content' in record;
-}
-
 /** Apply a remote record without triggering the broadcast hook.
- *  If newer → apply. If older and both have content → queue conflict. */
+ *  Newer wins silently — older incoming records are dropped. */
 export function putRecordSilent(value: { [key: string]: unknown; id: string }): void {
   const existing = cache.get(value.id);
-  const existingTime = getTimestamp(existing);
+  const existingTime = typeof existing === 'object' && existing !== null && 'updatedAt' in existing
+    ? (existing as { updatedAt: number }).updatedAt : 0;
   const incomingTime = typeof value['updatedAt'] === 'number' ? value['updatedAt'] : 0;
 
-  if (incomingTime >= existingTime) {
-    // Incoming is newer — apply it
-    suppressBroadcast = true;
-    putRecord(value);
-    suppressBroadcast = false;
-  } else if (onConflict && hasContent(existing) && hasContent(value)) {
-    // Local is newer but incoming differs — let user decide
-    onConflict(value.id, existing, value);
-  }
+  if (incomingTime < existingTime) return;
+
+  suppressBroadcast = true;
+  putRecord(value);
+  suppressBroadcast = false;
 }
 
 /**
@@ -117,8 +95,6 @@ export function putRecordsBatch(values: ReadonlyArray<{ [key: string]: unknown; 
     if (incomingTime >= existingTime) {
       cache.set(value.id, value);
       toWrite.push(value);
-    } else if (onConflict && hasContent(existing) && hasContent(value)) {
-      onConflict(value.id, existing, value);
     }
   }
 

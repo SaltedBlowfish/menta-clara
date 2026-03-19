@@ -2,8 +2,7 @@ import Peer from 'peerjs';
 import type { DataConnection } from 'peerjs';
 
 import { getDatabase, NOTES_STORE } from '../storage/database';
-import { putRecordSilent, putRecordsBatch, setOnConflict, setOnRecordChange } from '../storage/db-cache';
-import { addConflict } from './conflict-queue';
+import { putRecordSilent, putRecordsBatch, setOnRecordChange } from '../storage/db-cache';
 
 // ── Types ──
 
@@ -240,14 +239,6 @@ function installHooks() {
       if (c.open) c.send(msg);
     }
   });
-
-  setOnConflict((noteId, local, incoming) => {
-    if (typeof local !== 'object' || local === null || !('content' in local)) return;
-    if (typeof incoming !== 'object' || incoming === null || !('content' in incoming)) return;
-    const loc = local as { content: import('@tiptap/react').JSONContent; updatedAt: number };
-    const inc = incoming as { content: import('@tiptap/react').JSONContent; updatedAt: number };
-    addConflict(noteId, loc.content, loc.updatedAt, inc.content, inc.updatedAt);
-  });
 }
 
 // ── Reconnect ──
@@ -364,7 +355,6 @@ export function joinSync(code: string): void {
 function cleanup() {
   clearTimeout(retryTimer);
   setOnRecordChange(null);
-  setOnConflict(null);
   connections.clear();
   deviceCount = 0;
   pendingApproval = null;
@@ -383,7 +373,6 @@ export function disconnect(): void {
     peer = null;
   }
   setOnRecordChange(null);
-  setOnConflict(null);
   currentCode = '';
   deviceCount = 0;
   retryCount = 0;
