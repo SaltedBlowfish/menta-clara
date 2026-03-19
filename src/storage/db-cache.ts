@@ -59,25 +59,47 @@ export function putRecord(value: { [key: string]: unknown; id: string; }): void 
   })();
 }
 
-/** Apply a remote record without triggering the broadcast hook (prevents echo). */
+/** Apply a remote record without triggering the broadcast hook (prevents echo).
+ *  Only applies if the incoming record is newer than what we have. */
 export function putRecordSilent(value: { [key: string]: unknown; id: string }): void {
+  const existing = cache.get(value.id);
+  const existingTime = typeof existing === 'object' && existing !== null && 'updatedAt' in existing
+    ? (existing as { updatedAt: number }).updatedAt
+    : 0;
+  const incomingTime = typeof value['updatedAt'] === 'number' ? value['updatedAt'] : 0;
+
+  if (incomingTime < existingTime) return;
+
   suppressBroadcast = true;
   putRecord(value);
   suppressBroadcast = false;
 }
 
 /**
- * Apply many remote records in one batch. Updates cache for all records,
- * writes to IndexedDB in a single transaction, then notifies once.
+ * Apply many remote records in one batch. Only applies records that are
+ * newer than what we already have (last-write-wins by updatedAt).
+ * Writes to IndexedDB in a single transaction, then notifies once.
  * Does not trigger the broadcast hook (prevents echo).
  */
 export function putRecordsBatch(values: ReadonlyArray<{ [key: string]: unknown; id: string }>): void {
   if (values.length === 0) return;
 
-  // Update cache for all records without notifying
+  const toWrite: Array<{ [key: string]: unknown; id: string }> = [];
+
   for (const value of values) {
-    cache.set(value.id, value);
+    const existing = cache.get(value.id);
+    const existingTime = typeof existing === 'object' && existing !== null && 'updatedAt' in existing
+      ? (existing as { updatedAt: number }).updatedAt
+      : 0;
+    const incomingTime = typeof value['updatedAt'] === 'number' ? value['updatedAt'] : 0;
+
+    if (incomingTime >= existingTime) {
+      cache.set(value.id, value);
+      toWrite.push(value);
+    }
   }
+
+  if (toWrite.length === 0) return;
 
   // Clear all range caches once (cheaper than per-record invalidation)
   rangeCache.clear();
@@ -87,7 +109,7 @@ export function putRecordsBatch(values: ReadonlyArray<{ [key: string]: unknown; 
   void (async () => {
     const db = await getDatabase();
     const tx = db.transaction(NOTES_STORE, 'readwrite');
-    for (const value of values) {
+    for (const value of toWrite) {
       void tx.store.put(value);
     }
     await tx.done;
