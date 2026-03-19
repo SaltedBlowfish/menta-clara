@@ -1,1 +1,2 @@
-On mobile view,
+- On mobile view, the calendar doesn't need to max out at a small width / height. Make it full width of the screen.
+-

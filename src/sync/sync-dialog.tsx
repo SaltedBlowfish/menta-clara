@@ -1,7 +1,18 @@
 import { useCallback, useRef, useState, useSyncExternalStore } from 'react';
 
 import { Tooltip } from '../shared/tooltip';
-import { disconnect, getCode, getStatus, hostSync, joinSync, subscribeStatus } from './peer-sync';
+import {
+  approvePendingSync,
+  disconnect,
+  getCode,
+  getDeviceCount,
+  getPendingApproval,
+  getStatus,
+  hostSync,
+  joinSync,
+  rejectPendingSync,
+  subscribeStatus,
+} from './peer-sync';
 import './sync-dialog.css';
 
 type Tab = 'host' | 'join';
@@ -9,6 +20,8 @@ type Tab = 'host' | 'join';
 export function SyncDialog() {
   const status = useSyncExternalStore(subscribeStatus, getStatus);
   const code = useSyncExternalStore(subscribeStatus, getCode);
+  const devices = useSyncExternalStore(subscribeStatus, getDeviceCount);
+  const pending = useSyncExternalStore(subscribeStatus, getPendingApproval);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [tab, setTab] = useState<Tab>('host');
   const [joinCode, setJoinCode] = useState('');
@@ -43,8 +56,9 @@ export function SyncDialog() {
     : status === 'error' ? 'sync-dot-error'
     : '';
 
-  const statusText = status === 'connected' ? 'Connected — syncing in real time'
-    : status === 'waiting' ? 'Waiting for other device to connect...'
+  const statusText = status === 'connected'
+    ? `Connected — ${String(devices)} ${devices === 1 ? 'device' : 'devices'} syncing`
+    : status === 'waiting' ? 'Waiting for devices to connect...'
     : status === 'connecting' ? 'Connecting...'
     : status === 'error' ? 'Connection failed — try again'
     : '';
@@ -68,13 +82,39 @@ export function SyncDialog() {
 
       <dialog className="sync-dialog" ref={dialogRef}>
         <h2 className="sync-title">Sync Devices</h2>
-        <p className="sync-description">
-          Connect two devices directly over the internet.
-          Notes transfer peer-to-peer — nothing passes through our servers.
-        </p>
 
-        {!isActive ? (
+        {pending ? (
           <>
+            <div className="sync-warning">
+              <p>
+                <strong>Heads up:</strong> The connecting device has
+                significantly fewer notes ({pending.remoteCount}) than this
+                device ({pending.localCount}). This could mean the other
+                device was recently reset.
+              </p>
+              <p>
+                Accepting will merge its notes into yours. Your existing
+                notes are safe — only newer versions will overwrite older
+                ones.
+              </p>
+            </div>
+            <div className="sync-actions">
+              <button className="btn btn-danger" onClick={rejectPendingSync} type="button">
+                Reject sync
+              </button>
+              <button className="btn btn-primary" onClick={approvePendingSync} type="button">
+                Accept & merge
+              </button>
+            </div>
+          </>
+        ) : !isActive ? (
+          <>
+            <p className="sync-description">
+              Connect your devices directly over the internet.
+              Notes transfer peer-to-peer — nothing passes through our
+              servers. Multiple devices can join the same code.
+            </p>
+
             <div className="sync-tabs">
               <button className={`sync-tab${tab === 'host' ? ' active' : ''}`} onClick={() => setTab('host')} type="button">
                 This device has notes
@@ -87,7 +127,8 @@ export function SyncDialog() {
             {tab === 'host' ? (
               <>
                 <p className="sync-hint">
-                  Generate a code, then enter it on your other device.
+                  Generate a code, then enter it on your other devices.
+                  This device stays as the host — all others connect to it.
                 </p>
                 <div className="sync-actions">
                   <button className="btn btn-secondary" onClick={handleClose} type="button">Cancel</button>
@@ -121,7 +162,13 @@ export function SyncDialog() {
         ) : (
           <>
             {code && status === 'waiting' && (
-              <div className="sync-code-display">{code}</div>
+              <>
+                <div className="sync-code-display">{code}</div>
+                <p className="sync-hint">
+                  Enter this code on your other devices. Multiple devices
+                  can connect using the same code.
+                </p>
+              </>
             )}
 
             <div className="sync-status">
@@ -131,8 +178,9 @@ export function SyncDialog() {
 
             {status === 'connected' && (
               <p className="sync-hint">
-                Both devices are synced. Changes you make here will appear on
-                the other device instantly. Keep this tab open on both devices.
+                All connected devices are synced. Edits appear on every
+                device instantly. Keep this tab open on all devices.
+                {devices > 1 ? ` More devices can still join using code ${code}.` : ''}
               </p>
             )}
 
