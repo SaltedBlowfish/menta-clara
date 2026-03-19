@@ -143,7 +143,13 @@ export function App() {
     </>
   );
 
-  const dailyContent = <DailyPane date={selectedDate} onSelectDate={handleSelectDayFromStack} />;
+  const dailyContent = (
+    <DailyPane
+      actions={isMobile ? weeklyActions : undefined}
+      date={selectedDate}
+      onSelectDate={handleSelectDayFromStack}
+    />
+  );
   const weeklyContent = (
     <Pane actions={weeklyActions} title={`Weekly Note \u203a ${weekLabel}`}>
       <div className="right-pane-sections">

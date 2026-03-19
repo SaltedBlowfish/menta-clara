@@ -12,12 +12,13 @@ import { useDailyNote } from './use-daily-note';
 import { useDailyNotesList } from './use-daily-notes-list';
 
 interface DailyPaneProps {
+  actions?: React.ReactNode;
   date: Date;
   onSelectDate?: (dateStr: string) => void;
 }
 
 export function DailyPane(props: DailyPaneProps) {
-  const { date, onSelectDate } = props;
+  const { actions, date, onSelectDate } = props;
   const { content, dateLabel, error, isNew, loading, noteId, saveContent } = useDailyNote(date);
   const [showStack, setShowStack] = useState(false);
   const { entries } = useDailyNotesList();
@@ -72,8 +73,15 @@ export function DailyPane(props: DailyPaneProps) {
     </Tooltip>
   ) : null;
 
+  const allActions = (
+    <>
+      {stackButton}
+      {actions}
+    </>
+  );
+
   return (
-    <Pane actions={stackButton} title={`Daily Note \u203a ${dateLabel}`}>
+    <Pane actions={allActions} title={`Daily Note \u203a ${dateLabel}`}>
       {showStack ? (
         <CardStack
           currentDate={currentDateStr}
