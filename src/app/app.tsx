@@ -1,4 +1,4 @@
-import { format, parseISO } from 'date-fns';
+import { addDays, format, isSameDay, parseISO, subDays } from 'date-fns';
 import { getISOWeek } from 'date-fns/getISOWeek';
 // eslint-disable-next-line no-restricted-imports -- DOM event subscription
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -100,7 +100,19 @@ export function App() {
       key: 'k',
       meta: true,
     },
-  ], [handleToday]);
+    {
+      alt: true,
+      handler: () => { handleSelectDay(subDays(selectedDate, 1)); },
+      key: 'ArrowLeft',
+      meta: true,
+    },
+    {
+      alt: true,
+      handler: () => { handleSelectDay(addDays(selectedDate, 1)); },
+      key: 'ArrowRight',
+      meta: true,
+    },
+  ], [handleToday, handleSelectDay, selectedDate]);
 
   useKeyboardShortcuts(shortcuts);
 
@@ -198,7 +210,7 @@ export function App() {
       ) : (
         <div className="app-shell" onFocusCapture={handleFocusCapture}>
           <SplitPane left={dailyContent} right={weeklyContent} />
-          <ShortcutHints context={focusedPane} />
+          <ShortcutHints context={focusedPane} isToday={isSameDay(selectedDate, new Date())} />
         </div>
       )}
       <LiveRegion message={announcement} />

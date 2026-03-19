@@ -1,4 +1,4 @@
-import { mod } from './platform';
+import { alt, mod } from './platform';
 import './shortcut-hints.css';
 
 interface Hint {
@@ -6,31 +6,40 @@ interface Hint {
   label: string;
 }
 
+const navHint: Hint = { keys: `${mod}${alt}\u2190/\u2192`, label: 'Prev/next day' };
+
 const dailyHints: Hint[] = [
-  { keys: `${mod} ]`, label: 'Go to weekly note' },
-  { keys: `${mod} B`, label: 'Bold' },
-  { keys: `${mod} I`, label: 'Italic' },
+  { keys: `${mod}]`, label: 'Weekly note' },
+  navHint,
+  { keys: `${mod}K`, label: 'Calendar' },
+];
+
+const dailyNotTodayHints: Hint[] = [
+  ...dailyHints,
+  { keys: `${mod}.`, label: 'Today' },
 ];
 
 const weeklyHints: Hint[] = [
-  { keys: `${mod} [`, label: 'Go to daily note' },
-  { keys: `${mod} B`, label: 'Bold' },
-  { keys: `${mod} I`, label: 'Italic' },
+  { keys: `${mod}[`, label: 'Daily note' },
+  navHint,
+  { keys: `${mod}K`, label: 'Calendar' },
 ];
 
 const defaultHints: Hint[] = [
-  { keys: `${mod} [`, label: 'Daily note' },
-  { keys: `${mod} ]`, label: 'Weekly note' },
-  { keys: `${mod} .`, label: 'Today' },
-  { keys: `${mod} K`, label: 'Calendar' },
+  { keys: `${mod}[`, label: 'Daily note' },
+  { keys: `${mod}]`, label: 'Weekly note' },
+  navHint,
+  { keys: `${mod}K`, label: 'Calendar' },
 ];
 
 interface ShortcutHintsProps {
   context?: 'daily' | 'weekly' | undefined;
+  isToday?: boolean;
 }
 
-export function ShortcutHints({ context }: ShortcutHintsProps) {
-  const hints = context === 'daily' ? dailyHints
+export function ShortcutHints({ context, isToday }: ShortcutHintsProps) {
+  const hints = context === 'daily'
+    ? (isToday ? dailyHints : dailyNotTodayHints)
     : context === 'weekly' ? weeklyHints
     : defaultHints;
 

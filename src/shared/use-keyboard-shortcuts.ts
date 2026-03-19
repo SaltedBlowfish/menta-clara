@@ -2,6 +2,7 @@
 import { useEffect } from 'react';
 
 interface KeyboardShortcut {
+  alt?: boolean;
   handler: () => void;
   key: string;
   meta: boolean;
@@ -13,7 +14,8 @@ export function useKeyboardShortcuts(
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       for (const shortcut of shortcuts) {
-        if (event.metaKey === shortcut.meta && event.key === shortcut.key) {
+        const altMatch = shortcut.alt ? event.altKey : !event.altKey;
+        if (event.metaKey === shortcut.meta && altMatch && event.key === shortcut.key) {
           event.preventDefault();
           shortcut.handler();
           return;

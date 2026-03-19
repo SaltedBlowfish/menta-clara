@@ -2,6 +2,7 @@ import './calendar-section.css';
 
 import { useMemo } from 'react';
 
+import { isMac } from '../shared/platform';
 import { Tooltip } from '../shared/tooltip';
 import { CalendarGrid } from './calendar-grid';
 import { useCalendar } from './use-calendar';
@@ -23,7 +24,7 @@ export function CalendarSection({ onSelectDay, onToday, selectedDate }: Calendar
       <div className="calendar-header">
         <span className="section-title">Calendar</span>
         {onToday && (
-          <Tooltip label="Jump to today">
+          <Tooltip label={`Jump to today  ${isMac ? '\u2318' : 'Ctrl+'}.`}>
             <button
               className="calendar-today-btn"
               onClick={onToday}
