@@ -37,14 +37,33 @@ export function requestLoad(key: string): void {
   })();
 }
 
+// Optional hook for broadcasting changes to sync peers
+let onRecordChange: ((value: { [key: string]: unknown; id: string }) => void) | null = null;
+
+export function setOnRecordChange(cb: ((value: { [key: string]: unknown; id: string }) => void) | null): void {
+  onRecordChange = cb;
+}
+
+let suppressBroadcast = false;
+
 export function putRecord(value: { [key: string]: unknown; id: string; }): void {
   cache.set(value.id, value);
   invalidateRanges(value.id);
   notify();
+  if (!suppressBroadcast && onRecordChange) {
+    onRecordChange(value);
+  }
   void (async () => {
     const db = await getDatabase();
     await db.put(NOTES_STORE, value);
   })();
+}
+
+/** Apply a remote record without triggering the broadcast hook (prevents echo). */
+export function putRecordSilent(value: { [key: string]: unknown; id: string }): void {
+  suppressBroadcast = true;
+  putRecord(value);
+  suppressBroadcast = false;
 }
 
 export function deleteRecord(key: string): void {
