@@ -32,6 +32,33 @@ body {
   min-height: 0;
 }
 
+/* Scrollbars */
+* {
+  scrollbar-color: var(--color-border) transparent;
+}
+
+*::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border: 3px solid transparent;
+  border-radius: 6px;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
 /* TipTap content area */
 .tiptap {
   font-size: 16px;
@@ -99,38 +126,6 @@ body {
 .tiptap pre code {
   background: none;
   padding: 0;
-}
-
-.tiptap ul[data-type="taskList"] {
-  list-style: none;
-  padding-left: 0;
-}
-
-.tiptap ul[data-type="taskList"] li {
-  align-items: flex-start;
-  display: flex;
-  gap: 8px;
-}
-
-.tiptap ul[data-type="taskList"] li label {
-  flex: 0 0 auto;
-  margin-top: 3px;
-}
-
-.tiptap ul[data-type="taskList"] li label input[type="checkbox"] {
-  accent-color: var(--color-accent);
-  cursor: pointer;
-  height: 16px;
-  width: 16px;
-}
-
-.tiptap ul[data-type="taskList"] li div {
-  flex: 1;
-}
-
-.tiptap ul[data-type="taskList"] li[data-checked="true"] > div > p {
-  color: var(--color-text-secondary);
-  text-decoration: line-through;
 }
 
 .tiptap a {

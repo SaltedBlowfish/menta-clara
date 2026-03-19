@@ -3,9 +3,6 @@ import type { Editor } from '@tiptap/core';
 import { Extension } from '@tiptap/core';
 
 function trySink(editor: Editor): boolean {
-  if (editor.can().sinkListItem('taskItem')) {
-    return editor.commands.sinkListItem('taskItem');
-  }
   if (editor.can().sinkListItem('listItem')) {
     return editor.commands.sinkListItem('listItem');
   }
@@ -13,9 +10,6 @@ function trySink(editor: Editor): boolean {
 }
 
 function tryLift(editor: Editor): boolean {
-  if (editor.can().liftListItem('taskItem')) {
-    return editor.commands.liftListItem('taskItem');
-  }
   if (editor.can().liftListItem('listItem')) {
     return editor.commands.liftListItem('listItem');
   }
