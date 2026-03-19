@@ -11,10 +11,10 @@ export function CarryOverPrompt({ label, onCarryOver, onStartBlank }: CarryOverP
     <div className="carry-over-prompt">
       <p className="carry-over-text">Bring over content from {label}?</p>
       <div className="carry-over-actions">
-        <button className="carry-over-btn carry-over-btn-primary" onClick={onCarryOver} type="button">
+        <button className="btn btn-primary" onClick={onCarryOver} type="button">
           Carry over
         </button>
-        <button className="carry-over-btn" onClick={onStartBlank} type="button">
+        <button className="btn btn-secondary" onClick={onStartBlank} type="button">
           Start blank
         </button>
       </div>

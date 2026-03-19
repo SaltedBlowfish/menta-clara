@@ -18,34 +18,3 @@
   gap: 8px;
 }
 
-.carry-over-btn {
-  background: none;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 13px;
-  padding: 6px 16px;
-}
-
-.carry-over-btn:hover {
-  border-color: var(--color-text-secondary);
-  color: var(--color-text);
-}
-
-.carry-over-btn:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
-.carry-over-btn-primary {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-bg);
-}
-
-.carry-over-btn-primary:hover {
-  color: var(--color-bg);
-  opacity: 0.9;
-}

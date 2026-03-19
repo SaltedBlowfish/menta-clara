@@ -1,4 +1,5 @@
 @import '../theme/theme-tokens.css';
+@import '../shared/button.css';
 
 /* Reset */
 *,

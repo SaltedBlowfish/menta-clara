@@ -75,14 +75,14 @@ export function AboutDialog() {
           {!seen ? (
             <>
               <button
-                className="welcome-btn welcome-btn-secondary"
+                className="btn btn-secondary"
                 onClick={handleClose}
                 type="button"
               >
                 Start blank
               </button>
               <button
-                className="welcome-btn welcome-btn-primary"
+                className="btn btn-primary"
                 onClick={handleLoadSample}
                 type="button"
               >
@@ -91,7 +91,7 @@ export function AboutDialog() {
             </>
           ) : (
             <button
-              className="welcome-btn welcome-btn-secondary"
+              className="btn btn-secondary"
               onClick={handleClose}
               type="button"
             >

@@ -90,8 +90,8 @@ export function SyncDialog() {
                   Generate a code, then enter it on your other device.
                 </p>
                 <div className="sync-actions">
-                  <button className="sync-btn" onClick={handleClose} type="button">Cancel</button>
-                  <button className="sync-btn sync-btn-primary" onClick={handleHost} type="button">Generate code</button>
+                  <button className="btn btn-secondary" onClick={handleClose} type="button">Cancel</button>
+                  <button className="btn btn-primary" onClick={handleHost} type="button">Generate code</button>
                 </div>
               </>
             ) : (
@@ -105,9 +105,9 @@ export function SyncDialog() {
                   value={joinCode}
                 />
                 <div className="sync-actions">
-                  <button className="sync-btn" onClick={handleClose} type="button">Cancel</button>
+                  <button className="btn btn-secondary" onClick={handleClose} type="button">Cancel</button>
                   <button
-                    className="sync-btn sync-btn-primary"
+                    className="btn btn-primary"
                     disabled={joinCode.trim().length < 4}
                     onClick={handleJoin}
                     type="button"
@@ -137,10 +137,10 @@ export function SyncDialog() {
             )}
 
             <div className="sync-actions">
-              <button className="sync-btn sync-btn-danger" onClick={handleDisconnect} type="button">
+              <button className="btn btn-danger" onClick={handleDisconnect} type="button">
                 Disconnect
               </button>
-              <button className="sync-btn" onClick={handleClose} type="button">
+              <button className="btn btn-secondary" onClick={handleClose} type="button">
                 Close
               </button>
             </div>

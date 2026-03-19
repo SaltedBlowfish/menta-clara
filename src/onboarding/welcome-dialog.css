@@ -53,30 +53,3 @@ dialog.welcome-dialog::backdrop {
   margin-top: 24px;
 }
 
-.welcome-btn {
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 8px 16px;
-}
-
-.welcome-btn-secondary {
-  background: var(--color-bg);
-  color: var(--color-text);
-}
-
-.welcome-btn-secondary:hover {
-  background: var(--color-bg-secondary);
-}
-
-.welcome-btn-primary {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-bg);
-}
-
-.welcome-btn-primary:hover {
-  opacity: 0.9;
-}
