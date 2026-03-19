@@ -1,7 +1,7 @@
 import { format, parseISO } from 'date-fns';
 import { getISOWeek } from 'date-fns/getISOWeek';
 // eslint-disable-next-line no-restricted-imports -- DOM event subscription
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import './app.css';
 import { CalendarSection } from '../calendar/calendar-section';
@@ -24,6 +24,7 @@ export function App() {
   const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
   const [announcement, setAnnouncement] = useState('');
   const isMobile = useIsMobile();
+  const mobilePanelRef = useRef<{ goToDaily: () => void } | null>(null);
 
   const todayNoteId = `daily:${format(new Date(), 'yyyy-MM-dd')}`;
   const [activeNote, setActiveNote] = useState<ActiveNote>({
@@ -56,14 +57,15 @@ export function App() {
       id: `daily:${format(date, 'yyyy-MM-dd')}`,
       type: 'daily',
     });
+    // On mobile, switch to the daily panel after selecting a date
+    mobilePanelRef.current?.goToDaily();
   }, [navigateToNote]);
 
-  const handleSelectDayFromStack = useCallback((dateStr: string) => {
-    const date = parseISO(dateStr);
-    setSelectedDate(date);
-    setAnnouncement(`Viewing ${format(date, 'MMMM d, yyyy')}`);
-    navigateToNote({ id: `daily:${dateStr}`, type: 'daily' });
-  }, [navigateToNote]);
+  const handleToday = useCallback(() => {
+    returnToToday();
+    setAnnouncement('Viewing today');
+    mobilePanelRef.current?.goToDaily();
+  }, [returnToToday]);
 
   const shortcuts = useMemo(() => [
     {
@@ -80,7 +82,12 @@ export function App() {
       key: ']',
       meta: true,
     },
-  ], []);
+    {
+      handler: handleToday,
+      key: 't',
+      meta: true,
+    },
+  ], [handleToday]);
 
   useKeyboardShortcuts(shortcuts);
 
@@ -145,7 +152,6 @@ export function App() {
     <DailyPane
       actions={isMobile ? weeklyActions : undefined}
       date={selectedDate}
-      onSelectDate={handleSelectDayFromStack}
     />
   );
   const weeklyContent = (
@@ -155,21 +161,27 @@ export function App() {
       </div>
       {!isMobile && (
         <div className="right-pane-calendar">
-          <CalendarSection onSelectDay={handleSelectDay} selectedDate={selectedDate} />
+          <CalendarSection onSelectDay={handleSelectDay} onToday={handleToday} selectedDate={selectedDate} />
         </div>
       )}
     </Pane>
   );
   const calendarContent = (
     <Pane actions={weeklyActions} title="Calendar">
-      <CalendarSection onSelectDay={handleSelectDay} selectedDate={selectedDate} />
+      <CalendarSection onSelectDay={handleSelectDay} onToday={handleToday} selectedDate={selectedDate} />
     </Pane>
   );
 
   return (
     <ActiveNoteContext.Provider value={activeNoteValue}>
       {isMobile ? (
-        <MobileLayout calendar={calendarContent} daily={dailyContent} weekly={weeklyContent} />
+        <MobileLayout
+          calendar={calendarContent}
+          daily={dailyContent}
+          onTodayTab={handleToday}
+          panelRef={mobilePanelRef}
+          weekly={weeklyContent}
+        />
       ) : (
         <div className="app-shell" onFocusCapture={handleFocusCapture}>
           <SplitPane left={dailyContent} right={weeklyContent} />

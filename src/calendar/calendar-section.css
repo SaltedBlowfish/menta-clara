@@ -8,6 +8,31 @@
   }
 }
 
+.calendar-header {
+  align-items: center;
+  display: flex;
+}
+
+.calendar-header > .section-title {
+  flex: 1;
+}
+
+.calendar-today-btn {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  margin-right: 16px;
+  padding: 2px 8px;
+}
+
+.calendar-today-btn:hover {
+  color: var(--color-text);
+}
+
 .calendar-nav {
   align-items: center;
   display: flex;

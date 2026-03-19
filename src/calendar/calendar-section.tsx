@@ -2,15 +2,17 @@ import './calendar-section.css';
 
 import { useMemo } from 'react';
 
+import { Tooltip } from '../shared/tooltip';
 import { CalendarGrid } from './calendar-grid';
 import { useCalendar } from './use-calendar';
 
 interface CalendarSectionProps {
   onSelectDay: (date: Date) => void;
+  onToday?: () => void;
   selectedDate: Date;
 }
 
-export function CalendarSection({ onSelectDay, selectedDate }: CalendarSectionProps) {
+export function CalendarSection({ onSelectDay, onToday, selectedDate }: CalendarSectionProps) {
   const { daysWithNotes, displayedMonth, goToNextMonth, goToPreviousMonth, monthLabel, weeksWithNotes } =
     useCalendar(selectedDate);
 
@@ -18,7 +20,20 @@ export function CalendarSection({ onSelectDay, selectedDate }: CalendarSectionPr
 
   return (
     <div className="calendar-wrapper">
-      <span className="section-title">Calendar</span>
+      <div className="calendar-header">
+        <span className="section-title">Calendar</span>
+        {onToday && (
+          <Tooltip label="Jump to today">
+            <button
+              className="calendar-today-btn"
+              onClick={onToday}
+              type="button"
+            >
+              Today
+            </button>
+          </Tooltip>
+        )}
+      </div>
       <div className="calendar-nav">
         <button
           aria-label="Previous month"

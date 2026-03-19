@@ -7,21 +7,28 @@ import './mobile-layout.css';
 interface MobileLayoutProps {
   calendar: ReactNode;
   daily: ReactNode;
+  onTodayTab?: () => void;
+  panelRef?: React.RefObject<{ goToDaily: () => void } | null>;
   weekly: ReactNode;
 }
 
 const SWIPE_THRESHOLD = 50;
 
-export function MobileLayout({ calendar, daily, weekly }: MobileLayoutProps) {
+export function MobileLayout({ calendar, daily, onTodayTab, panelRef, weekly }: MobileLayoutProps) {
   const [panel, setPanel] = useState(1); // 0=calendar, 1=daily, 2=weekly
   const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const swiping = useRef(false);
+
+  // Expose goToDaily for parent to call when calendar date is clicked
+  if (panelRef) {
+    (panelRef as React.MutableRefObject<{ goToDaily: () => void } | null>).current = {
+      goToDaily: () => setPanel(1),
+    };
+  }
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     const touch = e.touches[0];
     if (touch) {
       touchStart.current = { x: touch.clientX, y: touch.clientY };
-      swiping.current = false;
     }
   }, []);
 
@@ -34,7 +41,6 @@ export function MobileLayout({ calendar, daily, weekly }: MobileLayoutProps) {
     const dy = touch.clientY - touchStart.current.y;
     touchStart.current = null;
 
-    // Only swipe if horizontal movement dominates
     if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dy) > Math.abs(dx)) return;
 
     if (dx > 0 && panel > 0) {
@@ -43,6 +49,11 @@ export function MobileLayout({ calendar, daily, weekly }: MobileLayoutProps) {
       setPanel(panel + 1);
     }
   }, [panel]);
+
+  const handleTodayTab = useCallback(() => {
+    setPanel(1);
+    onTodayTab?.();
+  }, [onTodayTab]);
 
   return (
     <div className="mobile-layout">
@@ -66,7 +77,7 @@ export function MobileLayout({ calendar, daily, weekly }: MobileLayoutProps) {
           </svg>
           Calendar
         </button>
-        <button className={`mobile-tab${panel === 1 ? ' active' : ''}`} onClick={() => setPanel(1)} type="button">
+        <button className={`mobile-tab${panel === 1 ? ' active' : ''}`} onClick={handleTodayTab} type="button">
           <svg fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
             <path d="M12 8v4l2 2" strokeLinecap="round" />
             <circle cx="12" cy="12" r="9" />
