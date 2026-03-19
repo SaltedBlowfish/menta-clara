@@ -27,7 +27,9 @@ export function CalendarDay({
     <button
       aria-label={format(date, 'MMMM d, yyyy')}
       className={className}
+      data-selected={isSelected ? '' : undefined}
       onClick={() => { onSelect(date); }}
+      tabIndex={isSelected ? 0 : -1}
       type="button"
     >
       <span className="calendar-day-number">{getDate(date)}</span>

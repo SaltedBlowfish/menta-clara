@@ -57,8 +57,11 @@ export function App() {
       id: `daily:${format(date, 'yyyy-MM-dd')}`,
       type: 'daily',
     });
-    // On mobile, switch to the daily panel after selecting a date
     mobilePanelRef.current?.goToDaily();
+    // Refocus the daily editor after navigating
+    requestAnimationFrame(() => {
+      document.querySelector<HTMLElement>('#daily-pane .tiptap')?.focus();
+    });
   }, [navigateToNote]);
 
   const handleToday = useCallback(() => {
@@ -85,6 +88,16 @@ export function App() {
     {
       handler: handleToday,
       key: '.',
+      meta: true,
+    },
+    {
+      handler: () => {
+        const selected = document.querySelector<HTMLButtonElement>('.calendar-day[data-selected]');
+        if (selected) {
+          selected.focus();
+        }
+      },
+      key: 'k',
       meta: true,
     },
   ], [handleToday]);
