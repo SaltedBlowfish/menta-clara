@@ -88,9 +88,7 @@ function connectDocToRoom(noteId: string, doc: Y.Doc, room: string) {
 
   const provider = new WebrtcProvider(ROOM_PREFIX + room + '-' + noteId, doc, {
     signaling: [
-      'wss://signaling.yjs.dev',
-      'wss://y-webrtc-signaling-eu.herokuapp.com',
-      'wss://y-webrtc-signaling-us.herokuapp.com',
+      'wss://yjs-signaling.onrender.com',
     ],
   });
 
