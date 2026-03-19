@@ -37,85 +37,14 @@ export function requestLoad(key: string): void {
   })();
 }
 
-// Optional hook for broadcasting changes to sync peers
-let onRecordChange: ((value: { [key: string]: unknown; id: string }) => void) | null = null;
-
-export function setOnRecordChange(cb: ((value: { [key: string]: unknown; id: string }) => void) | null): void {
-  onRecordChange = cb;
-}
-
-let suppressBroadcast = false;
-
 export function putRecord(value: { [key: string]: unknown; id: string; }): void {
   cache.set(value.id, value);
   invalidateRanges(value.id);
   notify();
-  if (!suppressBroadcast && onRecordChange) {
-    onRecordChange(value);
-  }
   void (async () => {
     const db = await getDatabase();
     await db.put(NOTES_STORE, value);
   })();
-}
-
-/** Apply a remote record without triggering the broadcast hook.
- *  Newer wins silently — older incoming records are dropped. */
-export function putRecordSilent(value: { [key: string]: unknown; id: string }): void {
-  const existing = cache.get(value.id);
-  const existingTime = typeof existing === 'object' && existing !== null && 'updatedAt' in existing
-    ? (existing as { updatedAt: number }).updatedAt : 0;
-  const incomingTime = typeof value['updatedAt'] === 'number' ? value['updatedAt'] : 0;
-
-  if (incomingTime < existingTime) return;
-
-  suppressBroadcast = true;
-  putRecord(value);
-  suppressBroadcast = false;
-}
-
-/**
- * Apply many remote records in one batch. Only applies records that are
- * newer than what we already have (last-write-wins by updatedAt).
- * Writes to IndexedDB in a single transaction, then notifies once.
- * Does not trigger the broadcast hook (prevents echo).
- */
-export function putRecordsBatch(values: ReadonlyArray<{ [key: string]: unknown; id: string }>): void {
-  if (values.length === 0) return;
-
-  const toWrite: Array<{ [key: string]: unknown; id: string }> = [];
-
-  for (const value of values) {
-    const existing = cache.get(value.id);
-    const existingTime = typeof existing === 'object' && existing !== null && 'updatedAt' in existing
-      ? (existing as { updatedAt: number }).updatedAt
-      : 0;
-    const incomingTime = typeof value['updatedAt'] === 'number' ? value['updatedAt'] : 0;
-
-    if (incomingTime >= existingTime) {
-      cache.set(value.id, value);
-      toWrite.push(value);
-    }
-  }
-
-  if (toWrite.length === 0) return;
-
-  // Clear all range caches once (cheaper than per-record invalidation)
-  rangeCache.clear();
-  pendingRanges.clear();
-
-  // Write to IndexedDB in a single transaction
-  void (async () => {
-    const db = await getDatabase();
-    const tx = db.transaction(NOTES_STORE, 'readwrite');
-    for (const value of toWrite) {
-      void tx.store.put(value);
-    }
-    await tx.done;
-  })();
-
-  // Notify once at the end
-  notify();
 }
 
 export function deleteRecord(key: string): void {

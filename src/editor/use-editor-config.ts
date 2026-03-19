@@ -1,8 +1,10 @@
 import type { JSONContent } from '@tiptap/react';
 
+import Collaboration from '@tiptap/extension-collaboration';
 import { useEditor } from '@tiptap/react';
 import { useRef } from 'react';
 
+import { getYDoc } from '../sync/yjs-provider';
 import { editorExtensions } from './extensions';
 
 interface UseEditorConfigOptions {
@@ -16,26 +18,31 @@ export function useEditorConfig(options: UseEditorConfigOptions) {
   const onUpdateRef = useRef(onUpdate);
   onUpdateRef.current = onUpdate;
   const appliedNoteRef = useRef<string | undefined>(undefined);
-  const appliedContentRef = useRef<JSONContent | null>(null);
 
-  const editor = useEditor({
-    content: '',
-    extensions: editorExtensions,
-    immediatelyRender: false,
-    onUpdate: ({ editor: e }) => {
-      onUpdateRef.current(e.getJSON());
+  const ydoc = noteId ? getYDoc(noteId) : undefined;
+
+  const editor = useEditor(
+    {
+      extensions: [
+        ...editorExtensions,
+        ...(ydoc
+          ? [Collaboration.configure({ document: ydoc })]
+          : []),
+      ],
+      immediatelyRender: false,
+      onUpdate: ({ editor: e }) => {
+        onUpdateRef.current(e.getJSON());
+      },
     },
-  });
+    // Re-create the editor when noteId changes so Collaboration binds to the new Y.Doc
+    [noteId],
+  );
 
-  if (editor && content !== null) {
-    const noteChanged = appliedNoteRef.current !== noteId;
-    const contentChanged = appliedContentRef.current !== content;
-    // Always apply on note change. For same note, only apply if the editor
-    // is not focused — this means the change came from an external source
-    // (e.g. sample data loaded) rather than the user typing.
-    if (noteChanged || (contentChanged && !editor.isFocused)) {
-      appliedNoteRef.current = noteId;
-      appliedContentRef.current = content;
+  // Seed the Y.Doc with initial content if it's empty and we have content
+  if (editor && ydoc && content !== null && appliedNoteRef.current !== noteId) {
+    appliedNoteRef.current = noteId;
+    const fragment = ydoc.getXmlFragment('default');
+    if (fragment.length === 0) {
       editor.commands.setContent(content);
     }
   }

@@ -2,33 +2,27 @@ import { useCallback, useRef, useState, useSyncExternalStore } from 'react';
 
 import { Tooltip } from '../shared/tooltip';
 import {
-  approvePendingSync,
-  disconnect,
+  disconnectSync,
   getCode,
-  getDeviceCount,
-  getPendingApproval,
+  getPeerCount,
   getStatus,
-  hostSync,
   joinSync,
-  rejectPendingSync,
   restoreSession,
+  startSync,
   subscribeStatus,
-} from './peer-sync';
+} from './yjs-provider';
 import './sync-dialog.css';
 
 // Auto-reconnect if there was an active session before page refresh
 restoreSession();
 
-type Tab = 'host' | 'join';
-
 export function SyncDialog() {
   const status = useSyncExternalStore(subscribeStatus, getStatus);
   const code = useSyncExternalStore(subscribeStatus, getCode);
-  const devices = useSyncExternalStore(subscribeStatus, getDeviceCount);
-  const pending = useSyncExternalStore(subscribeStatus, getPendingApproval);
+  const peers = useSyncExternalStore(subscribeStatus, getPeerCount);
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const [tab, setTab] = useState<Tab>('host');
   const [joinCode, setJoinCode] = useState('');
+  const [mode, setMode] = useState<'idle' | 'join' | 'started'>('idle');
 
   const handleOpen = useCallback(() => {
     dialogRef.current?.showModal();
@@ -38,33 +32,33 @@ export function SyncDialog() {
     dialogRef.current?.close();
   }, []);
 
-  const handleHost = useCallback(() => {
-    hostSync();
+  const handleStart = useCallback(() => {
+    startSync();
+    setMode('started');
   }, []);
 
   const handleJoin = useCallback(() => {
     if (joinCode.trim().length >= 4) {
       joinSync(joinCode);
+      setMode('started');
     }
   }, [joinCode]);
 
   const handleDisconnect = useCallback(() => {
-    disconnect();
+    disconnectSync();
     setJoinCode('');
+    setMode('idle');
   }, []);
 
   const isActive = status !== 'disconnected';
 
   const statusDot = status === 'connected' ? 'sync-dot-connected'
-    : status === 'waiting' || status === 'connecting' ? 'sync-dot-waiting'
-    : status === 'error' ? 'sync-dot-error'
+    : status === 'connecting' ? 'sync-dot-waiting'
     : '';
 
   const statusText = status === 'connected'
-    ? `Connected — ${String(devices)} ${devices === 1 ? 'device' : 'devices'} syncing`
-    : status === 'waiting' ? 'Waiting for devices to connect...'
-    : status === 'connecting' ? 'Connecting...'
-    : status === 'error' ? 'Connection failed — try again'
+    ? `Connected — ${String(peers)} other ${peers === 1 ? 'device' : 'devices'}`
+    : status === 'connecting' ? 'Waiting for other devices...'
     : '';
 
   return (
@@ -87,90 +81,44 @@ export function SyncDialog() {
       <dialog className="sync-dialog" ref={dialogRef}>
         <h2 className="sync-title">Sync Devices</h2>
 
-        {pending ? (
-          <>
-            <div className="sync-warning">
-              <p>
-                <strong>Heads up:</strong> The connecting device has
-                significantly fewer notes ({pending.remoteCount}) than this
-                device ({pending.localCount}). This could mean the other
-                device was recently reset.
-              </p>
-              <p>
-                Accepting will merge its notes into yours. Your existing
-                notes are safe — only newer versions will overwrite older
-                ones.
-              </p>
-            </div>
-            <div className="sync-actions">
-              <button className="btn btn-danger" onClick={rejectPendingSync} type="button">
-                Reject sync
-              </button>
-              <button className="btn btn-primary" onClick={approvePendingSync} type="button">
-                Accept & merge
-              </button>
-            </div>
-          </>
-        ) : !isActive ? (
+        {!isActive && mode === 'idle' ? (
           <>
             <p className="sync-description">
-              Connect your devices directly over the internet.
-              Notes transfer peer-to-peer — nothing passes through our
-              servers. Multiple devices can join the same code.
+              Connect your devices for real-time collaborative sync.
+              Edits merge automatically — no conflicts, no data loss.
+              All data transfers peer-to-peer.
             </p>
 
-            <div className="sync-tabs">
-              <button className={`sync-tab${tab === 'host' ? ' active' : ''}`} onClick={() => setTab('host')} type="button">
-                This device has notes
-              </button>
-              <button className={`sync-tab${tab === 'join' ? ' active' : ''}`} onClick={() => setTab('join')} type="button">
-                I have a code
-              </button>
-            </div>
+            <p className="sync-hint">
+              Start a new sync room, or enter a code from another device.
+            </p>
 
-            {tab === 'host' ? (
-              <>
-                <p className="sync-hint">
-                  Generate a code, then enter it on your other devices.
-                  This device stays as the host — all others connect to it.
-                </p>
-                <div className="sync-actions">
-                  <button className="btn btn-secondary" onClick={handleClose} type="button">Cancel</button>
-                  <button className="btn btn-primary" onClick={handleHost} type="button">Generate code</button>
-                </div>
-              </>
-            ) : (
-              <>
-                <input
-                  className="sync-code-input"
-                  maxLength={6}
-                  onChange={(e) => setJoinCode(e.target.value)}
-                  placeholder="Enter 6-character code"
-                  type="text"
-                  value={joinCode}
-                />
-                <div className="sync-actions">
-                  <button className="btn btn-secondary" onClick={handleClose} type="button">Cancel</button>
-                  <button
-                    className="btn btn-primary"
-                    disabled={joinCode.trim().length < 4}
-                    onClick={handleJoin}
-                    type="button"
-                  >
-                    Connect
-                  </button>
-                </div>
-              </>
-            )}
+            <input
+              className="sync-code-input"
+              maxLength={6}
+              onChange={(e) => setJoinCode(e.target.value)}
+              placeholder="Enter code to join..."
+              type="text"
+              value={joinCode}
+            />
+
+            <div className="sync-actions">
+              <button className="btn btn-secondary" onClick={handleClose} type="button">Cancel</button>
+              {joinCode.trim().length >= 4 ? (
+                <button className="btn btn-primary" onClick={handleJoin} type="button">Join room</button>
+              ) : (
+                <button className="btn btn-primary" onClick={handleStart} type="button">New room</button>
+              )}
+            </div>
           </>
         ) : (
           <>
-            {code && status === 'waiting' && (
+            {code && (
               <>
                 <div className="sync-code-display">{code}</div>
                 <p className="sync-hint">
-                  Enter this code on your other devices. Multiple devices
-                  can connect using the same code.
+                  Enter this code on your other devices to sync.
+                  Edits sync instantly across all connected devices.
                 </p>
               </>
             )}
@@ -182,9 +130,8 @@ export function SyncDialog() {
 
             {status === 'connected' && (
               <p className="sync-hint">
-                All connected devices are synced. Edits appear on every
-                device instantly. Keep this tab open on all devices.
-                {devices > 1 ? ` More devices can still join using code ${code}.` : ''}
+                All devices are synced. You can edit on any device — changes
+                merge automatically in real time.
               </p>
             )}
 
