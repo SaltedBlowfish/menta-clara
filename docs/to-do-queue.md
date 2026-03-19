@@ -1,2 +1,2 @@
 - On mobile view, the calendar doesn't need to max out at a small width / height. Make it full width of the screen.
--
+- "Browse notes" switcher doesn't work on mobile when scrolling up or down with touch.
