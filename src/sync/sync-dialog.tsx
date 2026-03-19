@@ -11,9 +11,13 @@ import {
   hostSync,
   joinSync,
   rejectPendingSync,
+  restoreSession,
   subscribeStatus,
 } from './peer-sync';
 import './sync-dialog.css';
+
+// Auto-reconnect if there was an active session before page refresh
+restoreSession();
 
 type Tab = 'host' | 'join';
 

@@ -29,6 +29,35 @@ function isSyncNote(v: unknown): v is SyncNote {
   return typeof v === 'object' && v !== null && 'id' in v && 'updatedAt' in v;
 }
 
+// ── Session persistence ──
+
+const SESSION_KEY = 'menta-clara-sync';
+
+interface SyncSession {
+  code: string;
+  role: 'host' | 'join';
+}
+
+function saveSession(role: 'host' | 'join', code: string) {
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify({ code, role }));
+}
+
+function clearSession() {
+  sessionStorage.removeItem(SESSION_KEY);
+}
+
+function getSavedSession(): SyncSession | null {
+  const raw = sessionStorage.getItem(SESSION_KEY);
+  if (!raw) return null;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (typeof parsed === 'object' && parsed !== null && 'role' in parsed && 'code' in parsed) {
+      return parsed as SyncSession;
+    }
+  } catch { /* ignore */ }
+  return null;
+}
+
 // ── State ──
 
 export type SyncStatus = 'connected' | 'connecting' | 'disconnected' | 'error' | 'waiting';
@@ -40,7 +69,6 @@ let deviceCount = 0;
 let peer: Peer | null = null;
 const connections = new Set<DataConnection>();
 
-// Pending sync approval
 let pendingApproval: { accept: () => void; localCount: number; reject: () => void; remoteCount: number } | null = null;
 
 function notifyStatus() {
@@ -124,19 +152,15 @@ function handleMessage(data: unknown, sender: DataConnection) {
       const remoteCount = remoteNotes.length;
 
       void getLocalNoteCount().then((localCount) => {
-        // Safety check: warn if local device has notes but the remote has
-        // significantly fewer (could mean the remote was reset/wiped)
         if (localCount > 5 && remoteCount === 0) {
-          // Remote is empty — safe, just send our notes, don't apply theirs
           return;
         }
 
         if (localCount > 10 && remoteCount > 0 && remoteCount < localCount / 2) {
-          // Remote has much fewer notes — ask user before applying
           pendingApproval = {
             accept: () => { applyNotes(remoteNotes); },
             localCount,
-            reject: () => { /* do nothing — keep local data */ },
+            reject: () => { /* keep local data */ },
             remoteCount,
           };
           notifyStatus();
@@ -148,8 +172,6 @@ function handleMessage(data: unknown, sender: DataConnection) {
     } else if (msg.type === 'update') {
       if (msg.note.id.startsWith('setting:')) return;
       putRecordSilent(msg.note);
-
-      // Relay to all other connected devices
       broadcastToOthers(sender, msg);
     }
   } catch (err) {
@@ -173,7 +195,6 @@ function setupConnection(connection: DataConnection) {
     updateDeviceCount();
     setStatus('connected');
 
-    // Send all our notes to the new peer
     void getAllNotes().then((notes) => {
       const msg: SyncMessage = { noteCount: notes.length, notes, type: 'sync' };
       connection.send(msg);
@@ -187,8 +208,17 @@ function setupConnection(connection: DataConnection) {
   connection.on('close', () => {
     connections.delete(connection);
     updateDeviceCount();
-    if (connections.size === 0) {
-      cleanup();
+    if (connections.size === 0 && currentStatus === 'connected') {
+      // Lost all connections — go back to waiting (host) or reconnect (joiner)
+      const session = getSavedSession();
+      if (session?.role === 'host') {
+        setStatus('waiting');
+      } else if (session) {
+        // Joiner lost connection — auto-retry
+        attemptReconnect(session.code);
+      } else {
+        cleanup();
+      }
     }
   });
 
@@ -196,9 +226,6 @@ function setupConnection(connection: DataConnection) {
     console.error('PeerJS connection error:', err);
     connections.delete(connection);
     updateDeviceCount();
-    if (connections.size === 0) {
-      setStatus('error');
-    }
   });
 }
 
@@ -214,6 +241,42 @@ function installBroadcastHook() {
   });
 }
 
+// ── Reconnect ──
+
+const RECONNECT_DELAY = 2000;
+const MAX_RETRIES = 5;
+let retryCount = 0;
+let retryTimer: ReturnType<typeof setTimeout> | undefined;
+
+function attemptReconnect(code: string) {
+  if (retryCount >= MAX_RETRIES) {
+    console.warn('Max reconnect retries reached');
+    cleanup();
+    return;
+  }
+  retryCount++;
+  setStatus('connecting');
+
+  retryTimer = setTimeout(() => {
+    if (!peer || peer.destroyed) {
+      peer = new Peer();
+      peer.on('open', () => {
+        installBroadcastHook();
+        const connection = peer!.connect(PEER_PREFIX + code, { reliable: true });
+        setupConnection(connection);
+        connection.on('open', () => { retryCount = 0; });
+      });
+      peer.on('error', () => {
+        attemptReconnect(code);
+      });
+    } else {
+      const connection = peer.connect(PEER_PREFIX + code, { reliable: true });
+      setupConnection(connection);
+      connection.on('open', () => { retryCount = 0; });
+    }
+  }, RECONNECT_DELAY);
+}
+
 // ── Public API ──
 
 const PEER_PREFIX = 'menta-clara-';
@@ -227,12 +290,13 @@ function generateCode(): string {
   return code;
 }
 
-export function hostSync(): string {
+export function hostSync(existingCode?: string): string {
   disconnect();
 
-  const code = generateCode();
+  const code = existingCode ?? generateCode();
   currentCode = code;
   setStatus('waiting');
+  saveSession('host', code);
 
   peer = new Peer(PEER_PREFIX + code);
 
@@ -241,14 +305,25 @@ export function hostSync(): string {
     installBroadcastHook();
   });
 
-  // Accept multiple incoming connections
   peer.on('connection', (connection) => {
     setupConnection(connection);
   });
 
   peer.on('error', (err) => {
     console.error('PeerJS error:', err);
-    setStatus('error');
+    // If the peer ID is taken (host refreshed too fast), retry with same code
+    if (String(err).includes('unavailable')) {
+      setTimeout(() => {
+        if (currentCode === code) {
+          peer = new Peer(PEER_PREFIX + code);
+          peer.on('open', () => { setStatus('waiting'); installBroadcastHook(); });
+          peer.on('connection', (c) => { setupConnection(c); });
+          peer.on('error', () => { setStatus('error'); });
+        }
+      }, RECONNECT_DELAY);
+    } else {
+      setStatus('error');
+    }
   });
 
   return code;
@@ -260,6 +335,8 @@ export function joinSync(code: string): void {
   const normalized = code.toUpperCase().replace(/\s/g, '');
   currentCode = normalized;
   setStatus('connecting');
+  saveSession('join', normalized);
+  retryCount = 0;
 
   peer = new Peer();
 
@@ -271,19 +348,22 @@ export function joinSync(code: string): void {
 
   peer.on('error', (err) => {
     console.error('PeerJS error:', err);
-    setStatus('error');
+    attemptReconnect(normalized);
   });
 }
 
 function cleanup() {
+  clearTimeout(retryTimer);
   setOnRecordChange(null);
   connections.clear();
   deviceCount = 0;
   pendingApproval = null;
+  clearSession();
   setStatus('disconnected');
 }
 
 export function disconnect(): void {
+  clearTimeout(retryTimer);
   for (const c of connections) {
     c.close();
   }
@@ -295,6 +375,21 @@ export function disconnect(): void {
   setOnRecordChange(null);
   currentCode = '';
   deviceCount = 0;
+  retryCount = 0;
   pendingApproval = null;
+  clearSession();
   setStatus('disconnected');
+}
+
+// ── Auto-reconnect on page load ──
+
+export function restoreSession(): void {
+  const session = getSavedSession();
+  if (!session) return;
+
+  if (session.role === 'host') {
+    hostSync(session.code);
+  } else {
+    joinSync(session.code);
+  }
 }
