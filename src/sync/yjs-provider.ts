@@ -87,7 +87,11 @@ function connectDocToRoom(noteId: string, doc: Y.Doc, room: string) {
   if (providers.has(noteId)) return;
 
   const provider = new WebrtcProvider(ROOM_PREFIX + room + '-' + noteId, doc, {
-    signaling: ['wss://signaling.yjs.dev'],
+    signaling: [
+      'wss://signaling.yjs.dev',
+      'wss://y-webrtc-signaling-eu.herokuapp.com',
+      'wss://y-webrtc-signaling-us.herokuapp.com',
+    ],
   });
 
   provider.on('peers', (event: { webrtcPeers: string[] }) => {

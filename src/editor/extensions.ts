@@ -16,6 +16,7 @@ const lowlight = createLowlight(common);
 export const editorExtensions = [
   StarterKit.configure({
     codeBlock: false,
+    undoRedo: false,
     link: false,
     listKeymap: false,
   }),
