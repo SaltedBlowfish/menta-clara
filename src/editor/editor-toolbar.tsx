@@ -28,7 +28,7 @@ function run(editor: Editor, fn: (e: Editor) => void) {
   return () => { fn(editor); };
 }
 
-export function EditorToolbar({ editor }: { editor: Editor }) {
+export function EditorToolbar({ editor, historyButton }: { editor: Editor; historyButton?: React.ReactNode }) {
   return (
     <div className="editor-toolbar">
       <Btn active={editor.isActive('heading', { level: 1 })} label={`Heading 1  ${mod}${alt}1`} onClick={run(editor, (e) => e.chain().focus().toggleHeading({ level: 1 }).run())}>H1</Btn>
@@ -46,6 +46,7 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
       <Btn active={editor.isActive('codeBlock')} label={`Code block  ${mod}${alt}C`} onClick={run(editor, (e) => e.chain().focus().toggleCodeBlock().run())}>{'{ }'}</Btn>
       <div className="editor-toolbar-divider" />
       <Btn active={false} label="Horizontal rule" onClick={run(editor, (e) => e.chain().focus().setHorizontalRule().run())}>&#8213;</Btn>
+      {historyButton}
     </div>
   );
 }

@@ -30,10 +30,7 @@ export function NoteEditor(props: NoteEditorProps) {
 
   return (
     <>
-      <div style={{ alignItems: 'center', display: 'flex', gap: 4 }}>
-        <EditorToolbar editor={editor} />
-        <HistoryDialog noteId={noteId} onRestore={handleRestore} />
-      </div>
+      <EditorToolbar editor={editor} historyButton={<HistoryDialog noteId={noteId} onRestore={handleRestore} />} />
       <EditorContent editor={editor} />
     </>
   );
