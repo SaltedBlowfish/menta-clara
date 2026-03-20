@@ -35,5 +35,9 @@ export function initSync(): void {
         peerCount: event.webrtcPeers.length,
       });
     });
+
+    window.addEventListener('beforeunload', () => {
+      provider.destroy();
+    });
   })();
 }
