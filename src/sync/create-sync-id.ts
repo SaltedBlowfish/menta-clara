@@ -8,3 +8,7 @@ export function getOrCreateSyncId(): string {
   localStorage.setItem(SYNC_ID_KEY, id);
   return id;
 }
+
+export function setSyncId(id: string): void {
+  localStorage.setItem(SYNC_ID_KEY, id);
+}
