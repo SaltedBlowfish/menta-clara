@@ -82,6 +82,20 @@ dialog.sync-dialog::backdrop {
   margin-top: 6px;
 }
 
+.sync-advanced-toggle {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 12px;
+  padding: 0;
+}
+
+.sync-advanced-toggle:hover {
+  color: var(--color-text);
+}
+
 .sync-actions {
   display: flex;
   gap: 8px;

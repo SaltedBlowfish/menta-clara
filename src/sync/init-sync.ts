@@ -2,6 +2,8 @@ import { getOrCreateSyncId, getSignalingUrl } from './create-sync-id';
 import { getWorkspaceDoc } from './doc-store';
 import { updateSyncState } from './sync-state';
 
+const DEFAULT_SIGNALING = 'wss://yjs-signaling.onrender.com';
+
 let initialized = false;
 
 export function initSync(): void {
@@ -19,8 +21,8 @@ export function initSync(): void {
       updateSyncState({ dbLoaded: true });
     });
 
-    const signalingUrl = getSignalingUrl();
-    if (!signalingUrl) return;
+    const custom = getSignalingUrl();
+    const signalingUrl = custom || DEFAULT_SIGNALING;
 
     const { WebrtcProvider } = await import('y-webrtc');
     const provider = new WebrtcProvider(`paneful:${syncId}`, ydoc, {

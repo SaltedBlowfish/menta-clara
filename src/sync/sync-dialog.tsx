@@ -19,8 +19,8 @@ export function SyncDialog(props: SyncDialogProps) {
   const [joinCode, setJoinCode] = useState('');
   const [copied, setCopied] = useState(false);
   const [serverUrl, setServerUrl] = useState(getSignalingUrl);
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const copyTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const hasServer = serverUrl.trim().length > 0;
 
   const handleCopy = useCallback(() => {
     void navigator.clipboard.writeText(syncId);
@@ -45,42 +45,44 @@ export function SyncDialog(props: SyncDialogProps) {
     window.location.reload();
   }, [serverUrl]);
 
-  const status = !hasServer
-    ? 'No signaling server configured'
-    : connected
-      ? `Connected to ${String(peerCount)} device${peerCount === 1 ? '' : 's'}`
-      : 'Waiting for devices\u2026';
+  const status = connected
+    ? `Connected to ${String(peerCount)} device${peerCount === 1 ? '' : 's'}`
+    : 'Waiting for devices\u2026';
 
   return (
     <dialog className="sync-dialog" ref={dialogRef}>
       <h3>Device Sync</h3>
+      <SyncCodeSection copied={copied} onCopy={handleCopy} syncId={syncId} />
+      <hr className="sync-divider" />
+      <JoinSection joinCode={joinCode} onJoin={handleJoin} onSetCode={setJoinCode} syncId={syncId} />
 
-      <div className="sync-section">
-        <div className="sync-section-label">Signaling server</div>
-        <div className="sync-code-row">
-          <input
-            className="sync-join-input"
-            onChange={(e) => setServerUrl(e.target.value)}
-            placeholder="wss://your-server.example.com"
-            type="text"
-            value={serverUrl}
-          />
-          <button className="btn btn-secondary" onClick={handleSaveServer} type="button">
-            {hasServer ? 'Update' : 'Save'}
-          </button>
+      <button
+        className="sync-advanced-toggle"
+        onClick={() => setShowAdvanced(!showAdvanced)}
+        type="button"
+      >
+        {showAdvanced ? 'Hide' : 'Advanced'} settings
+      </button>
+
+      {showAdvanced && (
+        <div className="sync-section">
+          <div className="sync-section-label">Custom signaling server</div>
+          <div className="sync-code-row">
+            <input
+              className="sync-join-input"
+              onChange={(e) => setServerUrl(e.target.value)}
+              placeholder="Default: yjs-signaling.onrender.com"
+              type="text"
+              value={serverUrl}
+            />
+            <button className="btn btn-secondary" onClick={handleSaveServer} type="button">
+              Save
+            </button>
+          </div>
+          <p className="sync-hint">
+            Override the default server. Run signaling-server/ on any host.
+          </p>
         </div>
-        <p className="sync-hint">
-          Required for sync. Run the included signaling-server/ on any host.
-        </p>
-      </div>
-
-      {hasServer && (
-        <>
-          <hr className="sync-divider" />
-          <SyncCodeSection copied={copied} onCopy={handleCopy} syncId={syncId} />
-          <hr className="sync-divider" />
-          <JoinSection joinCode={joinCode} onJoin={handleJoin} onSetCode={setJoinCode} syncId={syncId} />
-        </>
       )}
 
       <div className="sync-actions">
