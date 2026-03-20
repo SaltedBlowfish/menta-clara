@@ -1,4 +1,4 @@
-import { getOrCreateSyncId } from './create-sync-id';
+import { getOrCreateSyncId, getSignalingUrl } from './create-sync-id';
 import { getWorkspaceDoc } from './doc-store';
 import { updateSyncState } from './sync-state';
 
@@ -19,13 +19,12 @@ export function initSync(): void {
       updateSyncState({ dbLoaded: true });
     });
 
+    const signalingUrl = getSignalingUrl();
+    if (!signalingUrl) return;
+
     const { WebrtcProvider } = await import('y-webrtc');
     const provider = new WebrtcProvider(`paneful:${syncId}`, ydoc, {
-      signaling: [
-        'wss://signaling.yjs.dev',
-        'wss://y-webrtc-signaling-eu.herokuapp.com',
-        'wss://y-webrtc-signaling-us.herokuapp.com',
-      ],
+      signaling: [signalingUrl],
     });
 
     provider.on('peers', (event: { webrtcPeers: Array<string> }) => {
