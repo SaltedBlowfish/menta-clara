@@ -63,6 +63,7 @@ body {
 .tiptap {
   font-size: 16px;
   line-height: 1.6;
+  min-height: 100%;
   outline: none;
 }
 
