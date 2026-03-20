@@ -2,9 +2,10 @@ import { exportWorkspace } from './export-workspace';
 import { importWorkspace } from './import-workspace';
 
 const WORKSPACE_ID = 'personal';
+const WORKSPACE_NAME = 'Personal';
 
 export function handleExport(announce: (msg: string) => void): void {
-  void exportWorkspace(WORKSPACE_ID)
+  void exportWorkspace(WORKSPACE_ID, WORKSPACE_NAME)
     .then(() => announce('Data exported successfully'))
     .catch(() => announce('Export failed. Check that your browser allows file downloads.'));
 }

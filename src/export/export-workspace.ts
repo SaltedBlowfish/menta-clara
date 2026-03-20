@@ -37,7 +37,7 @@ function stripWorkspacePrefix(id: string, workspaceId: string): string {
   return id.startsWith(prefix) ? id.slice(prefix.length) : id;
 }
 
-export async function exportWorkspace(workspaceId: string): Promise<Blob> {
+export async function exportWorkspace(workspaceId: string, workspaceName = 'notes'): Promise<Blob> {
   const db = await getDatabase();
   const allNotes = await db.getAll(NOTES_STORE);
   const allImages = await db.getAll(IMAGES_STORE);
@@ -88,7 +88,9 @@ export async function exportWorkspace(workspaceId: string): Promise<Blob> {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${workspaceId}-export.zip`;
+  const now = new Date();
+  const dt = now.toISOString().slice(0, 16).replace('T', '_').replace(':', '-');
+  a.download = `${workspaceName}-${dt}.zip`;
   a.click();
   URL.revokeObjectURL(url);
 
