@@ -1,2 +1,2 @@
-- On mobile view, the calendar doesn't need to max out at a small width / height. Make it full width of the screen.
-- "Browse notes" switcher doesn't work on mobile when scrolling up or down with touch.
+- Copying the content of a note out to a text editor adds a ton of blank newlines and the content is all garbled. We should always end up with either pure markdown or some rich formatted text when copying.
+- Rename export with a clear "mentaclara.com" export name with the workspace and date so users know when and where this zip is from.
