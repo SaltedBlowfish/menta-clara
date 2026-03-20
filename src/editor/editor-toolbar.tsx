@@ -46,6 +46,7 @@ export function EditorToolbar({ editor, historyButton }: { editor: Editor; histo
       <Btn active={editor.isActive('codeBlock')} label={`Code block  ${mod}${alt}C`} onClick={run(editor, (e) => e.chain().focus().toggleCodeBlock().run())}>{'{ }'}</Btn>
       <div className="editor-toolbar-divider" />
       <Btn active={false} label="Horizontal rule" onClick={run(editor, (e) => e.chain().focus().setHorizontalRule().run())}>&#8213;</Btn>
+      <div className="editor-toolbar-spacer" />
       {historyButton}
     </div>
   );
