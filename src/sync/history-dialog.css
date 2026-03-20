@@ -3,13 +3,16 @@ dialog.history-dialog {
   border: 1px solid var(--color-border);
   border-radius: 12px;
   color: var(--color-text);
-  display: flex;
-  flex-direction: row;
   margin: auto;
   max-height: 80vh;
   max-width: 700px;
   padding: 0;
   width: 90vw;
+}
+
+dialog.history-dialog[open] {
+  display: flex;
+  flex-direction: row;
 }
 
 dialog.history-dialog::backdrop {
