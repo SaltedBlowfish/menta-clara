@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 
 import { App } from './app/app';
 import { requestPersistence } from './storage/request-persistence';
+import { SyncProvider } from './sync/sync-provider';
 
 void requestPersistence();
 
@@ -11,7 +12,9 @@ const root = document.getElementById('root');
 if (root) {
   createRoot(root).render(
     <StrictMode>
-      <App />
+      <SyncProvider>
+        <App />
+      </SyncProvider>
     </StrictMode>,
   );
 }

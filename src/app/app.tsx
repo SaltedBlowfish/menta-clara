@@ -16,6 +16,7 @@ import { ShortcutHints } from '../shared/shortcut-hints';
 import { Tooltip } from '../shared/tooltip';
 import { useIsMobile } from '../shared/use-is-mobile';
 import { useKeyboardShortcuts } from '../shared/use-keyboard-shortcuts';
+import { SyncStatus } from '../sync/sync-status';
 import { ThemeToggle } from '../theme/theme-toggle';
 import { WeeklySection } from '../weekly/weekly-section';
 import { type ActiveNote, ActiveNoteContext } from './active-note-context';
@@ -168,6 +169,7 @@ export function App() {
           </svg>
         </button>
       </Tooltip>
+      <SyncStatus />
       <ThemeToggle />
       <AboutDialog />
     </>

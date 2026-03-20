@@ -2,9 +2,9 @@ import type { JSONContent } from '@tiptap/react';
 
 import { MarkdownManager } from '@tiptap/markdown';
 
-import { editorExtensions } from '../editor/extensions';
+import { createExtensions } from '../editor/extensions';
 
-const manager = new MarkdownManager({ extensions: editorExtensions });
+const manager = new MarkdownManager({ extensions: createExtensions(null, 'export') });
 
 export function jsonToMarkdown(json: JSONContent): string {
   const md = manager.serialize(json);

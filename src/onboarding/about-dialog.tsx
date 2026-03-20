@@ -55,9 +55,10 @@ export function AboutDialog() {
           </p>
           <div className="welcome-privacy">
             <p>
-              <strong>Your data never leaves your browser.</strong> Notes are
-              stored in IndexedDB on this device. There is no server, no account,
-              no analytics, no tracking — nothing is transmitted. Ever.
+              <strong>Your data stays yours.</strong> Notes are stored locally in
+              your browser. Sync between your devices is peer-to-peer — your
+              notes travel directly between them, never through a server.
+              No accounts, no analytics, no tracking.
             </p>
             <p className="welcome-muted">
               Don't take our word for it — open your browser's Network tab and see

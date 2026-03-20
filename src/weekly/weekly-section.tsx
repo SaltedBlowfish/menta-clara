@@ -1,10 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
-import { StorageWarning } from '../app/storage-warning';
 import { NoteEditor } from '../editor/editor';
 import { PaneContent } from '../layout/pane';
 import { CarryOverPrompt } from '../shared/carry-over-prompt';
 import { useCarryOver } from '../shared/use-carry-over';
+import { createShadowWrite } from '../sync/shadow-write';
 import { useWeeklyNote } from './use-weekly-note';
 
 interface WeeklySectionProps {
@@ -12,8 +12,7 @@ interface WeeklySectionProps {
 }
 
 export function WeeklySection({ date }: WeeklySectionProps) {
-  const { content, error, isNew, loading, saveContent, weekNoteId } =
-    useWeeklyNote(date);
+  const { isNew, legacyContent, loading, weekNoteId } = useWeeklyNote(date);
   const { carryOver, handleCarryOver, handleStartBlank, resolvedContent } = useCarryOver(weekNoteId, isNew);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -23,26 +22,21 @@ export function WeeklySection({ date }: WeeklySectionProps) {
     }
   }, []);
 
-  const editorContent = isNew ? resolvedContent : content;
-  const showPrompt = isNew && carryOver === 'prompt';
-  const showEditor = !showPrompt && !loading && editorContent !== null;
+  const onUpdate = useMemo(() => createShadowWrite(weekNoteId), [weekNoteId]);
+  const initialContent = legacyContent ?? (isNew ? resolvedContent : undefined);
 
-  return (
-    <>
-      {showPrompt ? (
-        <CarryOverPrompt
-          label="last week's note"
-          onCarryOver={handleCarryOver}
-          onStartBlank={handleStartBlank}
-        />
-      ) : (
-        <PaneContent onMouseDown={handleMouseDown}>
-          {showEditor && (
-            <NoteEditor content={editorContent} noteId={weekNoteId} onUpdate={saveContent} />
-          )}
-        </PaneContent>
-      )}
-      {error ? <StorageWarning message={error} /> : null}
-    </>
-  );
+  const showPrompt = isNew && carryOver === 'prompt';
+  const showEditor = !showPrompt && !loading;
+
+  return showPrompt ? (
+    <CarryOverPrompt
+      label="last week's note"
+      onCarryOver={handleCarryOver}
+      onStartBlank={handleStartBlank}
+    />
+  ) : showEditor ? (
+    <PaneContent onMouseDown={handleMouseDown}>
+      <NoteEditor initialContent={initialContent} noteId={weekNoteId} onUpdate={onUpdate} />
+    </PaneContent>
+  ) : null;
 }

@@ -31,7 +31,7 @@ describe('NoteEditor', () => {
   it('renders null when editor is not ready', () => {
     mockUseEditorConfig.mockReturnValue(null);
     const { container } = render(
-      <NoteEditor content={null} onUpdate={vi.fn()} />,
+      <NoteEditor noteId="daily:2024-01-01" />,
     );
     expect(container.innerHTML).toBe('');
   });
@@ -45,15 +45,19 @@ describe('NoteEditor', () => {
       chain: () => chainable,
       isActive: () => false,
     } as never);
-    render(<NoteEditor content={null} onUpdate={vi.fn()} />);
+    render(<NoteEditor noteId="daily:2024-01-01" />);
     expect(screen.getByTestId('editor-content')).toBeInTheDocument();
   });
 
-  it('passes content and onUpdate to useEditorConfig', () => {
+  it('passes noteId and initialContent to useEditorConfig', () => {
     mockUseEditorConfig.mockReturnValue(null);
-    const content: JSONContent = { content: [], type: 'doc' };
+    const initialContent: JSONContent = { content: [], type: 'doc' };
     const onUpdate = vi.fn();
-    render(<NoteEditor content={content} onUpdate={onUpdate} />);
-    expect(mockUseEditorConfig).toHaveBeenCalledWith({ content, onUpdate });
+    render(<NoteEditor initialContent={initialContent} noteId="daily:2024-01-01" onUpdate={onUpdate} />);
+    expect(mockUseEditorConfig).toHaveBeenCalledWith({
+      initialContent,
+      noteId: 'daily:2024-01-01',
+      onUpdate,
+    });
   });
 });

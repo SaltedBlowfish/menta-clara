@@ -3,37 +3,36 @@ import type { JSONContent } from '@tiptap/react';
 import { useEditor } from '@tiptap/react';
 import { useRef } from 'react';
 
-import { editorExtensions } from './extensions';
+import { getWorkspaceDoc } from '../sync/doc-store';
+import { createExtensions } from './extensions';
 
 interface UseEditorConfigOptions {
-  content: JSONContent | null;
-  noteId?: string | undefined;
-  onUpdate: (content: JSONContent) => void;
+  initialContent?: JSONContent | null | undefined;
+  noteId: string;
+  onUpdate?: ((content: JSONContent) => void) | undefined;
 }
 
 export function useEditorConfig(options: UseEditorConfigOptions) {
-  const { content, noteId, onUpdate } = options;
+  const { initialContent, noteId, onUpdate } = options;
   const onUpdateRef = useRef(onUpdate);
   onUpdateRef.current = onUpdate;
-  const appliedNoteRef = useRef<string | undefined>(undefined);
-  const appliedContentRef = useRef<JSONContent | null>(null);
+  const initialAppliedRef = useRef<string | null>(null);
+
+  const ydoc = getWorkspaceDoc();
 
   const editor = useEditor({
-    content: '',
-    extensions: editorExtensions,
+    extensions: createExtensions(ydoc, noteId),
     immediatelyRender: false,
     onUpdate: ({ editor: e }) => {
-      onUpdateRef.current(e.getJSON());
+      onUpdateRef.current?.(e.getJSON());
     },
-  });
+  }, [noteId, ydoc]);
 
-  if (editor && content !== null) {
-    const noteChanged = appliedNoteRef.current !== noteId;
-    const contentChanged = appliedContentRef.current !== content;
-    if (noteChanged || (contentChanged && !editor.isFocused)) {
-      appliedNoteRef.current = noteId;
-      appliedContentRef.current = content;
-      editor.commands.setContent(content);
+  if (editor && initialContent && initialAppliedRef.current !== noteId) {
+    const fragment = ydoc.getXmlFragment(noteId);
+    if (fragment.length === 0) {
+      initialAppliedRef.current = noteId;
+      editor.commands.setContent(initialContent);
     }
   }
 
