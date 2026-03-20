@@ -6,6 +6,15 @@ const DEFAULT_SIGNALING = 'wss://yjs-signaling.onrender.com';
 
 let initialized = false;
 
+function updatePeerCount(awareness: { getStates: () => Map<number, unknown>; clientID: number }) {
+  const states = awareness.getStates();
+  const peerCount = states.size - 1;
+  updateSyncState({
+    connected: peerCount > 0,
+    peerCount,
+  });
+}
+
 export function initSync(): void {
   if (initialized) return;
   initialized = true;
@@ -29,12 +38,8 @@ export function initSync(): void {
       signaling: [signalingUrl],
     });
 
-    provider.on('peers', (event: { webrtcPeers: Array<string> }) => {
-      updateSyncState({
-        connected: event.webrtcPeers.length > 0,
-        peerCount: event.webrtcPeers.length,
-      });
-    });
+    provider.awareness.setLocalState({ active: true });
+    provider.awareness.on('update', () => updatePeerCount(provider.awareness));
 
     window.addEventListener('beforeunload', () => {
       provider.destroy();
