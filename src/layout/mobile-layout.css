@@ -1,6 +1,4 @@
 .mobile-layout {
-  display: flex;
-  flex-direction: column;
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
@@ -8,8 +6,7 @@
 
 .mobile-panels {
   display: flex;
-  flex: 1;
-  min-height: 0;
+  height: 100%;
   transition: transform 200ms ease;
   width: 300%;
 }
@@ -22,18 +19,23 @@
   flex: 0 0 33.333%;
   min-height: 0;
   overflow-y: auto;
+  padding-bottom: 52px;
   width: 33.333%;
 }
 
-/* Bottom tab bar */
+/* Bottom tab bar — fixed to guarantee visibility on mobile */
 .mobile-tabbar {
   align-items: center;
   background: var(--color-bg);
   border-top: 1px solid var(--color-border);
+  bottom: 0;
   display: flex;
-  flex: 0 0 auto;
+  left: 0;
   padding: 4px 0;
   padding-bottom: max(4px, env(safe-area-inset-bottom));
+  position: fixed;
+  right: 0;
+  z-index: 100;
 }
 
 .mobile-tab {
