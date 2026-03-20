@@ -76,19 +76,14 @@ export function App() {
       handler: () => {
         document.querySelector<HTMLElement>('#daily-pane .tiptap')?.focus();
       },
-      key: '[',
+      key: '1',
       meta: true,
     },
     {
       handler: () => {
         document.querySelector<HTMLElement>('#right-pane .tiptap')?.focus();
       },
-      key: ']',
-      meta: true,
-    },
-    {
-      handler: handleToday,
-      key: '.',
+      key: '2',
       meta: true,
     },
     {
@@ -98,20 +93,23 @@ export function App() {
           selected.focus();
         }
       },
-      key: 'k',
+      key: '3',
+      meta: true,
+    },
+    {
+      handler: handleToday,
+      key: '.',
       meta: true,
     },
     {
       handler: () => { handleSelectDay(subDays(selectedDate, 1)); },
-      key: 'ArrowLeft',
+      key: '[',
       meta: true,
-      shift: true,
     },
     {
       handler: () => { handleSelectDay(addDays(selectedDate, 1)); },
-      key: 'ArrowRight',
+      key: ']',
       meta: true,
-      shift: true,
     },
   ], [handleToday, handleSelectDay, selectedDate]);
 
