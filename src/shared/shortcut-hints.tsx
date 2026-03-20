@@ -1,4 +1,4 @@
-import { alt, mod } from './platform';
+import { mod, shift } from './platform';
 import './shortcut-hints.css';
 
 interface Hint {
@@ -6,7 +6,7 @@ interface Hint {
   label: string;
 }
 
-const navHint: Hint = { keys: `${mod}${alt}\u2190/\u2192`, label: 'Prev/next day' };
+const navHint: Hint = { keys: `${mod}${shift}\u2190/\u2192`, label: 'Prev/next day' };
 
 const dailyHints: Hint[] = [
   { keys: `${mod}]`, label: 'Weekly note' },

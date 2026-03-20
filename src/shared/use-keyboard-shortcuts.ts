@@ -6,6 +6,7 @@ interface KeyboardShortcut {
   handler: () => void;
   key: string;
   meta: boolean;
+  shift?: boolean;
 }
 
 export function useKeyboardShortcuts(
@@ -15,7 +16,8 @@ export function useKeyboardShortcuts(
     function handleKeyDown(event: KeyboardEvent) {
       for (const shortcut of shortcuts) {
         const altMatch = shortcut.alt ? event.altKey : !event.altKey;
-        if (event.metaKey === shortcut.meta && altMatch && event.key === shortcut.key) {
+        const shiftMatch = shortcut.shift ? event.shiftKey : !event.shiftKey;
+        if (event.metaKey === shortcut.meta && altMatch && shiftMatch && event.key === shortcut.key) {
           event.preventDefault();
           shortcut.handler();
           return;

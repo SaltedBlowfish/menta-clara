@@ -102,16 +102,16 @@ export function App() {
       meta: true,
     },
     {
-      alt: true,
       handler: () => { handleSelectDay(subDays(selectedDate, 1)); },
       key: 'ArrowLeft',
       meta: true,
+      shift: true,
     },
     {
-      alt: true,
       handler: () => { handleSelectDay(addDays(selectedDate, 1)); },
       key: 'ArrowRight',
       meta: true,
+      shift: true,
     },
   ], [handleToday, handleSelectDay, selectedDate]);
 
