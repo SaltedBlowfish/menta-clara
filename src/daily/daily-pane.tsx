@@ -14,7 +14,7 @@ interface DailyPaneProps {
 
 export function DailyPane(props: DailyPaneProps) {
   const { actions, date } = props;
-  const { dateLabel, isNew, legacyContent, loading, noteId } = useDailyNote(date);
+  const { dateLabel, isNew, legacyContent, noteId } = useDailyNote(date);
   const { carryOver, handleCarryOver, handleStartBlank, resolvedContent } = useCarryOver(noteId, isNew);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -28,7 +28,6 @@ export function DailyPane(props: DailyPaneProps) {
   const initialContent = legacyContent ?? (isNew ? resolvedContent : undefined);
 
   const showPrompt = isNew && carryOver === 'prompt';
-  const showEditor = !showPrompt && !loading;
 
   return (
     <Pane actions={actions} title={`Daily Note \u203a ${dateLabel}`}>
@@ -38,11 +37,11 @@ export function DailyPane(props: DailyPaneProps) {
           onCarryOver={handleCarryOver}
           onStartBlank={handleStartBlank}
         />
-      ) : showEditor ? (
+      ) : (
         <PaneContent onMouseDown={handleMouseDown}>
           <NoteEditor initialContent={initialContent} noteId={noteId} onUpdate={onUpdate} />
         </PaneContent>
-      ) : null}
+      )}
     </Pane>
   );
 }

@@ -12,7 +12,7 @@ interface WeeklySectionProps {
 }
 
 export function WeeklySection({ date }: WeeklySectionProps) {
-  const { isNew, legacyContent, loading, weekNoteId } = useWeeklyNote(date);
+  const { isNew, legacyContent, weekNoteId } = useWeeklyNote(date);
   const { carryOver, handleCarryOver, handleStartBlank, resolvedContent } = useCarryOver(weekNoteId, isNew);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -26,7 +26,6 @@ export function WeeklySection({ date }: WeeklySectionProps) {
   const initialContent = legacyContent ?? (isNew ? resolvedContent : undefined);
 
   const showPrompt = isNew && carryOver === 'prompt';
-  const showEditor = !showPrompt && !loading;
 
   return showPrompt ? (
     <CarryOverPrompt
@@ -34,9 +33,9 @@ export function WeeklySection({ date }: WeeklySectionProps) {
       onCarryOver={handleCarryOver}
       onStartBlank={handleStartBlank}
     />
-  ) : showEditor ? (
+  ) : (
     <PaneContent onMouseDown={handleMouseDown}>
       <NoteEditor initialContent={initialContent} noteId={weekNoteId} onUpdate={onUpdate} />
     </PaneContent>
-  ) : null;
+  );
 }
