@@ -7,23 +7,25 @@
 }
 
 .mobile-panels {
-  display: flex;
   flex: 1;
   min-height: 0;
-  transition: transform 200ms ease;
-  width: 300%;
+  position: relative;
 }
 
-.mobile-panels[data-panel="0"] { transform: translateX(0); }
-.mobile-panels[data-panel="1"] { transform: translateX(-33.333%); }
-.mobile-panels[data-panel="2"] { transform: translateX(-66.666%); }
-
 .mobile-panel {
-  flex: 0 0 33.333%;
-  min-height: 0;
+  height: 100%;
+  left: 0;
   overflow-y: auto;
   padding-bottom: 52px;
-  width: 33.333%;
+  position: absolute;
+  top: 0;
+  visibility: hidden;
+  width: 100%;
+}
+
+.mobile-panel.active {
+  position: relative;
+  visibility: visible;
 }
 
 /* Bottom tab bar — fixed to guarantee visibility on mobile */

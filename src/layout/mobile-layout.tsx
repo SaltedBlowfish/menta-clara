@@ -59,13 +59,12 @@ export function MobileLayout({ calendar, daily, onTodayTab, panelRef, weekly }: 
     <div className="mobile-layout">
       <div
         className="mobile-panels"
-        data-panel={panel}
         onTouchEnd={handleTouchEnd}
         onTouchStart={handleTouchStart}
       >
-        <div className="mobile-panel">{calendar}</div>
-        <div className="mobile-panel" id="daily-pane">{daily}</div>
-        <div className="mobile-panel" id="right-pane">{weekly}</div>
+        <div className={`mobile-panel${panel === 0 ? ' active' : ''}`}>{calendar}</div>
+        <div className={`mobile-panel${panel === 1 ? ' active' : ''}`} id="daily-pane">{daily}</div>
+        <div className={`mobile-panel${panel === 2 ? ' active' : ''}`} id="right-pane">{weekly}</div>
       </div>
 
       <nav className="mobile-tabbar">
