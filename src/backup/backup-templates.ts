@@ -16,9 +16,14 @@ const GITHUB_TOKEN = 'YOUR_TOKEN';
 const GIST_ID = ''; // leave empty to create, or paste an existing gist ID
 
 const files = {};
+
+// Each note as a readable .md file
 for (const note of payload.notes) {
   files[note.id + '.md'] = { content: note.markdown || '(empty)' };
 }
+
+// Full payload (JSON content, revision history, images) in one restorable file
+files['_backup.json'] = { content: JSON.stringify(payload, null, 2) };
 
 const body = JSON.stringify({
   description: 'Menta Clara backup — ' + payload.timestamp,
