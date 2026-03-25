@@ -1,10 +1,11 @@
-import { useCallback, useRef, useState, useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 
-import { getSignalingUrl, setSignalingUrl, setSyncId } from './create-sync-id';
-import { JoinSection } from './join-section';
-import { SyncCodeSection } from './sync-code-section';
+import { BackupTab } from '../backup/backup-tab';
 import { getSyncSnapshot, subscribeSyncState } from './sync-state';
+import { SyncTabContent } from './sync-tab-content';
 import './sync-dialog.css';
+
+type Tab = 'sync' | 'backup';
 
 interface SyncDialogProps {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
@@ -16,79 +17,33 @@ export function SyncDialog(props: SyncDialogProps) {
     subscribeSyncState,
     getSyncSnapshot,
   );
-  const [joinCode, setJoinCode] = useState('');
-  const [copied, setCopied] = useState(false);
-  const [serverUrl, setServerUrl] = useState(getSignalingUrl);
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const copyTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  const handleCopy = useCallback(() => {
-    void navigator.clipboard.writeText(syncId);
-    setCopied(true);
-    clearTimeout(copyTimer.current);
-    copyTimer.current = setTimeout(() => setCopied(false), 2000);
-  }, [syncId]);
-
-  const handleJoin = useCallback(() => {
-    const code = joinCode.trim().toLowerCase();
-    if (!code || code === syncId) return;
-    const confirmed = window.confirm(
-      'Join this sync code? Your existing notes will merge with the other device.',
-    );
-    if (!confirmed) return;
-    setSyncId(code);
-    window.location.reload();
-  }, [joinCode, syncId]);
-
-  const handleSaveServer = useCallback(() => {
-    setSignalingUrl(serverUrl.trim());
-    window.location.reload();
-  }, [serverUrl]);
-
-  const status = connected
-    ? `Connected to ${String(peerCount)} device${peerCount === 1 ? '' : 's'}`
-    : 'Waiting for devices\u2026';
+  const [activeTab, setActiveTab] = useState<Tab>('sync');
 
   return (
-    <dialog className="sync-dialog" ref={dialogRef}>
-      <h3>Device Sync</h3>
-      <SyncCodeSection copied={copied} onCopy={handleCopy} syncId={syncId} />
-      <hr className="sync-divider" />
-      <JoinSection joinCode={joinCode} onJoin={handleJoin} onSetCode={setJoinCode} syncId={syncId} />
+    <dialog className={`sync-dialog ${activeTab === 'backup' ? 'sync-dialog--wide' : ''}`} ref={dialogRef}>
+      <div className="sync-tab-bar">
+        <button
+          className={`sync-tab ${activeTab === 'sync' ? 'sync-tab--active' : ''}`}
+          onClick={() => setActiveTab('sync')}
+          type="button"
+        >
+          Device Sync
+        </button>
+        <button
+          className={`sync-tab ${activeTab === 'backup' ? 'sync-tab--active' : ''}`}
+          onClick={() => setActiveTab('backup')}
+          type="button"
+        >
+          Backup
+        </button>
+      </div>
 
-      <button
-        className="sync-advanced-toggle"
-        onClick={() => setShowAdvanced(!showAdvanced)}
-        type="button"
-      >
-        {showAdvanced ? 'Hide' : 'Advanced'} settings
-      </button>
-
-      {showAdvanced && (
-        <div className="sync-section">
-          <div className="sync-section-label">Custom signaling server</div>
-          <div className="sync-code-row">
-            <input
-              className="sync-join-input"
-              onChange={(e) => setServerUrl(e.target.value)}
-              placeholder="Default: yjs-signaling.onrender.com"
-              type="text"
-              value={serverUrl}
-            />
-            <button className="btn btn-secondary" onClick={handleSaveServer} type="button">
-              Save
-            </button>
-          </div>
-          <p className="sync-hint">
-            Override the default server. Run signaling-server/ on any host.
-          </p>
-        </div>
+      {activeTab === 'sync' && (
+        <SyncTabContent connected={connected} peerCount={peerCount} syncId={syncId} />
       )}
+      {activeTab === 'backup' && <BackupTab />}
 
       <div className="sync-actions">
-        <span style={{ color: 'var(--color-text-secondary)', flex: 1, fontSize: 13 }}>
-          {status}
-        </span>
         <button className="btn btn-secondary" onClick={() => dialogRef.current?.close()} type="button">
           Close
         </button>

@@ -102,3 +102,37 @@ dialog.sync-dialog::backdrop {
   justify-content: flex-end;
   margin-top: 20px;
 }
+
+/* Tab bar */
+.sync-tab-bar {
+  display: flex;
+  gap: 0;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sync-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+}
+
+.sync-tab:hover {
+  color: var(--color-text);
+}
+
+.sync-tab--active {
+  border-bottom-color: var(--color-text);
+  color: var(--color-text);
+}
+
+/* Wide dialog for backup tab */
+dialog.sync-dialog.sync-dialog--wide {
+  max-width: 640px;
+  transition: max-width 0.15s ease;
+}
