@@ -11,7 +11,7 @@ export const BACKUP_TEMPLATES: BackupTemplate[] = [
 // For large images, enable Git LFS on the repo:
 //   git lfs install && git lfs track "images/*"
 //
-// 1. Create a repo (private recommended).
+// 1. Create a repo (private recommended) and initialize it with a README.
 // 2. Create a fine-grained token at https://github.com/settings/personal-access-tokens/new
 //    with "Contents" read/write permission for that repo.
 // 3. Fill in the values below.
@@ -63,47 +63,31 @@ for (const img of payload.images) {
   tree.push({ path: 'images/' + img.id + '.' + ext, mode: '100644', type: 'blob', sha: blob.sha });
 }
 
-// Get current commit, or bootstrap an empty repo with an initial commit
-let parentSha;
-try {
-  const ref = await api('/repos/' + OWNER + '/' + REPO + '/git/ref/heads/' + BRANCH);
-  parentSha = ref.object.sha;
-} catch {
-  // Empty repo — the Git Data API won't work until there's at least one commit.
-  // Use the Contents API to create a seed file, which initializes the branch.
-  const seed = await api('/repos/' + OWNER + '/' + REPO + '/contents/README.md', {
-    method: 'PUT',
-    body: JSON.stringify({ message: 'Initialize backup repo', content: btoa('# Menta Clara Backup\\n'), branch: BRANCH }),
-  });
-  parentSha = seed.commit.sha;
-}
+// Get current commit SHA
+const ref = await api('/repos/' + OWNER + '/' + REPO + '/git/ref/heads/' + BRANCH);
+const parentSha = ref.object.sha;
 
 // Create tree and commit
+const parentCommit = await api('/repos/' + OWNER + '/' + REPO + '/git/commits/' + parentSha);
 const newTree = await api('/repos/' + OWNER + '/' + REPO + '/git/trees', {
   method: 'POST',
-  body: JSON.stringify({ tree, base_tree: parentSha ? (await api('/repos/' + OWNER + '/' + REPO + '/git/commits/' + parentSha)).tree.sha : undefined }),
+  body: JSON.stringify({ tree, base_tree: parentCommit.tree.sha }),
 });
-
-const commitBody = { message: 'Backup ' + payload.timestamp + ' (' + payload.meta.noteCount + ' notes, ' + payload.meta.imageCount + ' images)', tree: newTree.sha };
-if (parentSha) commitBody.parents = [parentSha];
 
 const commit = await api('/repos/' + OWNER + '/' + REPO + '/git/commits', {
   method: 'POST',
-  body: JSON.stringify(commitBody),
+  body: JSON.stringify({
+    message: 'Backup ' + payload.timestamp + ' (' + payload.meta.noteCount + ' notes, ' + payload.meta.imageCount + ' images)',
+    tree: newTree.sha,
+    parents: [parentSha],
+  }),
 });
 
-// Update (or create) branch ref
-if (parentSha) {
-  await api('/repos/' + OWNER + '/' + REPO + '/git/refs/heads/' + BRANCH, {
-    method: 'PATCH',
-    body: JSON.stringify({ sha: commit.sha }),
-  });
-} else {
-  await api('/repos/' + OWNER + '/' + REPO + '/git/refs', {
-    method: 'POST',
-    body: JSON.stringify({ ref: 'refs/heads/' + BRANCH, sha: commit.sha }),
-  });
-}
+// Update branch ref
+await api('/repos/' + OWNER + '/' + REPO + '/git/refs/heads/' + BRANCH, {
+  method: 'PATCH',
+  body: JSON.stringify({ sha: commit.sha }),
+});
 
 console.log('Committed:', commit.sha);`,
   },
