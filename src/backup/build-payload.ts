@@ -91,7 +91,7 @@ export async function buildPayload(): Promise<BackupPayload> {
   const imageMap = new Map<string, string>();
   for (const img of images) {
     const ext = img.mimeType.split('/')[1] ?? 'bin';
-    imageMap.set(img.id, `images/${img.id}.${ext}`);
+    imageMap.set(img.id, `../images/${img.id}.${ext}`);
   }
 
   // Re-convert markdown with image paths instead of blob URLs
