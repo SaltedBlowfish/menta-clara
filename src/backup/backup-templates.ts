@@ -7,8 +7,8 @@ export const BACKUP_TEMPLATES: BackupTemplate[] = [
   {
     label: 'GitHub Gist',
     code: `// Back up all notes to a GitHub Gist.
-// 1. Create a personal access token at https://github.com/settings/tokens
-//    with the "gist" scope.
+// 1. Create a classic personal access token (not fine-grained) at
+//    https://github.com/settings/tokens/new with the "gist" scope.
 // 2. Replace YOUR_TOKEN below.
 // 3. On first run this creates a new gist; after that it updates the same one.
 
