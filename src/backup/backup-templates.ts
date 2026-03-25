@@ -63,13 +63,19 @@ for (const img of payload.images) {
   tree.push({ path: 'images/' + img.id + '.' + ext, mode: '100644', type: 'blob', sha: blob.sha });
 }
 
-// Get current commit to base the new tree on
+// Get current commit, or bootstrap an empty repo with an initial commit
 let parentSha;
 try {
   const ref = await api('/repos/' + OWNER + '/' + REPO + '/git/ref/heads/' + BRANCH);
   parentSha = ref.object.sha;
 } catch {
-  // Empty repo — no parent
+  // Empty repo — the Git Data API won't work until there's at least one commit.
+  // Use the Contents API to create a seed file, which initializes the branch.
+  const seed = await api('/repos/' + OWNER + '/' + REPO + '/contents/README.md', {
+    method: 'PUT',
+    body: JSON.stringify({ message: 'Initialize backup repo', content: btoa('# Menta Clara Backup\\n'), branch: BRANCH }),
+  });
+  parentSha = seed.commit.sha;
 }
 
 // Create tree and commit
