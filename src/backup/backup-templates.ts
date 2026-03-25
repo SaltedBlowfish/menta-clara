@@ -60,7 +60,7 @@ const ref = await api('/repos/' + OWNER + '/' + REPO + '/git/ref/heads/' + BRANC
 const parentSha = ref.object.sha;
 const parentCommit = await api('/repos/' + OWNER + '/' + REPO + '/git/commits/' + parentSha);
 const currentTree = await api('/repos/' + OWNER + '/' + REPO + '/git/trees/' + parentCommit.tree.sha + '?recursive=1');
-const existing = new Map(currentTree.tree.map(f => [f.path, f.sha]));
+const existing = new Map(currentTree.tree.filter(f => f.type === 'blob').map(f => [f.path, f.sha]));
 
 // Build list of changed files only
 const tree = [];
