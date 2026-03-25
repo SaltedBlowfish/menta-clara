@@ -28,7 +28,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer);
   let binary = '';
   for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
+    binary += String.fromCharCode(bytes[i]!);
   }
   return btoa(binary);
 }
@@ -53,13 +53,15 @@ export async function buildPayload(): Promise<BackupPayload> {
     });
   }
 
-  const notes = rawNotes.map((n) => ({
-    id: n.id as string,
-    markdown: n.content ? jsonToMarkdown(n.content as JSONContent) : '',
-    json: (n.content ?? {}) as JSONContent,
-    updatedAt: n.updatedAt as number | undefined,
-    history: historyByNote.get(n.id as string) ?? [],
-  }));
+  const notes = rawNotes.map((n) => {
+    const base = {
+      id: n.id as string,
+      markdown: n.content ? jsonToMarkdown(n.content as JSONContent) : '',
+      json: (n.content ?? {}) as JSONContent,
+      history: historyByNote.get(n.id as string) ?? [],
+    };
+    return n.updatedAt != null ? { ...base, updatedAt: n.updatedAt as number } : base;
+  });
 
   const images = rawImages.map((img) => ({
     id: img.id as string,
