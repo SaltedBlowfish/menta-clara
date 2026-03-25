@@ -33,6 +33,19 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
   return btoa(binary);
 }
 
+function rewriteImageSrcs(json: JSONContent, imageMap: Map<string, string>): JSONContent {
+  if (json.type === 'image') {
+    const imageId = json.attrs?.['data-image-id'] as string | undefined;
+    if (imageId && imageMap.has(imageId)) {
+      return { ...json, attrs: { ...json.attrs, src: imageMap.get(imageId) } };
+    }
+  }
+  if (json.content) {
+    return { ...json, content: json.content.map((c) => rewriteImageSrcs(c, imageMap)) };
+  }
+  return json;
+}
+
 export async function buildPayload(): Promise<BackupPayload> {
   const db = await getDatabase();
 
@@ -66,12 +79,26 @@ export async function buildPayload(): Promise<BackupPayload> {
   const images = await Promise.all(rawImages.map(async (img) => {
     const blob = img.blob as Blob | undefined;
     const buffer = blob ? await blob.arrayBuffer() : new ArrayBuffer(0);
+    const mimeType = (img.mimeType ?? 'application/octet-stream') as string;
     return {
       id: img.id as string,
-      mimeType: (img.mimeType ?? 'application/octet-stream') as string,
+      mimeType,
       base64: arrayBufferToBase64(buffer),
     };
   }));
+
+  // Map image IDs to filenames so markdown can reference them
+  const imageMap = new Map<string, string>();
+  for (const img of images) {
+    const ext = img.mimeType.split('/')[1] ?? 'bin';
+    imageMap.set(img.id, `images/${img.id}.${ext}`);
+  }
+
+  // Re-convert markdown with image paths instead of blob URLs
+  for (const note of notes) {
+    const json = (rawNotes.find((n) => (n.id as string) === note.id)?.content ?? {}) as JSONContent;
+    note.markdown = json.type ? jsonToMarkdown(rewriteImageSrcs(json, imageMap)) : '';
+  }
 
   return {
     timestamp: new Date().toISOString(),
