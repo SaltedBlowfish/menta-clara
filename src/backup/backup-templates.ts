@@ -34,41 +34,78 @@ const api = async (path, opts = {}) => {
   return res.json();
 };
 
-// Build file tree: notes as .md, full data as JSON, images as binary
+// Compute git blob SHA locally to detect what actually changed
+async function gitSha(bytes) {
+  const header = new TextEncoder().encode('blob ' + bytes.length + '\\0');
+  const full = new Uint8Array(header.length + bytes.length);
+  full.set(header);
+  full.set(bytes, header.length);
+  const hash = await crypto.subtle.digest('SHA-1', full);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function textSha(text) {
+  return gitSha(new TextEncoder().encode(text));
+}
+
+async function base64Sha(b64) {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return gitSha(bytes);
+}
+
+// Fetch current tree to diff against
+const ref = await api('/repos/' + OWNER + '/' + REPO + '/git/ref/heads/' + BRANCH);
+const parentSha = ref.object.sha;
+const parentCommit = await api('/repos/' + OWNER + '/' + REPO + '/git/commits/' + parentSha);
+const currentTree = await api('/repos/' + OWNER + '/' + REPO + '/git/trees/' + parentCommit.tree.sha + '?recursive=1');
+const existing = new Map(currentTree.tree.map(f => [f.path, f.sha]));
+
+// Build list of changed files only
 const tree = [];
 
 for (const note of payload.notes) {
+  const path = 'notes/' + note.id + '.md';
+  const content = note.markdown || '(empty)';
+  const sha = await textSha(content);
+  if (existing.get(path) === sha) continue;
   const blob = await api('/repos/' + OWNER + '/' + REPO + '/git/blobs', {
     method: 'POST',
-    body: JSON.stringify({ content: note.markdown || '(empty)', encoding: 'utf-8' }),
+    body: JSON.stringify({ content, encoding: 'utf-8' }),
   });
-  tree.push({ path: 'notes/' + note.id + '.md', mode: '100644', type: 'blob', sha: blob.sha });
+  tree.push({ path, mode: '100644', type: 'blob', sha: blob.sha });
 }
 
-// Full restorable data (notes JSON + history, no images — those are committed separately)
 const meta = { ...payload, images: payload.images.map(i => ({ id: i.id, mimeType: i.mimeType })) };
-const metaBlob = await api('/repos/' + OWNER + '/' + REPO + '/git/blobs', {
-  method: 'POST',
-  body: JSON.stringify({ content: JSON.stringify(meta, null, 2), encoding: 'utf-8' }),
-});
-tree.push({ path: '_backup.json', mode: '100644', type: 'blob', sha: metaBlob.sha });
+const metaContent = JSON.stringify(meta, null, 2);
+const metaSha = await textSha(metaContent);
+if (existing.get('_backup.json') !== metaSha) {
+  const blob = await api('/repos/' + OWNER + '/' + REPO + '/git/blobs', {
+    method: 'POST',
+    body: JSON.stringify({ content: metaContent, encoding: 'utf-8' }),
+  });
+  tree.push({ path: '_backup.json', mode: '100644', type: 'blob', sha: blob.sha });
+}
 
-// Images as binary blobs (base64-encoded in the API, stored as binary in the repo)
 for (const img of payload.images) {
   const ext = img.mimeType.split('/')[1] || 'bin';
+  const path = 'images/' + img.id + '.' + ext;
+  const sha = await base64Sha(img.base64);
+  if (existing.get(path) === sha) continue;
   const blob = await api('/repos/' + OWNER + '/' + REPO + '/git/blobs', {
     method: 'POST',
     body: JSON.stringify({ content: img.base64, encoding: 'base64' }),
   });
-  tree.push({ path: 'images/' + img.id + '.' + ext, mode: '100644', type: 'blob', sha: blob.sha });
+  tree.push({ path, mode: '100644', type: 'blob', sha: blob.sha });
 }
 
-// Get current commit SHA
-const ref = await api('/repos/' + OWNER + '/' + REPO + '/git/ref/heads/' + BRANCH);
-const parentSha = ref.object.sha;
+if (tree.length === 0) {
+  console.log('Nothing changed, skipping commit.');
+  return;
+}
 
-// Create tree and commit
-const parentCommit = await api('/repos/' + OWNER + '/' + REPO + '/git/commits/' + parentSha);
+// Create tree and commit with only the changed files
 const newTree = await api('/repos/' + OWNER + '/' + REPO + '/git/trees', {
   method: 'POST',
   body: JSON.stringify({ tree, base_tree: parentCommit.tree.sha }),
@@ -77,19 +114,18 @@ const newTree = await api('/repos/' + OWNER + '/' + REPO + '/git/trees', {
 const commit = await api('/repos/' + OWNER + '/' + REPO + '/git/commits', {
   method: 'POST',
   body: JSON.stringify({
-    message: 'Backup ' + payload.timestamp + ' (' + payload.meta.noteCount + ' notes, ' + payload.meta.imageCount + ' images)',
+    message: 'Backup ' + payload.timestamp + ' (' + tree.length + ' files changed)',
     tree: newTree.sha,
     parents: [parentSha],
   }),
 });
 
-// Update branch ref
 await api('/repos/' + OWNER + '/' + REPO + '/git/refs/heads/' + BRANCH, {
   method: 'PATCH',
   body: JSON.stringify({ sha: commit.sha }),
 });
 
-console.log('Committed:', commit.sha);`,
+console.log('Committed:', commit.sha, '(' + tree.length + ' files changed)');`,
   },
   {
     label: 'Webhook (POST)',

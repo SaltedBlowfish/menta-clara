@@ -63,10 +63,14 @@ export async function buildPayload(): Promise<BackupPayload> {
     return n.updatedAt != null ? { ...base, updatedAt: n.updatedAt as number } : base;
   });
 
-  const images = rawImages.map((img) => ({
-    id: img.id as string,
-    mimeType: (img.mimeType ?? 'application/octet-stream') as string,
-    base64: arrayBufferToBase64(img.data as ArrayBuffer),
+  const images = await Promise.all(rawImages.map(async (img) => {
+    const blob = img.blob as Blob | undefined;
+    const buffer = blob ? await blob.arrayBuffer() : new ArrayBuffer(0);
+    return {
+      id: img.id as string,
+      mimeType: (img.mimeType ?? 'application/octet-stream') as string,
+      base64: arrayBufferToBase64(buffer),
+    };
   }));
 
   return {
