@@ -1,12 +1,13 @@
 import type { JSONContent } from '@tiptap/react';
 
-import { useSyncNote } from '../sync/use-sync-note';
+import { useNote } from '../storage/use-note';
 import { getWeekId, getWeekNumber } from './get-week-id';
 
 interface UseWeeklyNoteResult {
+  content: JSONContent | null;
   isNew: boolean;
-  legacyContent: JSONContent | null;
   loading: boolean;
+  saveContent: (content: JSONContent) => void;
   weekLabel: string;
   weekNoteId: string;
 }
@@ -14,7 +15,14 @@ interface UseWeeklyNoteResult {
 export function useWeeklyNote(date: Date): UseWeeklyNoteResult {
   const weekNoteId = getWeekId(date);
   const weekLabel = `Week ${String(getWeekNumber(date))}`;
-  const { isNew, legacyContent, loading } = useSyncNote(weekNoteId);
+  const { content, loading, saveContent } = useNote(weekNoteId);
 
-  return { isNew, legacyContent, loading, weekLabel, weekNoteId };
+  return {
+    content,
+    isNew: !loading && content === null,
+    loading,
+    saveContent,
+    weekLabel,
+    weekNoteId,
+  };
 }

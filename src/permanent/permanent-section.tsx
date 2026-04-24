@@ -1,11 +1,10 @@
 import './permanent-section.css';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import { useActiveNote } from '../app/use-active-note';
-import { NoteEditor } from '../editor/editor';
 import { Tooltip } from '../shared/tooltip';
-import { createShadowWrite } from '../sync/shadow-write';
 import { NoteBrowserItem } from './note-browser-item';
+import { PermanentEditor } from './permanent-editor';
 import { usePermanentNotes } from './use-permanent-notes';
 
 export function PermanentSection() {
@@ -22,11 +21,6 @@ export function PermanentSection() {
       navigateToNote({ id: noteId, type: 'permanent' });
     },
     [navigateToNote],
-  );
-
-  const onUpdate = useMemo(
-    () => selectedNoteId ? createShadowWrite(selectedNoteId) : undefined,
-    [selectedNoteId],
   );
 
   if (notes.length === 0) {
@@ -82,7 +76,7 @@ export function PermanentSection() {
       </div>
       {selectedNoteId ? (
         <div className="permanent-editor-area">
-          <NoteEditor noteId={selectedNoteId} onUpdate={onUpdate ?? undefined} />
+          <PermanentEditor noteId={selectedNoteId} />
         </div>
       ) : null}
     </>

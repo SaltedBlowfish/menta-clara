@@ -56,9 +56,8 @@ export function AboutDialog() {
           <div className="welcome-privacy">
             <p>
               <strong>Your data stays yours.</strong> Notes are stored locally in
-              your browser. Sync between your devices is peer-to-peer — your
-              notes travel directly between them, never through a server.
-              No accounts, no analytics, no tracking.
+              your browser — no accounts, no servers, no analytics, no tracking.
+              Use Export anytime to take your notes with you.
             </p>
             <p className="welcome-muted">
               Don't take our word for it — open your browser's Network tab and see

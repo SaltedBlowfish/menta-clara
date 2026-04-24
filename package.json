@@ -38,7 +38,6 @@
     "@tiptap/core": "^3.20.2",
     "@tiptap/extension-code-block": "^3.20.2",
     "@tiptap/extension-code-block-lowlight": "^3.20.2",
-    "@tiptap/extension-collaboration": "^3.20.4",
     "@tiptap/extension-image": "^3.20.2",
     "@tiptap/markdown": "3.20.2",
     "@tiptap/pm": "^3.20.2",
@@ -49,10 +48,7 @@
     "idb": "^8.0.3",
     "lowlight": "^3.3.0",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "y-indexeddb": "^9.0.12",
-    "y-webrtc": "^10.3.0",
-    "yjs": "^13.6.30"
+    "react-dom": "^19.2.4"
   },
   "pnpm": {
     "overrides": {

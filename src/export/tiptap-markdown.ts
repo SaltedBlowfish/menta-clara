@@ -4,7 +4,7 @@ import { MarkdownManager } from '@tiptap/markdown';
 
 import { createExtensions } from '../editor/extensions';
 
-const manager = new MarkdownManager({ extensions: createExtensions(null, 'export') });
+const manager = new MarkdownManager({ extensions: createExtensions() });
 
 export function jsonToMarkdown(json: JSONContent): string {
   const md = manager.serialize(json);
