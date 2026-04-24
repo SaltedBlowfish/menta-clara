@@ -28,13 +28,46 @@ If you want to walk away, close the tab — nothing follows you.
 - **Keyboard-first** — shortcuts for pane focus, date navigation, and common
   formatting.
 
-## Running locally
+## Use it yourself, without the website
 
-Requires Node 22+ and pnpm.
+mentaclara.com is convenient but optional. The app is a static bundle — no
+server, no backend — so you can run it from your own machine and never touch
+the hosted version. Notes on the hosted site and the self-hosted build live
+in separate IndexedDBs, so pick one and stick with it (or shuttle between
+them with Export / Import).
+
+Two ways to run it yourself:
+
+**Quick local run** (keeps updating as you `git pull`):
 
 ```bash
 pnpm install
-pnpm dev        # http://localhost:5173
+pnpm build
+pnpm preview    # serves the built app at http://localhost:4173
+```
+
+**Build once, serve from anywhere:**
+
+```bash
+pnpm install && pnpm build
+# dist/ is a plain folder of static files. Host it however you like:
+#   - python3 -m http.server --directory dist 8080
+#   - nginx / caddy / any static host
+#   - open dist/index.html directly in some browsers
+```
+
+Because everything is client-side, you can drop `dist/` on a USB stick or
+throw it behind your own domain. No secrets to configure, no server to
+maintain.
+
+## Running locally for development
+
+Requires Node 22+ and pnpm. If you use asdf, the pinned versions are in
+[`.tool-versions`](.tool-versions).
+
+```bash
+pnpm install
+pnpm dev        # http://localhost:5173 with HMR
 ```
 
 Other scripts:
